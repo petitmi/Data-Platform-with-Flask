@@ -1,0 +1,37 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+
+
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript" src="{{ url_for('static',filename='js/shitsweeper.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/shitsweeper.css') }}">
+{% endblock %}
+
+{% block page_content %}
+    {{ super() }}
+    <div id="hananTOP"><h3>扫翔</h3></div>
+
+    <div style="width: 213px; display:none" class="main solid-border-up" id="oMain">
+        <div class="solid-border-down top">
+            <table>
+                <tr>
+                    <td style="width: 42px;"><div class="solid-border-down count" id="oCount">10</div></td>
+                    <td><input src="{{url_for('static',filename='img/shit_white.jpeg')}}" type="image" id="start" title="点击开始游戏"></td>
+                    <td style="text-align: right;">
+                        <label style="font-size: 7px"><input checked="checked" type="radio" name="radio" value="10">初级</label>
+                        <label style="font-size: 7px"><input type="radio" name="radio" value="40">中级</label>
+                        <label style="font-size: 7px"><input type="radio" name="radio" value="99">高级</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="mine-field solid-border-down" id="mineField"></div>
+    </div>
+    <img src="{{  url_for('static',filename='img/shit_green.jpeg')}}" id="loading">
+
+    <div id="hananBottom">喵喵喵喵喵</div>
+
+
+
+{% endblock %}

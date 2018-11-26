@@ -1,0 +1,28 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+{% block page_content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='detail.css') }}">
+
+</head>
+<body>
+<h1><font size="6">{% if current_user.username %}{{ current_user.username }}{%else %}影工人{%endif %},你好</font></h1>
+<br>
+<br>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file style="font-size: 20px">
+        <br>
+      <input type=submit value=Upload>
+    </form>
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <div class=flashes>
+                <div><font color="red"> {{ message }}</font></div></div>
+        </div>
+    {% endfor %}
+</body>
+</html>
+
+{% endblock %}

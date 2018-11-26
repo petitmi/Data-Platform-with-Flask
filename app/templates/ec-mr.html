@@ -1,0 +1,125 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script src="https://pyecharts.github.io/assets/js/echarts.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+{% endblock %}
+
+{% block page_content %}
+    <br><br>
+        <form action="/ec-rp" method=post >
+选择日期：<input size="16" type="text" name="input" value="{{ thatdate }}" readonly class="form_datetime">
+            <input type="submit" class="startButton" value="查询">
+        </form>
+    <script type="text/javascript">
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd',minView:2});
+    </script>
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <div class=flashes>
+                <div><font color="red"> {{ message }}</font></div></div>
+        </div>
+    {% endfor %}
+<br>
+
+    <h1 class="head1">月数据</h1>
+<hr width="70%" align="left">
+        <div class="blue_table"  style="font-size: 20px">
+        <ul class="blue_head">
+            <li class="cell">本月</li>
+            <li class="cell">总销量</li >
+            <li class="cell">总销售额</li>
+        </ul>
+        <ul class="blue_row" >
+            <li class="cell">{{ ec_month[0][0] }}</li>
+            <li class="cell">{{ ec_month[0][1]+ec_chanjet_month[0][0] }}</li>
+            <li class="cell">￥{{ ec_month[0][2]+ec_chanjet_month[0][1]}}</li>
+
+        </ul>
+    </div>
+    <br>
+    {{ overlap_month_online|safe }}
+    {{ overlap_month_consult|safe }}
+    <br><br>
+
+    <h2 class="head2" style=" font-size: 18px; color: gray;">平台分类数据</h2>
+
+    <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="30%">类别</div>
+            <div class="green_cell">销量</div>
+            <div class="green_cell">来自圈子数量</div>
+            <div class="green_cell">销售额</div>
+            <div class="green_cell">客单价</div>
+        </div>
+        {% for i in ec_type_month %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
+                <div class="green_cell">{{ i[1] }}</div>
+                <div class="green_cell">{{ i[2]}}</div>
+                <div class="green_cell">￥{{ i[3]}}</div>
+                <div class="green_cell">￥{{ i[4]}}</div>
+            </div>
+        {% endfor %}
+        <div class="green_row">
+            <div class="green_cell" id="first_group" width="30%">顾问销售</div>
+            <div class="green_cell" >{{ ec_chanjet_month[0][0] }}</div>
+            <div class="green_cell">0</div>
+            <div class="green_cell">￥{{ ec_chanjet_month[0][1]}}</div>
+            {% if ec_chanjet_month[0][0]!=0 %}
+            <div class="green_cell">￥{{ (ec_chanjet_month[0][1]/ec_chanjet_month[0][0])|int}}</div>
+            {% else %}
+            <div class="green_cell">未录入</div>
+{% endif %}
+        </div>
+    </div>
+        <h2 class="head2" style=" font-size: 18px;
+                color: gray;">99元会员</h2>
+
+        <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="30%">类别</div>
+            <div class="green_cell">会员数</div>
+            <div class="green_cell">订单数</div>
+            <div class="green_cell">总订单金额</div>
+            <div class="green_cell">人均订单数</div>
+            <div class="green_cell">人均订单金额</div>
+        </div>
+            {% for i in ec_vip_month %}
+                <div class="green_row">
+                    <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
+                    <div class="green_cell">{{ i[1] }}</div>
+                    <div class="green_cell">{{ i[2] }}</div>
+                    <div class="green_cell">￥{{ i[3]|int }}</div>
+                    <div class="green_cell">{{ (i[2]/i[1])|int }}</div>
+                    <div class="green_cell">￥{{ (i[3]/i[1])|int }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <h2 class="head2" style=" font-size: 18px;
+                color: gray;">重点产品自主下单</h2>
+
+            <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="30%">平台</div>
+            <div class="green_cell">产品</div>
+            <div class="green_cell">销量</div>
+            <div class="green_cell">价格</div>
+
+        </div>
+        {% for i in ec_goods_month %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
+                <div class="green_cell">{{ i[1] }}</div>
+                <div class="green_cell" >{{ i[2] }}</div>
+                <div class="green_cell">￥{{ i[3]|int}}</div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}
+

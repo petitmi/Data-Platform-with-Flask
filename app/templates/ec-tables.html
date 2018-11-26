@@ -1,0 +1,93 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script src="https://pyecharts.github.io/assets/js/echarts.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+{% endblock %}
+
+{% block page_content %}
+    <br><br>
+
+            <h2 class="head2" style=" font-size: 18px;
+                color: gray;">周毛利表</h2>
+            <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="30%">周</div>
+            <div class="green_cell">总销货额</div>
+            <div class="green_cell">总毛利</div>
+            <div class="green_cell">总毛利率</div>
+            <div class="green_cell">顾问式销货额</div>
+            <div class="green_cell">顾问式毛利</div>
+            <div class="green_cell">顾问式毛利率</div>
+            <div class="green_cell">自主销货额</div>
+            <div class="green_cell">自主毛利</div>
+            <div class="green_cell">自主毛利率</div>
+            <div class="green_cell">影音店销货额</div>
+            <div class="green_cell">影音店毛利</div>
+            <div class="green_cell">影音店毛利率</div>
+
+        </div>
+        {% for i in result_ec_table_week %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
+                <div class="green_cell">{{ i[1] }}</div>
+                <div class="green_cell" >{{ i[2] }}</div>
+                <div class="green_cell">{% if i[1]>0 %}{{ (i[2]*100/i[1])|int}}{%else%}{{ 0 }}{% endif %}%</div>
+                <div class="green_cell">{{ i[3] }}</div>
+                <div class="green_cell" >{{ i[4] }}</div>
+                <div class="green_cell">{% if i[3]>0 %}{{ (i[4]*100/i[3])|int}}{%else%}{{ 0 }}{% endif %}%</div>
+                <div class="green_cell">{{ i[5] }}</div>
+                <div class="green_cell" >{{ i[6] }}</div>
+                <div class="green_cell">{% if i[5]>0 %}{{ (i[6]*100/i[5])|int}}{%else%}{{ 0 }}{% endif %}%</div>
+                <div class="green_cell">{{ i[7] }}</div>
+                <div class="green_cell" >{{ i[8] }}</div>
+                <div class="green_cell">{% if i[7]>0 %}{{ (i[8]*100/i[7])|int}}{%else%}{{ 0 }}{% endif %}%</div>
+            </div>
+        {% endfor %}
+            </div>
+
+    <br><br>
+
+              <h2 class="head2" style=" font-size: 18px;
+                color: gray;">月毛利表</h2>
+            <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="30%">月</div>
+            <div class="green_cell">总销货额</div>
+            <div class="green_cell">总毛利</div>
+            <div class="green_cell">总毛利率</div>
+            <div class="green_cell">顾问式销货额</div>
+            <div class="green_cell">顾问式毛利</div>
+            <div class="green_cell">顾问式毛利率</div>
+            <div class="green_cell">自主销货额</div>
+            <div class="green_cell">自主毛利</div>
+            <div class="green_cell">自主毛利率</div>
+            <div class="green_cell">影音店销货额</div>
+            <div class="green_cell">影音店毛利</div>
+            <div class="green_cell">影音店毛利率</div>
+
+        </div>
+        {% for i in result_ec_table_month %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
+                <div class="green_cell">{{ i[1] }}</div>
+                <div class="green_cell" >{{ i[2] }}</div>
+                <div class="green_cell">{% if i[1]>0 %}{{ (i[2]*100/i[1])|int}}{%else%}{{ 0 }}{% endif %}%</div>
+                <div class="green_cell">{{ i[3] }}</div>
+                <div class="green_cell" >{{ i[4] }}</div>
+                <div class="green_cell">{% if i[3]>0 %}{{ (i[4]*100/i[3])|int}}{%else%}{{ 0 }}{% endif %}%</div>
+                <div class="green_cell">{{ i[5] }}</div>
+                <div class="green_cell" >{{ i[6] }}</div>
+                <div class="green_cell">{% if i[5]>0 %}{{ (i[6]*100/i[5])|int}}{%else%}{{ 0 }}{% endif %}%</div>
+                <div class="green_cell">{{ i[7] }}</div>
+                <div class="green_cell" >{{ i[8] }}</div>
+                <div class="green_cell">{% if i[7]>0 %}{{ (i[8]*100/i[7])|int}}{%else%}{{ 0 }}{% endif %}%</div>
+            </div>
+        {% endfor %}
+
+
+
+{% endblock %}
+

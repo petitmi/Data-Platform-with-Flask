@@ -1,0 +1,105 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <script src="https://pyecharts.github.io/assets/js/echarts.min.js"></script>
+{% endblock %}
+
+{% block page_content %}
+    {{ super() }}
+    <h1 class="head1">总数据</h1>
+    <hr width="70%" align="left">
+    <div>
+       <div class="blue_table"  style="font-size: 17px;width: 50%;float: left">
+        <ul class="blue_head">
+            <li class="cell">总uv</li>
+            <li class="cell">总解锁</li >
+            <div class="cell">总做作业</div>
+            <li class="cell">解锁转化率</li>
+            <li class="cell">作业转化率</li>
+
+        </ul>
+           <ul class="blue_row">
+               <li class="cell">{{ result_littleclass_total[0][0]|int }}</li>
+               <li class="cell">{{ result_littleclass_total[0][1]|int}}</li>
+               <li class="cell">{{ result_littleclass_total[0][2]|int}}</li>
+               <li class="cell">{{ (result_littleclass_total[0][3]*100)|int }}%</li>
+               <li class="cell">{{ (result_littleclass_total[0][4]*100)|int }}%</li>
+
+           </ul>
+       </div>
+        <br><br>
+{#    {{ liquid_total|safe }}#}
+      <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="40%">帖子id</div>
+            <div class="green_cell">帖子标题</div>
+            <div class="green_cell">总uv</div>
+            <div class="green_cell">总解锁</div>
+            <div class="green_cell">总做作业</div>
+            <div class="green_cell">解锁转化率</div>
+            <div class="green_cell">作业转化率</div>
+
+        </div>
+        {% for i in result_littleclass_post_total %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="40%">{{ i[0] }}</div>
+                <div class="green_cell">{{ i[1] }}</div>
+                <div class="green_cell">{{ i[2]|int}}</div>
+                <div class="green_cell">{{ i[3]|int}}</div>
+                <div class="green_cell">{{ i[4]|int}}</div>
+                <div class="green_cell">{{ (i[5]*100)|int}}%</div>
+                <div class="green_cell">{{ (i[6]*100)|int}}%</div>
+            </div>
+        {% endfor %}
+      </div>
+    </div>
+<br><br>
+        <h1 class="head1">日数据</h1>
+    <hr width="70%" align="left">
+    <div>
+       <div class="blue_table"  style="font-size: 17px;width: 50%;float: left">
+        <ul class="blue_head">
+            <li class="cell">日uv</li>
+            <li class="cell">日解锁</li >
+            <div class="cell">日做作业</div>
+            <li class="cell">解锁转化率</li>
+            <li class="cell">作业转化率</li>
+
+        </ul>
+           <ul class="blue_row">
+               <li class="cell">{{ result_littleclass_day_total[0][0]|int }}</li>
+               <li class="cell">{{ result_littleclass_day_total[0][1]|int }}</li>
+               <li class="cell">{{ result_littleclass_day_total[0][2]|int }}</li>
+               <li class="cell">{{ (result_littleclass_day_total[0][3]*100)|int }}%</li>
+               <li class="cell">{{ (result_littleclass_day_total[0][4]*100)|int }}%</li>
+
+           </ul>
+       </div>
+<br>
+      <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="40%">帖子id</div>
+            <div class="green_cell">帖子标题</div>
+            <div class="green_cell">总uv</div>
+            <div class="green_cell">总解锁</div>
+            <div class="green_cell">总做作业</div>
+            <div class="green_cell">解锁转化率</div>
+            <div class="green_cell">作业转化率</div>
+
+        </div>
+        {% for i in result_littleclass_day_post %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="40%">{{ i[0] }}</div>
+                <div class="green_cell">{{ i[1] }}</div>
+                <div class="green_cell">{{ i[2]|int}}</div>
+                <div class="green_cell">{{ i[3]|int}}</div>
+                <div class="green_cell">{{ i[4]|int}}</div>
+                <div class="green_cell">{{ (i[5]*100)|int}}%</div>
+                <div class="green_cell">{{ (i[6]*100)|int}}%</div>
+
+            </div>
+        {% endfor %}
+    </div>
+    </div>
+{% endblock %}

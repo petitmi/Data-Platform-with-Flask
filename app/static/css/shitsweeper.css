@@ -1,0 +1,80 @@
+    *{ padding: 0; margin: 0; }
+    table { /*border-collapse: collapse; */border-spacing: 0; }
+    fieldset,img { border: 0; }
+    strong{ font-weight:bold;}
+
+
+    .solid-border-up{
+    border:2px solid #fff;
+    border-right:2px solid #848484;
+    border-bottom:2px solid #848484;
+    }
+    .solid-border-down{
+    border:2px solid #848484;
+    border-right:2px solid #fff;
+    border-bottom:2px solid #fff;
+    }
+    .main{
+    width:200px;
+    height:auto;
+    background:#CECFCE;
+    margin:20px auto;
+    padding:4px;
+    }
+    .top { padding:5px;}
+    .top table{width:100%;}
+    .top table td{text-align: left;}
+    .count {
+    width: 26px;
+    height: 20px;
+    line-height:20px;
+    background:#000;
+    color:red;
+    text-align:center;
+    }
+    #start { margin-top:2px; }
+    .mine-field { margin:8px 0 0 0; font-weight:bold}
+    .mine-field td {
+    width:22px;
+    height:22px;
+    border:2px solid #fff;
+    border-right:2px solid #848484;
+    border-bottom:2px solid #848484;
+    cursor:default;
+    overflow:hidden;
+    }
+    .mine-field td.on  {
+    border:1px solid #B4B4B4;
+    border-right:1px solid #B4B4B4;
+    border-bottom:1px solid #B4B4B4;
+    }
+    .mine-field td.on1 {color:#1b1b1b}
+    .mine-field td.on2 {color:#1b1b1b;}
+    .mine-field td.on3 {color:#1b1b1b;}
+    .mine-field td.on4 {color:#1b1b1b;}
+    .mine-field td.on5 {color:darkred;}
+    .mine-field td.on6 {color:darkred;}
+    .mine-field td.on7 {color:darkred;}
+    .mine-field td.on8 {color:darkred;}
+    .mine-field td.flag {
+    background:url("../img/shit_white.jpeg") no-repeat center center;
+    }
+    .mine-field td.mine, .mine-field td.boom {
+    background:url("../img/shit_green.jpeg") no-repeat center center;
+    }
+    .mine-field td.boom {background-color:red;}
+
+    #hananTOP h3{
+    color:#000;
+    border-bottom:1px solid #ccc;
+    margin-bottom:10px;
+    padding:10px;
+    text-align:center;
+    }
+    #hananTOP h3 img{ }
+    #hananBottom {
+    border-top:1px solid #ccc;
+    margin-top:10px;
+    padding:10px;
+    text-align:center;
+    }

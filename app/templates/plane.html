@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+<script type="text/javascript" src="static/js/plane_util.js"></script>
+<script type="text/javascript" src="static/js/plane_entity.js"></script>
+<script type="text/javascript" src="static/js/plane_main.js"></script>
+<script type="text/javascript">
+
+window.onload=function(){
+    Main.init();
+    Util.g("startBtn").onclick=function(){
+        Main.start();
+        this.style.display="none";
+    }
+}
+</script>
+{% endblock %}
+</head>
+{% block page_content %}
+    {{ super() }}
+    <div id="hananTOP" style="    color:#000;
+    border-bottom:1px solid #ccc;
+    margin-bottom:10px;
+    padding:10px;
+    text-align:center;"><h3>翔打翔</h3></div>
+
+<div id="parent" style="
+        margin: 0 auto;
+        width:350px; height:480px;
+        background-color:#c3c9c9;
+        position: relative;
+        overflow:hidden;">
+    <div style="
+        position:absolute;
+        left:5px;
+        top:5px;">积分:<span id="score">0</span></div>
+    <button style="position:absolute;left:150px;top:240px;display:block;"  id="startBtn">开始打翔</button>
+<button style=" position:absolute; right:10px; top:5px; display:block;" id="'stopBtn">结束打翔</button>
+</div>
+        <div id="hananBottom" style="    border-top:1px solid #ccc;
+    margin-top:10px;
+    padding:10px;
+    text-align:center;">喵喵喵喵喵</div>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block page_content %}
+    {{ super() }}
+                <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="40%">课程名称</div>
+            <div class="green_cell">教师</div>
+            <div class="green_cell">销量</div>
+            <div class="green_cell">均价</div>
+            <div class="green_cell">销售额</div>
+            <div class="green_cell">收入分成</div>
+
+        </div>
+        {% for i in edu_class_all %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="40%">{{ i[0] }}</div>
+                <div class="green_cell">{{ i[1] }}</div>
+                <div class="green_cell">{{ i[2]}}</div>
+                <div class="green_cell">￥{{ i[3]}}</div>
+                <div class="green_cell">￥{{ i[4]}}</div>
+                <div class="green_cell">￥{{ i[5]}}</div>
+            </div>
+        {% endfor %}
+
+    </div>
+{% endblock %}

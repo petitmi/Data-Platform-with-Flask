@@ -1,0 +1,107 @@
+<!doctype html>
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+        <script src="https://pyecharts.github.io/assets/js/echarts.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+{% endblock %}
+{% block page_content %}
+
+        <form action="/edu-rp" method=post >
+选择日期：<input size="16" type="text" name="input" value="{{ thatdate }}" readonly class="form_datetime">
+            <input type="submit" class="startButton" value="查询">
+        </form>
+     <script type="text/javascript">
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd',minView:2});
+     </script>
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <div class=flashes>
+                <div><font color="red"> {{ message }}</font></div></div>
+        </div>
+    {% endfor %}
+    <h1 class="head1">日流量</h1>
+     <hr width="70%" align="left">
+      <div class="blue_table"  style="font-size: 20px;width: 80%;">
+         <ul class="blue_head">
+             <li class="cell">下载</li>
+             <li class="cell">首次登录(不精确)</li>
+             <li class="cell">激活(不精确)</li>
+             <li class="cell">新增电话数</li>
+             <li class="cell">新增通讯录关系</li>
+
+         </ul>
+         <ul class="blue_row">
+             <li class="cell">待输入</li>
+             <li class="cell">{{login_day_newly}}</li>
+             <li class="cell">{{activate_day}}</li>
+             <li class="cell">{{contact_day}}</li>
+             <li class="cell">{{relation_contact_day}}</li>
+         </ul>
+     </div>        <br>
+
+ <p style="color:red">11月15日前uv不准确</p>
+        <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="30%">日期</div>
+            <div class="green_cell">下载pv</div>
+            <div class="green_cell">登录uv</div>
+            <div class="green_cell">登录pv</div>
+            <div class="green_cell">活跃uv</div>
+            <div class="green_cell">活跃pv</div>
+            <div class="green_cell">绑定uv</div>
+            <div class="green_cell">绑定pv</div>
+            <div class="green_cell">激活uv</div>
+            <div class="green_cell">激活pv</div>
+        </div>
+            {% for i in range(process_date|length) %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="30%">{{ process_date[i] }}</div>
+                <div class="green_cell"> 待录入</div>
+                <div class="green_cell">{{ login_7days_uv[i]|int }}</div>
+                <div class="green_cell">{{ login_7days_pv[i]|int }}</div>
+                <div class="green_cell">{{ active_7days_uv[i]|int }}</div>
+                <div class="green_cell">{{ active_7days_pv[i]|int }}</div>
+                <div class="green_cell">{{ binding_7days_uv[i]|int }}</div>
+                <div class="green_cell">{{ binding_7days_pv[i]|int }}</div>
+                <div class="green_cell">{{ activate_7days_uv[i]|int }}</div>
+                <div class="green_cell">{{ activate_7days_pv[i]|int }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <br>
+        <div class="table1-left" style="width:50%;height: 250px">
+            {{ overlap_newly_day|safe }}
+        </div>
+         <div class="table1-left" style="width:50%;height: 250px">
+            {{ overlap_au_day|safe }}
+        </div>
+
+{#    <h2 class="head2" style=" font-size: 18px; color: gray;">转化率</h2>#}
+{#     <div class="blue_table"  style="font-size: 15px;width: 60%;" >#}
+{#         <ul class="blue_head">#}
+{#             <li class="cell">下载-首登</li>#}
+{#             <li class="cell">首登-绑定</li>#}
+{#             <li class="cell">绑定-激活</li>#}
+{#         </ul>#}
+{#         <ul class="blue_row">#}
+{#             <li class="cell">待输入</li>#}
+{#             <li class="cell">待计算</li>#}
+{#             {% if activate_day>0 %}#}
+{#             <li class="cell">待计算</li>#}
+{#             {% else %}#}
+{#             <li class="cell">0%</li>#}
+{#             {% endif %}#}
+{#         </ul>#}
+{#     </div>#}
+<br><br>
+
+    {% for message in get_flashed_messages() %}
+     <div class="alert alert-warning">
+        <ul class=flashes>
+            <li><font color="red"> {{ message }}</font></li></ul>
+     </div>
+    {% endfor %}
+
+{% endblock %}
+

@@ -1,0 +1,155 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script src="https://pyecharts.github.io/assets/js/echarts.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+{% endblock %}
+
+{% block page_content %}
+    <br><br>
+        <form action="/ec-rp" method=post >
+选择日期：<input size="16" type="text" name="input" value="{{ thatdate }}" readonly class="form_datetime">
+            <input type="submit" class="startButton" value="查询">
+        </form>
+    <script type="text/javascript">
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd',minView:2});
+    </script>
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <div class=flashes>
+                <div><font color="red"> {{ message }}</font></div></div>
+        </div>
+    {% endfor %}
+<br>
+    <h1 class="head1">日数据</h1>
+    <hr width="70%" align="left">
+    <div style="overflow: hidden">
+        <div class="table1-left" style="float: left;width:400px;height: 250px">
+        <div class="blue_table"  >
+            <ul class="blue_head" style="font-size: 20px">
+                <li class="cell"></li>
+                <li class="cell">自主下单销量</li >
+                <li class="cell">自主下单销售额</li >
+            </ul>
+                <ul class="blue_row" style="font-size: 20px">
+                    <li class="cell"></li>
+                    <li class="cell">{{ ec_yesterday[0][0] }}</li>
+                    <li class="cell">￥{{ ec_yesterday[0][1]| int  }}</li>
+                </ul>
+        {% if  ec_1day[0][0]!=0 %}
+            <ul class="blue_row" >
+                <li class="cell">较前一日</li>
+               {% if  ec_yesterday[0][0]/ec_1day[0][0]-1>0%} <li class="cell" style="color: red">↑
+               {% else %}<li class="cell" style="color: green">↓{% endif %}
+                {{ (ec_yesterday[0][0]*100/ec_1day[0][0]-100 )| round(1, 'floor')  }}%</li>
+
+               {% if  ec_yesterday[0][1]/ec_1day[0][1]-1>0%} <li class="cell" style="color: red">↑
+               {% else %}<li class="cell" style="color: green">↓{% endif %}
+                {{ (ec_yesterday[0][1]*100/ec_1day[0][1]-100) | round(1, 'floor')  }}%</li>
+            </ul>
+            {% else %}
+            <ul class="blue_row" >
+                <li class="cell" >较前一日</li>
+                <li class="cell" style="color: green">0%</li>
+                <li class="cell" style="color: green">0%</li>
+            </ul>
+            {% endif %}
+            {% if   ec_7day[0][0]!=0%}
+            <ul class="blue_row" >
+                <li class="cell">较上周同期</li>
+               {% if  ec_yesterday[0][0]/ec_7day[0][0]-1>0%} <li class="cell" style="color: red">↑
+               {% else %}<li class="cell" style="color: green">↓{% endif %}
+                    {{ (ec_yesterday[0][0]*100/ec_7day[0][0]-100)| round(1, 'floor')  }}%</li>
+
+               {% if  ec_yesterday[0][1]/ec_7day[0][1]-1>0%} <li class="cell" style="color: red">↑
+               {% else %}<li class="cell" style="color: green">↓{% endif %}
+                {{ (ec_yesterday[0][1]*100/ec_7day[0][1]-100)| round(1, 'floor')  }}%</li>
+            </ul>
+            {% else %}
+            <ul class="blue_row" >
+                <li class="cell">较上周同期</li>
+                <li class="cell" style="color: green">0%</li>
+                <li class="cell" style="color: green">0%</li>
+            </ul>
+        {% endif %}
+        </div>
+        </div>
+    <br>
+        <div class="table1-left" style="float: left;width:50%;height: 250px">{{ overlap_day|safe }}</div>
+    <br>
+    </div>
+    <h2 class="head2" style=" font-size: 18px; color: gray;">平台分类数据</h2>
+
+    <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="30%">类别</div>
+            <div class="green_cell">销量</div>
+            <div class="green_cell">来自圈子数量</div>
+            <div class="green_cell">销售额</div>
+            <div class="green_cell">客单价</div>
+        </div>
+        {% for i in ec_type_day %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
+                <div class="green_cell" >{{ i[1] }}</div>
+                <div class="green_cell">{{ i[2]}}</div>
+                <div class="green_cell">￥{{ i[3]}}</div>
+                <div class="green_cell">￥{{ i[4]}}</div>
+            </div>
+        {% endfor %}
+
+    </div>
+        <h2 class="head2" style=" font-size: 18px; color: gray;">99元会员</h2>
+
+        <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="30%">类别</div>
+            <div class="green_cell">会员数</div>
+            <div class="green_cell">订单数</div>
+            <div class="green_cell">总订单金额</div>
+            <div class="green_cell">人均订单数</div>
+            <div class="green_cell">人均订单金额</div>
+        </div>
+            {% for i in ec_vip_day %}
+                <div class="green_row">
+                    <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
+                    <div class="green_cell">{{ i[1] }}</div>
+                    <div class="green_cell">{{ i[2] }}</div>
+                    <div class="green_cell">￥{{ i[3]|int }}</div>
+                    {% if i[1] %}
+                    <div class="green_cell">{{ (i[2]/i[1])|int }}</div>
+                    <div class="green_cell">￥{{ (i[3]/i[1])|int }}</div>
+                {% else %}
+                <div class="green_cell">0</div>
+                    <div class="green_cell">0</div>
+                {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+            <h2 class="head2" style=" font-size: 18px;
+                color: gray;">重点产品自主下单</h2>
+            <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="30%">平台</div>
+            <div class="green_cell">产品</div>
+            <div class="green_cell">销量</div>
+            <div class="green_cell">价格</div>
+
+        </div>
+        {% for i in ec_goods_day %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
+                <div class="green_cell">{{ i[1] }}</div>
+                <div class="green_cell" >{{ i[2] }}</div>
+                <div class="green_cell">￥{{ i[3]|int}}</div>
+
+            </div>
+        {% endfor %}
+    </div>
+<br><br>
+    
+
+{% endblock %}
+

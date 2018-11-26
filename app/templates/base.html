@@ -1,0 +1,95 @@
+{% extends "bootstrap/base.html"%}
+{% block title %}Petitmi{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation" >
+    <div class="container" >
+        <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                data-target=".navbar-collapse">
+            <span class="sr-only">切换导航</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+            <a class="navbar-brand" href="/"><font size="5">Cinehello数据档案</font></a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+{#                <li class="dropdown"><a href="/shitsweeper" class="dropdown-toggle" data-toggle="dropdown">新鲜感 <b class="caret"></b></a>#}
+{#                    <ul class="dropdown-menu">#}
+{#                        <li><a href="/shitsweeper">扫翔</a></li>#}
+{#                        <li><a href="/plane">翔打翔</a></li>#}
+{#                    </ul>#}
+                <li class="dropdown"><a href="/edu-rp"  class="dropdown-toggle" data-toggle="dropdown">课程<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/edu-rp" style="font-weight: bold">总数据</a></li>
+                        <li><a href="/edu-dr" style="font-weight: bold">日报</a></li>
+                        <li><a href="/edu-wr" style="font-weight: bold">周报</a></li>
+                        <li><a href="/edu-mr" style="font-weight: bold">月报</a></li>
+                        <li><a href="/edu-littleclass">媒体课程一体化</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="/ec-rp" class="dropdown-toggle" data-toggle="dropdown">电商 <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/ec-rp" style="font-weight: bold">总数据</a></li>
+                        <li><a href="/ec-dr" style="font-weight: bold">日报</a></li>
+                        <li><a href="/ec-wr" style="font-weight: bold">周报</a></li>
+                        <li><a href="/ec-mr" style="font-weight: bold">月报</a></li>
+                        <li><a href="/ec-tables">毛利表</a></li>
+                        <li><a href="/ec-repur">复购</a></li>
+                    </ul>
+                </li>
+                 <li class="dropdown"><a href="/circle-rp" class="dropdown-toggle" data-toggle="dropdown">内容 <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/circle-rp" style="font-weight: bold">总数据</a></li>
+                        <li><a href="/circle-dr" style="font-weight: bold">日报</a></li>
+                        <li><a href="/circle-mr" style="font-weight: bold">月报</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="/morning-rp" class="dropdown-toggle" data-toggle="dropdown">APP <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/morning-rp" style="font-weight: bold">总数据</a></li>
+                        <li><a href="/morning-dr" style="font-weight: bold">日报</a></li>
+                    </ul>
+                </li>
+
+
+            </ul>
+            <ul class='nav navbar-nav navbar-right'>
+
+                <li>{% if current_user.username %}<a>{{ current_user.username }}</a>{%else %}<a href="/auth/login">登录</a>{%endif %}</li>
+                <li><a href="/auth/logout"><font size="2">登出</font> </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/edu.css')  }}{{'?'+(range(0,599)|random)|string()}}">
+    <link id="bsdp-css" href="{{ url_for('static',filename='bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css')}}" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="{{ url_for('static',filename='js/common.js')}}"></script>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {% for jsfile_name in script_list_week %}
+        <script src="{{ host }}/{{ jsfile_name }}.js"></script>
+    {% endfor %}
+    {% for jsfile_name in script_list %}
+        <script src="{{ host }}/{{ jsfile_name }}.js"></script>
+    {% endfor %}
+    {% for jsfile_name in script_list_day %}
+        <script src="{{ host }}/{{ jsfile_name }}.js"></script>
+    {% endfor %}
+    <script type="text/javascript" src="{{ url_for('static',filename='bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js')}}"></script>
+{% endblock %}
+
+<{% block content %}
+<div class="container">
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock%}

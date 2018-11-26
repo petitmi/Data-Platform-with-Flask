@@ -1,0 +1,92 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+{% block head %}{{ super() }}
+    <script src="https://pyecharts.github.io/assets/js/echarts.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+{% endblock %}
+
+{% block page_content %}
+    <div>
+<br><br>
+        <form action="/edu-rp" method=post >
+选择日期：<input size="16" type="text" name="input" value="{{ thatdate }}" readonly class="form_datetime">
+            <input type="submit" class="startButton" value="查询">
+
+        </form>
+
+<script type="text/javascript">
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd',minView:2});
+</script>
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <div class=flashes>
+                <div><font color="red"> {{ message }}</font></div></div>
+        </div>
+    {% endfor %}
+<br>
+    <h1 class="head1">周数据</h1>
+<hr width="70%" align="left">
+    <div class="blue_table"  style="font-size: 20px">
+        <ul class="blue_head">
+            <li class="cell">本周</li>
+            <li class="cell">销量</li >
+            <li class="cell">销售额</li>
+            <li class="cell">毛利</li>
+
+        </ul>
+        <ul class="blue_row" >
+            <li class="cell">{{ edu_week[0][0] }}</li>
+            <li class="cell">{{ edu_week[0][1] }}</li>
+            <li class="cell">￥{{ edu_week[0][2] }}</li>
+            <li class="cell">￥{{ edu_week[0][3] }}</li>
+
+        </ul>
+    </div>
+    <br>
+            <div class="table3-top" style="width: 90%;height: 80%;  margin: 0 auto;">
+            {{ overlap_week|safe }}
+    </div>
+
+    <br>
+            <div class="green_table" >
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="40%">会员名称</div>
+            <div class="green_cell">销量</div>
+            <div class="green_cell">销售额</div>
+
+        </div>
+        {% for i in edu_800vip_week %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="40%">{{ i[0] }}</div>
+                <div class="green_cell">{{ i[1] }}</div>
+                <div class="green_cell">{{ i[2] }}</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <br>
+    <div class="green_table">
+        <div class="green_row_head">
+            <div class="green_cell" id="first_group" width="40%">课程名称</div>
+            <div class="green_cell">教师</div>
+            <div class="green_cell">销量</div>
+            <div class="green_cell">均价</div>
+            <div class="green_cell">销售额</div>
+            <div class="green_cell">毛利</div>
+
+        </div>
+        {% for i in edu_class_week %}
+            <div class="green_row">
+                <div class="green_cell" id="first_group" width="40%">{{ i[0] }}</div>
+                <div class="green_cell">{{ i[1] }}</div>
+                <div class="green_cell">{{ i[2]}}</div>
+                <div class="green_cell">￥{{ i[3]|int}}</div>
+                <div class="green_cell">￥{{ i[4]|int}}</div>
+                <div class="green_cell">￥{{ i[5]|int}}</div>
+
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+</div>
+<br><br>

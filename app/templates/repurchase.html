@@ -1,0 +1,95 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block page_content %}
+    {{ super() }}
+                <div class="blue_table"  >
+                    <ul class="blue_head" >
+                        <li class="cell" style="width:20px"></li>
+                            <li class="cell" style="width:20px">第一周</li>
+                            <li class="cell" style="width:20px">第二周</li>
+                            <li class="cell" style="width:20px">第三周</li>
+                            <li class="cell" style="width:20px">第四周</li>
+                            <li class="cell" style="width:20px">第五周</li>
+                            <li class="cell" style="width:20px">第六周</li>
+                            <li class="cell" style="width:20px">第七周</li>
+                            <li class="cell" style="width:20px">第八周</li>
+                    </ul>
+                    {% for i in dup_oneweek%}
+                        <ul class="blue_row" >
+                            <li class="cell" style="width:20px">{{ i[0] }}</li>
+                            <li class="cell" style="width:20px">{{ i[1] }}</li>
+                            <li class="cell" style="width:20px">{{ i[2] }}</li>
+                            <li class="cell" style="width:20px">{{ i[3] }}</li>
+                            <li class="cell" style="width:20px">{{ i[4] }}</li>
+                            <li class="cell" style="width:20px">{{ i[5] }}</li>
+                            <li class="cell" style="width:20px">{{ i[6] }}</li>
+                            <li class="cell" style="width:20px">{{ i[7] }}</li>
+                            <li class="cell" style="width:20px">{{ i[8] }}</li>
+
+                        </ul>
+                    {% endfor %}
+                </div>
+
+
+                 <div class="blue_table"  >
+                    <ul class="blue_head" >
+                        <li class="cell" style="width:20px"></li>
+                            <li class="cell" style="width:20px">第一双周</li>
+                            <li class="cell" style="width:20px">第二双周</li>
+                            <li class="cell" style="width:20px">第三双周</li>
+                            <li class="cell" style="width:20px">第四双周</li>
+                            <li class="cell" style="width:20px">第五双周</li>
+                            <li class="cell" style="width:20px">第六双周</li>
+                            <li class="cell" style="width:20px">第七双周</li>
+                            <li class="cell" style="width:20px">第八双周</li>
+                    </ul>
+                    {% for i in dup_twoweek%}
+                        <ul class="blue_row" >
+                            <li class="cell" style="width:20px">{{ i[0] }}</li>
+                            <li class="cell" style="width:20px">{{ i[1] }}</li>
+                            <li class="cell" style="width:20px">{{ i[2] }}</li>
+                            <li class="cell" style="width:20px">{{ i[3] }}</li>
+                            <li class="cell" style="width:20px">{{ i[4] }}</li>
+                            <li class="cell" style="width:20px">{{ i[5] }}</li>
+                            <li class="cell" style="width:20px">{{ i[6] }}</li>
+                            <li class="cell" style="width:20px">{{ i[7] }}</li>
+                            <li class="cell" style="width:20px">{{ i[8] }}</li>
+
+                        </ul>
+                    {% endfor %}
+                </div>
+
+                     <div class="blue_table"  >
+                    <ul class="blue_head" >
+                        <li class="cell" style="width:20px"></li>
+                            <li class="cell" style="width:20px">第一月</li>
+                            <li class="cell" style="width:20px">第二月</li>
+                            <li class="cell" style="width:20px">第三月</li>
+                            <li class="cell" style="width:20px">第四月</li>
+                            <li class="cell" style="width:20px">第五月</li>
+                            <li class="cell" style="width:20px">第六月</li>
+                            <li class="cell" style="width:20px">第七月</li>
+                            <li class="cell" style="width:20px">第八月</li>
+                    </ul>
+                    {% for i in dup_month%}
+                        <ul class="blue_row" >
+                            <li class="cell" style="width:20px">{{ i[0] }}</li>
+                            <li class="cell" style="width:20px">{{ i[1] }}</li>
+                            <li class="cell" style="width:20px">{{ i[2] }}</li>
+                            <li class="cell" style="width:20px">{{ i[3] }}</li>
+                            <li class="cell" style="width:20px">{{ i[4] }}</li>
+                            <li class="cell" style="width:20px">{{ i[5] }}</li>
+                            <li class="cell" style="width:20px">{{ i[6] }}</li>
+                            <li class="cell" style="width:20px">{{ i[7] }}</li>
+                            <li class="cell" style="width:20px">{{ i[8] }}</li>
+
+                        </ul>
+                    {% endfor %}
+                </div>
+{% endblock %}
