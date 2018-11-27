@@ -88,20 +88,20 @@ def upload_file():
             flash('文件不对')
             return redirect(request.url)
         file = request.files['file']
-        if file.filename != 'sales.xls':
-            flash('文件名称不对')
+        if file.filename != 'sales.csv':
+            flash('文件名称不对:需要sales.csv')
             return redirect(request.url)
-        if file and file.filename == 'sales.xls':
+        if file and file.filename == 'sales.csv':
             filename = secure_filename(file.filename)
-            file_path=os.path.join('C:\download\work\petitmi-file', filename)
+            file_path=os.path.join('/root/xmmz/dbxmmz/', filename)
             if (os.path.exists(file_path)):
                 os.remove(file_path)
                 file.save(file_path)
-                os.system(r"C:\download\code\RP\ecConsultant_xmmz_mysql.py")
+                os.system(r"python3 /root/xmmz/dbxmmz/insert_chanjet.py")
                 flash('上传成功')
             else:
                 file.save(file_path)
-                os.system(r"C:\download\code\RP\ecConsultant_xmmz_mysql.py")
+                os.system(r"python3 /root/xmmz/dbxmmz/insert_chanjet.py")
                 flash('上传成功')
             return redirect(url_for('main.upload_file',
                                     filename=filename))
