@@ -17,14 +17,14 @@ class get_days_list:
         self.days=days
     def sql_list(self):
         sql_list_days = []
-        for i in range(self.days):
+        for i in range(-1,self.days):
             daybefore = self.thedate - datetime.timedelta(i)
             sql_list_days.append(daybefore.strftime('%Y-%m-%d'))
         sql_list_days.reverse()
         return sql_list_days
     def es_list(self):
         es_list_days = []
-        for i in range(self.days):
+        for i in range(-1,self.days):
             daybefore = self.thedate - datetime.timedelta(i)
             es_list_days.append(daybefore.strftime('%Y-%m-%dT00:00:00+0800'))
         es_list_days.reverse()

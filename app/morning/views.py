@@ -60,8 +60,8 @@ def get_dr_values(thatdate_sql):
             http_auth=ES_http_auth,
             scheme=ES_scheme,
             port=ES_port)
-    date_es_list = get_days_list(days=8,thatdate=today_sql).es_list()
-    date_sql_list=get_days_list(days=8,thatdate=today_sql).sql_list()
+    date_es_list = get_days_list(days=14,thatdate=thatdate_sql).es_list()
+    date_sql_list=get_days_list(days=14,thatdate=thatdate_sql).sql_list()
 
     results['process_date']=[]
     results['login_7days_uv']=[]
