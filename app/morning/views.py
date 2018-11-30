@@ -121,6 +121,16 @@ def get_dr_values(thatdate_sql):
                                          "size": 0})
         results['activate_7days_pv'].append(activate_7days["hits"]['total'])
         results['activate_7days_uv'].append(activate_7days["aggregations"]['uv']['value'])
+    results['process_date']=list(reversed(results['process_date']))
+    results['login_7days_uv']=list(reversed(results['login_7days_uv']))
+    results['login_7days_pv']=list(reversed(results['login_7days_pv']))
+    results['binding_7days_uv']=list(reversed(results['binding_7days_uv']))
+    results['binding_7days_pv']=list(reversed(results['binding_7days_pv']))
+    results['active_7days_uv']=list(reversed(results['active_7days_uv']))
+    results['active_7days_pv']=list(reversed(results['active_7days_pv']))
+    results['activate_7days_uv']=list(reversed(results['activate_7days_uv']))
+    results['activate_7days_pv']=list(reversed(results['activate_7days_pv']))
+
     return results
 
 def get_rp_values():

@@ -8,7 +8,7 @@ sql_relation_contact_all="""select count(1) from address_books"""
 #当日登录用es
 
 #当日激活
-sql_activate_day="""select count(distinct member_id) active_day from person_infos  where  actived_sites like '%%unsung_hero%%' and date(updated_at) = '%s';"""
+sql_activate_day="""select count(distinct member_id) active_day from person_infos  where  actived_sites like '%%unsung_hero%%' and date(hero_actived_at) = '%s';"""
 #新登录
 sql_login_day_newly="""select count(distinct member_id) login_day_newly from person_infos where date(updated_at) = '%s';"""
 
