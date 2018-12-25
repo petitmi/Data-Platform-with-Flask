@@ -45,27 +45,29 @@
         <div class="green_row_head">
             <div class="green_cell" id="first_group" width="30%">日期</div>
             <div class="green_cell">下载pv</div>
-            <div class="green_cell">登录uv</div>
-            <div class="green_cell">登录pv</div>
             <div class="green_cell">信息流uv</div>
             <div class="green_cell">信息流pv</div>
-            <div class="green_cell">绑定uv</div>
+	    <!--            <div class="green_cell">登录uv</div> -->
+            <div class="green_cell">登录pv</div>
+	    <!--            <div class="green_cell">绑定uv</div>  -->
             <div class="green_cell">绑定pv</div>
-            <div class="green_cell">激活uv</div>
+	    <!--            <div class="green_cell">激活uv</div>  -->
             <div class="green_cell">激活pv</div>
-        </div>
+            <div class="green_cell">激活转化率</div>
+	</div>
             {% for i in range(process_date|length) %}
             <div class="green_row">
                 <div class="green_cell" id="first_group" width="30%">{{ process_date[i] }}</div>
                 <div class="green_cell"> 待录入</div>
-                <div class="green_cell">{{ login_7days_uv[i]|int }}</div>
-                <div class="green_cell">{{ login_7days_pv[i]|int }}</div>
                 <div class="green_cell">{{ active_7days_uv[i]|int }}</div>
                 <div class="green_cell">{{ active_7days_pv[i]|int }}</div>
-                <div class="green_cell">{{ binding_7days_uv[i]|int }}</div>
+                <div class="green_cell">{{ login_7days_pv[i]|int }}</div>
+		<!--<div class="green_cell">{{ login_7days_uv[i]|int }}</div>-->
+		<!--<div class="green_cell">{{ binding_7days_uv[i]|int }}</div>-->
                 <div class="green_cell">{{ binding_7days_pv[i]|int }}</div>
-                <div class="green_cell">{{ activate_7days_uv[i]|int }}</div>
+		<!--<div class="green_cell">{{ activate_7days_uv[i]|int }}</div>-->
                 <div class="green_cell">{{ activate_7days_pv[i]|int }}</div>
+                <div class="green_cell">{{ (activate_7days_pv[i]*100/login_7days_pv[i])|int }}%</div>
             </div>
             {% endfor %}
         </div>

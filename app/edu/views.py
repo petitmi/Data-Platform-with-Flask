@@ -88,7 +88,8 @@ def edu_rp():
 
 
 def get_dr_values(thatdate_sql):
-    result_ec = pd.read_sql_query(sql_edu_7days.format(thatdate_sql), db.engine).fillna(0)
+    days_tuple=str(tuple(get_days_list(thatdate=thatdate_sql,days=7).sql_list()))
+    result_ec = pd.read_sql_query(sql_edu_7days%days_tuple, db.engine).fillna(0)
     attr_day = result_ec['date'].sort_index(ascending=False).values.tolist()
     bar1_day = result_ec['sales_count'].sort_index(ascending=False).values.tolist()
     line1_day = result_ec['sales_amount'].sort_index(ascending=False).values.tolist()

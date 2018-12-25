@@ -144,10 +144,10 @@ def get_rp_values():
             http_auth=ES_http_auth,
             scheme=ES_scheme,
             port=ES_port)
-    results['active_all'] = es.search(index="logstash-*",
-                            body={"query":{"bool":{"must":[{"term":{"path":"activities"}},{"term":{"path":"v3"}},
-                                                           {"bool":{"should":[{"term":{"ua":"ppb"}},{"term":{"ua":"okhttp"}}]}}]}},
-                                  "aggs":{"uv":{"cardinality":{"field":"member_uuid.keyword"}}},"size":0})["aggregations"]['uv']['value']
+#    results['active_all'] = es.search(index="logstash-*",
+#                            body={"query":{"bool":{"must":[{"term":{"path":"activities"}},{"term":{"path":"v3"}},
+#                                                           {"bool":{"should":[{"term":{"ua":"ppb"}},{"term":{"ua":"okhttp"}}]}}]}},
+#                                  "aggs":{"uv":{"cardinality":{"field":"member_uuid.keyword"}}},"size":0})["aggregations"]['uv']['value']
     #栏目数据
     columns_casts_count=pd.read_sql_query(sql_columns_casts_count, con=db_circlecenter,index_col=['column_id'])
     columns_clips_count=pd.read_sql_query(sql_columns_clips_count, con=db_circlecenter,index_col=['column_id'])
@@ -184,7 +184,7 @@ def morning_rp():
     return render_template('morning-rp.html',
                            activate_all=results_rp['activate_all'],
                            contact_all=results_rp['contact_all'],
-                           active_all=results_rp['active_all'],
+#                           active_all=results_rp['active_all'],
                            columns_data=results_rp['columns_data'],
                            columncasts_data=results_rp['columncasts_data'],
                            columns_id=results_rp['columns_id'],

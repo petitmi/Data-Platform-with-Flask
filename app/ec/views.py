@@ -44,7 +44,8 @@ def ec_rp():
                            ec_vip=result_rp['ec_vip'])
 
 def get_dr_values(thatdate_sql):
-    result_ec = pd.read_sql_query(sql_ec_7days.format(thatdate_sql), db.engine).fillna(0)
+    days_tuple=str(tuple(get_days_list(thatdate=thatdate_sql,days=7).sql_list()))
+    result_ec = pd.read_sql_query(sql_ec_7days.format(days_tuple), db.engine).fillna(0)
     attr_day = result_ec['date'].sort_index(ascending=False).values.tolist()
     bar1_day = result_ec['sales_count'].sort_index(ascending=False).values.tolist()
     line1_day = result_ec['sales_amount'].sort_index(ascending=False).values.tolist()
@@ -58,7 +59,6 @@ def get_dr_values(thatdate_sql):
     result['ec_type_day'] = db.session.execute(sql_ec_type % (thatdate_sql, thatdate_sql)).fetchall()
     result['script_list'] = overlap_day.get_js_dependencies()
     result['overlap_day'] = overlap_day.render_embed()
-    result['ec_7days'] = db.session.execute(sql_ec_7days.format(thatdate_sql)).fetchall(),
     return result
 
 @ec.route('/ec-dr',methods=["POST","GET"])
@@ -83,7 +83,6 @@ def ec_dr():
                            ec_type_day=result_dr['ec_type_day'],
                            script_list=result_dr['script_list'],
                            overlap_day=result_dr['overlap_day'],
-                           ec_7days= result_dr['ec_7days'],
                            thatdate=thatdate_sql)
 
 

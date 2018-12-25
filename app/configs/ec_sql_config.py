@@ -36,14 +36,9 @@ count(distinct  order_id )'日销量',
 ifnull(sum(pay_amount),0)'日流水'
  from ec_orders a  where date(pay_time)= date_add('{0}',interval -7 day)  and order_state= 1  ;"""
 
-sql_ec_7days="""select b.date date,IFNULL(sales_count,0) sales_count,ifnull(sales_amount,0) sales_amount from
-(select date(pay_time) pay_date,count(distinct order_id) sales_count,cast(sum( pay_amount ) as UNSIGNED) sales_amount
+sql_ec_7days="""select date(pay_time) date,count(distinct order_id) sales_count,cast(sum( pay_amount ) as UNSIGNED) sales_amount
 from ec_orders 
-where date(pay_time) between date_add('{0}',interval -7 day)  and  '{0}' group by date(pay_time) order by date(pay_time) desc )a
-right join 
-date_list b 
-on a.pay_date=b.date
-where b.date between date_add('{0}',interval -7 day)  and  '{0}' order by b.date desc"""
+where date(pay_time) in {0} group by date(pay_time) order by date(pay_time) desc ;"""
 
 
 sql_ec_week="""select concat(year(pay_time),'-',week(pay_time,1)) week_num,count(distinct order_id) '周销量',

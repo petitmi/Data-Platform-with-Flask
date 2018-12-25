@@ -25,14 +25,9 @@ ifnull(sum( orderamount+ wallet_pay),0)'日流水'
  from edu_orders a  where order_status='success' and  date(pay_time)= date_add('{0}',interval -7 day)  ;"""
 
 
-sql_edu_7days="""select b.date date,IFNULL(sales_count,0) sales_count,ifnull(sales_amount,0) sales_amount from
-(select date(pay_time) pay_date,count(distinct order_id) sales_count,round(sum(orderamount+wallet_pay),0) sales_amount
+sql_edu_7days="""select date(pay_time) date,count(distinct order_id) sales_count,round(sum(orderamount+wallet_pay),0) sales_amount
 from edu_orders 
-where order_status='success' and  date(pay_time) between date_add('{0}',interval -7 day)  and  '{0}' group by date(pay_time) order by date(pay_time) desc )a
-right join 
-date_list b 
-on a.pay_date=b.date
-where b.date between date_add('{0}',interval -7 day)  and  '{0}' order by b.date desc;"""
+where order_status='success' and  date(pay_time) in %s group by date(pay_time) order by date(pay_time) desc """
 
 sql_edu_week="""select concat(year(pay_time),'-',week(pay_time,1)) '周',count(1) '周销量',round(sum(orderamount)+sum(wallet_pay),0) '周流水',
 cast(sum((orderamount + wallet_pay)*ifnull(b.proportion,0)) as unsigned)  '周收入分成'
