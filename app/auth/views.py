@@ -7,13 +7,14 @@ from . import auth
 from flask import url_for,request,session
 import datetime
 import re
+import hashlib
 
 @auth.route("/login",methods=["POST","GET"])
 def login():
     form=LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data.encode('utf-8')).first()
-        if user is not None and user.password == form.password.data:
+        if user is not None and user.password == hashlib.md5(form.password.data.encode('utf-8')).hexdigest():
             login_user(user)
             if 'next' in request.referrer:
                 next='/'+re.findall(re.compile(r'.*next=%2F(.*)'),request.referrer)[0]

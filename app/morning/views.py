@@ -40,21 +40,27 @@ def get_dr_values(thatdate_sql):
     results['contact_day']=pd.read_sql_query(sql_contact_day%thatdate_sql, con=db_circlecenter).values[0][0]
     results['relation_contact_day']=pd.read_sql_query(sql_relation_contact_day%thatdate_sql, con=db_circlecenter).values[0][0]
     results['login_day_newly']=pd.read_sql_query(sql_login_day_newly%thatdate_sql, con=db_circlecenter).values[0][0]
-    activate_7days_sql=pd.read_sql_query(sql_activate_7days.format(today_sql), con=db_circlecenter)
+    results['7days_list']=get_days_list(days=14,thatdate=thatdate_sql).sql_list()
+    sql_7days=tuple(results['7days_list'])
+
+    activate_7days=pd.read_sql_query(sql_activate_7days.format(today_sql), con=db_circlecenter)
     login_newly_7days=pd.read_sql_query(sql_login_newly_7days.format(today_sql), con=db_circlecenter)
     feed_count_7days=pd.read_sql_query(sql_feed_count_7days.format(today_sql), con=db_circlecenter)
     feed_author_7days=pd.read_sql_query(sql_feed_author_7days.format(today_sql), con=db_circlecenter)
-    results['7days_list']=[]
-    results['activate_7days_list']=[]
-    results['login_newly_7days_list']=[]
-    results['feed_count_7days']=[]
-    results['feed_author_7days']=[]
-    for i in activate_7days_sql.values.tolist():
-        results['7days_list'].append(i[0])
-        results['activate_7days_list'].append(i[1])
-    results['login_newly_7days_list']=[ x[0] for x in login_newly_7days.values.tolist()]
-    results['feed_count_7days']=[ x[0] for x in feed_count_7days.values.tolist()]
-    results['feed_author_7days']=[ x[0] for x in feed_author_7days.values.tolist()]
+    works_7days=pd.read_sql_query(sql_works_7days.format(today_sql), con=db_circlecenter)
+    claimers_7days=pd.read_sql_query(sql_claimers_7days.format(today_sql), con=db_circlecenter)
+    charts_data=activate_7days.merge(login_newly_7days,how='left',on=['date','date']).merge(feed_count_7days,how='left',on=['date','date']).merge(feed_author_7days,how='left',on=['date','date']).merge(works_7days,how='left',on=['date','date']).merge(claimers_7days,how='left',on=['date','date']).fillna(0)
+
+    print(charts_data.values)
+
+
+    results['activate_7days']=charts_data['activate_7days'].values.tolist()
+    results['login_newly_7days']=charts_data['login_newly_7days'].values.tolist()
+    results['feed_count_7days']=charts_data['feed_count_7days'].values.tolist()
+    results['feed_author_7days']=charts_data['feed_author_7days'].values.tolist()
+    results['works_7days']=charts_data['works_7days'].values.tolist()
+    results['claimers_7days']=charts_data['claimers_7days'].values.tolist()
+
     es = Elasticsearch(
             [ES_host],
             http_auth=ES_http_auth,
@@ -139,6 +145,11 @@ def get_rp_values():
     results={'activate_all':pd.read_sql_query(sql_activate_all, con=db_circlecenter).values[0][0]}
     results['contact_all']=pd.read_sql_query(sql_contact_all, con=db_circlecenter).values[0][0]
     results['relation_contact_all']=pd.read_sql_query(sql_relation_contact_all, con=db_circlecenter).values[0][0]
+    results['works_all']=pd.read_sql_query(sql_works_all,con=db_circlecenter).values[0][0]
+    results['works_checked']=pd.read_sql_query(sql_works_checked,con=db_circlecenter).values[0][0]
+    results['works_complete']=pd.read_sql_query(sql_works_complete,con=db_circlecenter).values[0][0]
+    results['workers_all']=pd.read_sql_query(sql_workers_all,con=db_circlecenter).values[0][0]
+    results['claimers_all']=pd.read_sql_query(sql_claimers_all,con=db_circlecenter).values[0][0]
     es = Elasticsearch(
             [ES_host],
             http_auth=ES_http_auth,
@@ -188,7 +199,13 @@ def morning_rp():
                            columns_data=results_rp['columns_data'],
                            columncasts_data=results_rp['columncasts_data'],
                            columns_id=results_rp['columns_id'],
-                           relation_contact_all=results_rp['relation_contact_all'])
+                           relation_contact_all=results_rp['relation_contact_all'],
+                           works_all=results_rp['works_all'],
+                           works_checked=results_rp['works_checked'],
+                           works_complete=results_rp['works_complete'],
+                           workers_all=results_rp['workers_all'],
+                           claimers_all=results_rp['claimers_all']
+                           )
 
 @morning.route('/morning-dr',methods=["POST","GET"])
 @login_required
@@ -202,12 +219,18 @@ def morning_dr():
         thatdate_sql = yesterday_sql
 
     results_dr=get_dr_values(thatdate_sql)
-    overlap_newly_day=olp(attr=results_dr['7days_list'],bar1=results_dr['activate_7days_list'],bar2=0,bar3=0,
-                    line1=results_dr['login_newly_7days_list'],line2=0,line3=0,bar1_title='新激活用户',bar2_title=0,bar3_title=0,
-        line1_title='新登录用户',line2_title=0,line3_title=0,title='日拉新数据',width=600,height=260)
+
+    overlap_newly_day=olp(attr=results_dr['7days_list'],bar1=results_dr['activate_7days'],bar2=0,bar3=0,
+                    line1=results_dr['login_newly_7days'],line2=0,line3=0,bar1_title='新激活用户',bar2_title=0,bar3_title=0,
+        line1_title='新登录用户',line2_title=0,line3_title=0,title='日拉新数据',width=1200,height=260)
     overlap_au_day=olp(attr=results_dr['7days_list'],bar1=results_dr['feed_count_7days'],bar2=0,bar3=0,
                     line1=results_dr['feed_author_7days'],line2=0,line3=0,bar1_title='动态条数',bar2_title=0,bar3_title=0,
-        line1_title='动态发布者',line2_title=0,line3_title=0,title='日动态数据',width=600,height=260)
+        line1_title='动态发布者',line2_title=0,line3_title=0,title='日动态数据',width=1200,height=260)
+
+    overlap_works_day=olp(attr=results_dr['7days_list'],bar1=results_dr['works_7days'],bar2=0,bar3=0,
+                    line1=results_dr['claimers_7days'],line2=0,line3=0,bar1_title='作品数量',bar2_title=0,bar3_title=0,
+        line1_title='认领人数',line2_title=0,line3_title=0,title='日作品认领数据',width=1200,height=260)
+
     print('UA:',request.user_agent.string)
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('morning-dr.html',thatdate=thatdate_sql,
@@ -225,6 +248,7 @@ def morning_dr():
                            activate_7days_pv=results_dr['activate_7days_pv'],
                            activate_7days_uv=results_dr['activate_7days_uv'],
                            overlap_newly_day=overlap_newly_day.render_embed(),
-                           overlap_au_day=overlap_au_day.render_embed())
+                           overlap_au_day=overlap_au_day.render_embed(),
+                           overlap_works_day=overlap_works_day.render_embed())
 
 

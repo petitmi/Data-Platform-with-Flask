@@ -2,13 +2,32 @@
 {% extends "base.html" %}
 {% block head %}
     {{ super() }}
-                <script src="https://pyecharts.github.io/assets/js/echarts.min.js"></script>
+<script src="https://pyecharts.github.io/assets/js/echarts.min.js"></script>
     <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 {% endblock %}
+
 {% block page_content %}
 
+
+
+        <br><br>
+        <form action="/index-sum" method=post >
+选择日期：<input size="16" type="text" name="input" value="{{ thatdate }}" readonly class="form_datetime">
+            <input type="submit" class="startButton" value="查询">
+
+        </form>
+<script type="text/javascript">
+    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd',minView:2});
+</script>
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <div class=flashes>
+                <div><font color="red"> {{ message }}</font></div></div>
+        </div>
+    {% endfor %}
+
 <br>
-   <h1 class="head1">2018部门汇总</h1>
+   <h1 class="head1">{{year_sql}}部门汇总</h1>
 <hr width="70%" align="left">
     <div style="overflow: hidden">
         <div class="blue_table"  style="width:400px;height: 350px;font-size: 22px; padding: 10px;float: left">
@@ -35,7 +54,7 @@
     {{ py_bar|safe }}
 
     <br><br>
-   <h1 class="head1">2018项目汇总</h1>
+   <h1 class="head1">{{year_sql}}项目汇总</h1>
 <hr width="70%" align="left">
 
         <div class="blue_table"  style="font-size: 17px;">
@@ -69,6 +88,8 @@
             <div class="green_cell">设备</div>
             <div class="green_cell">城市</div>
             <div class="green_cell">城市</div>
+             <div class="green_cell">城市</div>
+
         </div>
         <div class="green_row_head">
             <div class="green_cell" id="first_group" width="40%">月份</div>
@@ -86,6 +107,8 @@
             <div class="green_cell">顾问销售</div>
             <div class="green_cell">场景库</div>
             <div class="green_cell">重庆</div>
+            <div class="green_cell">电影周</div>
+
         </div>
         {% for i in result_month_compared %}
             <div class="green_row">
@@ -104,16 +127,13 @@
                 <div class="green_cell">￥{{ i[12]|int}}</div>
                 <div class="green_cell">￥{{ i[13]|int}}</div>
                 <div class="green_cell">￥{{ i[14]|int}}</div>
+                <div class="green_cell">￥{{ i[15]|int}}</div>
+
 
             </div>
         {% endfor %}
 
     </div>
 
-    {% for message in get_flashed_messages() %}
-    <div class="alert alert-warning">
-        <ul class=flashes>
-            <li><font color="red"> {{ message }}</font></li></ul>
-    </div>
-    {% endfor %}
+
 {% endblock %}

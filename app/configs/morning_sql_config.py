@@ -15,14 +15,26 @@ sql_login_day_newly="""select count(distinct member_id) login_day_newly from per
 sql_contact_day="""select count(distinct mobile) contact_day from address_books where date(created_at)='%s';"""
 sql_relation_contact_day="""select count(1) from address_books where date(created_at)='%s'"""
 
-sql_login_newly_7days="""select count(distinct member_id) login_day_newly from person_infos 
-where updated_at between date_add('{0}',interval -6 day)  and '{0}'group by date(updated_at) order by date(updated_at)
+sql_login_newly_7days="""select date(updated_at) date,count(distinct member_id) login_newly_7days from person_infos 
+where updated_at between date_add('{0}',interval -15 day)  and '{0}'group by date(updated_at) order by date(updated_at)
 """
-sql_activate_7days="""select date(updated_at) active_date,count(distinct member_id) active_day 
+sql_activate_7days="""select date(updated_at) date,count(distinct member_id) activate_7days
 from person_infos
-where actived_sites like '%unsung_hero%'  and updated_at between date_add('{0}',interval -6 day)  and '{0}'
-group by date(updated_at) order by date(updated_at)
-"""
+where actived_sites like '%unsung_hero%'  and updated_at between date_add('{0}',interval -15 day)  and '{0}'
+group by date(updated_at) order by date(updated_at)"""
+sql_works_7days="""select date(created_at) date,count(1) works_7days from films where `category`=1  and created_at between date_add('{0}',interval -15 day) and '{0}'
+group by date(created_at) order by date(created_at) asc;"""
+# sql_workers_7days=""""""
+sql_claimers_7days="""select date(created_at) date,count(distinct member_id) claimers_7days from claim_logs where status=1   and created_at between date_add('{0}',interval -15 day) and '{0}'
+group by date(created_at) order by date(created_at) asc; """
+#动态
+sql_feed_author_7days="""select date(created_at) date,count(distinct owner_id) feed_author_7days from activities 
+where recipient_id = 3865 and recipient_type = 'Board' and `key` in ('video.create','album.create','link.create') and  created_at between date_add('{0}',interval -15 day)  and '{0}' 
+group by date(created_at) order by date(created_at) asc;"""
+sql_feed_count_7days="""select date(created_at) date,count(1) feed_count_7days from activities 
+where recipient_id = 3865 and recipient_type = 'Board'  and `key` in ('video.create','album.create','link.create') and created_at between date_add('{0}',interval -15 day)  and '{0}'
+ group by date(created_at) order by date(created_at) asc;"""
+
 json_login_day={"query":{"bool":{"must": [{"bool": {"should": [{"bool": {"must": [{"term": {"path": "wechat"}},{"term": {"path": "auth"}}]}},{"term": {"path": "sign_in"}}]}},
                                    {"bool": {"should": [{"term": {"ua": "ppb"}},{"term": {"ua": "okhttp"}}]}}],
                           "filter":{"range": {"time": {"gte": "2018-11-15T00:00:00","lte": "2018-11-15T23:59:59Z"}}}}}}
@@ -37,13 +49,18 @@ sql_actived_business="""SELECT businesses.name,COUNT(member_businesses.id)
 FROM member_businesses INNER JOIN businesses ON businesses.id = member_businesses.`business_id` AND businesses.`kind`= 3
 WHERE member_id IN (SELECT member_id FROM person_infos WHERE actived_sites LIKE '%unsung%') GROUP BY businesses.`id` ORDER BY COUNT(member_businesses.`id`) DESC"""
 
-#动态
-sql_feed_author_7days="""select count(distinct owner_id) from activities 
-where recipient_id = 3865 and recipient_type = 'Board' and `key` in ('video.create','album.create','link.create') and  created_at between date_add('{0}',interval -6 day)  and '{0}' 
-group by date(created_at) order by date(created_at) asc;"""
-sql_feed_count_7days="""select count(1) from activities 
-where recipient_id = 3865 and recipient_type = 'Board'  and `key` in ('video.create','album.create','link.create') and created_at between date_add('{0}',interval -6 day)  and '{0}'
- group by date(created_at) order by date(created_at) asc;"""
+
+
+
+#作品
+sql_works_all="""select count(1) from films where `category`=1;"""
+sql_works_checked="""select count(distinct film_id) from filmographies where real_name is not null"""
+sql_works_complete="""select count(1) from (select film_id,count(1) count_film from filmographies where real_name is not null group by film_id having count_film>50)a"""
+sql_workers_all="""select count(distinct case when member_id is not null then 1 else null end)+count(case when member_id is null then 1 else null end) workers_all
+from filmographies where real_name is not null;"""
+sql_claimers_all="""select count(distinct member_id) from filmographies where member_id is not null and real_name is not null;"""
+
+
 
 #栏目
 sql_columns_pv="""select b.id column_id,b.title column_title,sum(a.visits) column_pv
@@ -59,6 +76,7 @@ sql_columns_clips_count="""select c.id column_id,count(1) clip_count
 from cast_clip a left join casts b on a.cast_id=b.id 
 left join cast_columns c on b.cast_column_id=c.id 
 where  c.id is not null group by c.id"""
+
 
 #期
 sql_casts_pv="""select  b.id column_id,a.id cast_id,b.title column_title,a.title,a.begin_time begin_date,ifnull(sum(a.visits),0) cast_pv
