@@ -7,7 +7,7 @@ from app.configs.config import *
 app=create_app()
 
 if __name__ == '__main__':
-    app.run(port=port,threaded=True)
+    app.run(host=host,port=port,threaded=True)
 
 @app.shell_context_processor
 def make_shell_context():
