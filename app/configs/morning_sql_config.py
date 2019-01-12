@@ -22,6 +22,10 @@ sql_activate_7days="""select date(updated_at) date,count(distinct member_id) act
 from person_infos
 where actived_sites like '%unsung_hero%'  and updated_at between date_add('{0}',interval -15 day)  and '{0}'
 group by date(updated_at) order by date(updated_at)"""
+
+sql_authorized_days="""select count(distinct member_id) count_authorized from `address_books` 
+where created_at between date_add('{0}',interval -15 day) and '{0}' group by date(created_at) order by date(created_at) desc"""
+
 sql_works_7days="""select date(created_at) date,count(1) works_7days from films where `category`=1  and created_at between date_add('{0}',interval -15 day) and '{0}'
 group by date(created_at) order by date(created_at) asc;"""
 # sql_workers_7days=""""""
@@ -34,15 +38,6 @@ group by date(created_at) order by date(created_at) asc;"""
 sql_feed_count_7days="""select date(created_at) date,count(1) feed_count_7days from activities 
 where recipient_id = 3865 and recipient_type = 'Board'  and `key` in ('video.create','album.create','link.create') and created_at between date_add('{0}',interval -15 day)  and '{0}'
  group by date(created_at) order by date(created_at) asc;"""
-
-json_login_day={"query":{"bool":{"must": [{"bool": {"should": [{"bool": {"must": [{"term": {"path": "wechat"}},{"term": {"path": "auth"}}]}},{"term": {"path": "sign_in"}}]}},
-                                   {"bool": {"should": [{"term": {"ua": "ppb"}},{"term": {"ua": "okhttp"}}]}}],
-                          "filter":{"range": {"time": {"gte": "2018-11-15T00:00:00","lte": "2018-11-15T23:59:59Z"}}}}}}
-json_login_all={"query":{"bool":{"must": [{"bool": {"should": [{"bool": {"must": [{"term": {"path": "wechat"}},{"term": {"path": "auth"}}]}},{"term": {"path": "sign_in"}}]}},
-                                   {"bool": {"should": [{"term": {"ua": "ppb"}},{"term": {"ua": "okhttp"}}]}}]}}}
-json_binding_day={"query": {"bool": {"must": [{"bool": { "should": [{"term": {"path": "set_mobile.json"}},{"term": {"path": "integrate.json"}}]}},
-                                              {"bool": {"should": [{"term": {"ua": "ppb"}},{"term": {"ua": "okhttp"}}] }}],
-                                     "filter": {"range": {"time": {"gte": "2018-11-15T00:00:00","lte": "2018-11-15T23:59:59Z"} }}}}}
 
 
 sql_actived_business="""SELECT businesses.name,COUNT(member_businesses.id)

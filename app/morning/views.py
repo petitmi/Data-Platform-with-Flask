@@ -51,7 +51,6 @@ def get_dr_values(thatdate_sql):
     claimers_7days=pd.read_sql_query(sql_claimers_7days.format(today_sql), con=db_circlecenter)
     charts_data=activate_7days.merge(login_newly_7days,how='left',on=['date','date']).merge(feed_count_7days,how='left',on=['date','date']).merge(feed_author_7days,how='left',on=['date','date']).merge(works_7days,how='left',on=['date','date']).merge(claimers_7days,how='left',on=['date','date']).fillna(0)
 
-    print(charts_data.values)
 
 
     results['activate_7days']=charts_data['activate_7days'].values.tolist()
@@ -113,7 +112,7 @@ def get_dr_values(thatdate_sql):
                                                                             "lte": "%s" % date_es_list[i + 1]}}}}},
                                        "aggs": {"uv": {"cardinality": {"field": "member_uuid.keyword"}}},
                                        "size": 0})
-        results['active_7days_pv'].append(active_7days["hits"]['total'])
+        results['active_7days_pv'].append('%.1f'%(active_7days["hits"]['total']/active_7days["aggregations"]['uv']['value']))
         results['active_7days_uv'].append(active_7days["aggregations"]['uv']['value'])
 
         activate_7days = es.search(index="logstash-*",
@@ -127,6 +126,7 @@ def get_dr_values(thatdate_sql):
                                          "size": 0})
         results['activate_7days_pv'].append(activate_7days["hits"]['total'])
         results['activate_7days_uv'].append(activate_7days["aggregations"]['uv']['value'])
+    results['authorized_days']=pd.read_sql_query(sql_authorized_days.format(today_sql), con=db_circlecenter).count_authorized.values.tolist()
     results['process_date']=list(reversed(results['process_date']))
     results['login_7days_uv']=list(reversed(results['login_7days_uv']))
     results['login_7days_pv']=list(reversed(results['login_7days_pv']))
@@ -247,6 +247,7 @@ def morning_dr():
                            active_7days_uv=results_dr['active_7days_uv'],
                            activate_7days_pv=results_dr['activate_7days_pv'],
                            activate_7days_uv=results_dr['activate_7days_uv'],
+                           authorized_days=results_dr['authorized_days'],
                            overlap_newly_day=overlap_newly_day.render_embed(),
                            overlap_au_day=overlap_au_day.render_embed(),
                            overlap_works_day=overlap_works_day.render_embed())
