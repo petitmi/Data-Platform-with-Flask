@@ -32,7 +32,6 @@ def py_pie(attr,pie_v,v_title,title):
         pie.add(v_title, attr, pie_v,    radius=[30, 55],
                 is_legend_show=False,
                 is_label_show=True)
-    pie.render()
     return pie
 
 @main.route('/brush-flow', methods=['GET', 'POST'])
