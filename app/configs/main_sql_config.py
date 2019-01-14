@@ -89,7 +89,8 @@ where year(pay_time) ='%s' group by month(pay_time))b on a.month=b.month;"""
 
 sql_project_month_compared="""select a.month,ifnull(sales_amount_yltx,0) sales_amount_yltx,ifnull(sales_amount_rs,0) sales_amount_rs,
 ifnull(sales_amount_cjrh,0) sales_amount_cjrh,ifnull(sales_amount_cjk,0) sales_amount_cjk,ifnull(sales_amount_gg,0) sales_amount_gg,
-ifnull(sales_amount_zl,0) sales_amount_zl,ifnull(sales_amount_wx,0) sales_amount_wx,ifnull(sales_amount_cq,0) sales_amount_cq, ifnull(sales_amount_dyz,0) sales_amount_dyz
+ifnull(sales_amount_zl,0) sales_amount_zl,ifnull(sales_amount_wx,0) sales_amount_wx,ifnull(sales_amount_cq,0) sales_amount_cq, 
+ifnull(sales_amount_dyz,0) sales_amount_dyz,ifnull(sales_amount_stz,0) sales_amount_stz
 from month_list a left join 
 (select month(received_time) month,
 sum(case when `project_id`=314 then sales_amount else 0 end) sales_amount_cjrh, /*产教融合*/
@@ -100,7 +101,8 @@ sum(case when `project_id`=311 then sales_amount else 0 end) sales_amount_zl,/*�
 sum(case when `project_id`=310 then sales_amount else 0 end) sales_amount_rs,/*二手*/
 sum(case when `project_id`=309 then sales_amount else 0 end) sales_amount_cjk,/*场景库*/
 sum(case when `project_id`=308 then sales_amount else 0 end) sales_amount_cq/*重庆*/,
-sum(case when `project_id`=321 then sales_amount else 0 end) sales_amount_dyz/*电影周*/
+sum(case when `project_id`=321 then sales_amount else 0 end) sales_amount_dyz/*电影周*/,
+sum(case when `project_id`=323 then sales_amount else 0 end) sales_amount_stz/*师徒制*/
 
 from finances_sum where year(received_time)='%s'
 group by month(received_time))b on a.month=b.month ;"""

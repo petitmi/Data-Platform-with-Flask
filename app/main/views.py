@@ -216,7 +216,7 @@ def get_sum_values(thatdate_sql):
     result_month_compared=pd.concat([result_month_compared,result_littleclass_month_compared], axis=1)
     result_month_compared=result_month_compared.reset_index().sort_index(ascending=False)
     result_month_compared=result_month_compared[['month','sales_amount_cjrh','sales_amount_csc','sales_amount_ppxy',
-                                                 'sales_amount_littleclass','sales_amount_gg','sales_amount_yltx',
+                                                 'sales_amount_littleclass','sales_amount_stz','sales_amount_gg','sales_amount_yltx',
                                                  'sales_amount_wx','sales_amount_zl','sales_amount_rs','sales_amount_ec_online',
                                                  'sales_amount_ec_chanjet','sales_amount_cjk','sales_amount_cq','sales_amount_dyz']]
     project_month_sum=result_month_compared.iloc[:,1:].sum(axis=1)
