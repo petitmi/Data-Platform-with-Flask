@@ -103,6 +103,8 @@ def screen():
     new_member=pd.read_sql_query(sql_new_member, con=db_circlecenter)
     results['new_member_id']=new_member.values[0][0]
     results['new_member_realname']=new_member.values[0][2]
+    member_business_id=pd.read_sql_query(sql_member_business_id.format(results['new_member_id']), con=db_circlecenter).values[0][0]
+    results['member_business']=pd.read_sql_query(sql_member_business.format(member_business_id), con=db_circlecenter).values[0][0]
     if  new_member.values[0][1] is None:
         results['new_member_avater'] ='None'
     else :
@@ -115,7 +117,6 @@ def screen():
             os.remove(path_avator)
             with open(path_avator, 'wb') as f:
                 f.write(avator)
-        print(avator)
     return render_template('screen.html',activate_all=results['activate_all'],
                            activate_today=results['activate_today'],
                            activate_yesterday=results['activate_comp_yes'],
@@ -125,6 +126,7 @@ def screen():
                            new_member_realname=results['new_member_realname'],
                            new_member_id=results['new_member_id'],
                            new_member_avator=results['new_member_avater'],
+                           member_business=results['member_business'],
 
                            now=sql_today_end)
 

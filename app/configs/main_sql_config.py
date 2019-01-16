@@ -122,3 +122,5 @@ sql_activate_org="""select count(distinct member_id) active_all from org_infos
 where  actived_sites like '%unsung_hero%' and hero_actived_at between '{0}' and '{1}';"""
 sql_activate_all_org="""select count(distinct member_id) active_all from org_infos  
 where  actived_sites like '%unsung_hero%';"""
+sql_member_business_id="""select `business_id` from `member_businesses` where `member_id`='{0}'"""
+sql_member_business="""select name from businesses where id='{0}'"""

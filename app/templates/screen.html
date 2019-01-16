@@ -68,6 +68,8 @@
     </div>
     <div style="display: table-cell;">
         <div style="color:#8E8E8E;font-size: 30px;font-weight: bold ">{{new_member_realname}}-{{new_member_id}}</div>
+        <div style="color:#8E8E8E;font-size: 28px ">职业：{{member_business}}</div>
+
         {%if new_member_avator !='None'%}
         <img src= "{{url_for('static',filename='images/avator.jpg')}}{{'?'+(range(0,599)|random)|string()}}" height="160px" width="160px">
         {%else%}
