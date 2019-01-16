@@ -106,3 +106,12 @@ sum(case when `project_id`=323 then sales_amount else 0 end) sales_amount_stz/*å
 
 from finances_sum where year(received_time)='%s'
 group by month(received_time))b on a.month=b.month ;"""
+
+
+
+# **********************************************************************************************************************
+# screen
+sql_activate="""select count(distinct member_id) active_all from person_infos  
+where  actived_sites like '%unsung_hero%' and hero_actived_at between '{0}' and '{1}';"""
+sql_activate_all="""select count(distinct member_id) active_all from person_infos  
+where  actived_sites like '%unsung_hero%';;"""

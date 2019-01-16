@@ -5,6 +5,7 @@ from . import main
 from ..decorators import admin_required,permission_required
 from ..configs.time_config import *
 from ..configs.main_sql_config import *
+from ..configs.config import *
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
@@ -13,6 +14,8 @@ from .forms import *
 from ..models import Permission
 import requests
 import re
+import pymysql
+
 
 def pyec_bar(attr,bar1,bar2,bar3,bar4,bar1_title,bar2_title,bar3_title,bar4_title,title,width,height):
     bar = Bar(title,width=width,height=height)
@@ -75,6 +78,33 @@ def shitsweeper():
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('shitsweeper.html')
 
+@main.route('/screen')
+def screen():
+    db_circlecenter = pymysql.connect(host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD, db=DB_DB,
+                                      charset='utf8')
+    now=datetime.datetime.now()
+    today=datetime.date.today()
+    sql_today_end=now.strftime('%Y-%m-%d %H:%M:%S')
+    sql_today_start=today.strftime('%Y-%m-%d %H:%M:%S')
+    sql_yesterday_start=(today-datetime.timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')
+    sql_yesterday_end=sql_yesterday_start[:11]+sql_today_end[-8:]
+    sql_lastweek_start=(today-datetime.timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')
+    sql_lastweek_end=sql_lastweek_start[:11]+sql_today_end[-8:]
+    results = {'activate_all': pd.read_sql_query(sql_activate_all, con=db_circlecenter).values[0][0]}
+    results['activate_today']=pd.read_sql_query(sql_activate.format(sql_today_start,sql_today_end), con=db_circlecenter).values[0][0]
+    results['activate_yesterday']=pd.read_sql_query(sql_activate.format(sql_yesterday_start,sql_yesterday_end), con=db_circlecenter).values[0][0]
+    results['activate_lastweek']=pd.read_sql_query(sql_activate.format(sql_lastweek_start,sql_lastweek_end), con=db_circlecenter).values[0][0]
+    results['activate_comp_yes']='%.1f'%((results['activate_today']/results['activate_yesterday']-1)*100)
+    results['activate_comp_lasw']='%.1f'%((results['activate_today']/results['activate_lastweek']-1)*100)
+    print(results)
+    print('UA:',request.user_agent.string)
+    print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
+
+    return render_template('screen.html',activate_all=results['activate_all'],
+                           activate_today=results['activate_today'],
+                           activate_yesterday=results['activate_comp_yes'],
+                           activate_lastweek=results['activate_comp_lasw'],
+                           now=sql_today_end)
 
 @main.route('/upload', methods=['GET', 'POST'])
 @login_required
