@@ -5,15 +5,15 @@
     <title>Screen Data</title>
 </head>
 <body bgcolor="#f5f5f5">
-<div style="color:#8E8E8E;font-size: 35px">now：{{now}}</div>
-<div style="color:#3C3C3C	;font-weight:bold;text-shadow: 15px 15px 15px #FF0000;;font-size: 70px">
-    <p >总激活：{{activate_all}}</p>
-    <p>今日激活：{{activate_today}}</p></div>
-<div style="color:#8E8E8E;font-size: 45px">
+<div style="color:#8E8E8E;font-size: 30px">now：{{now}}</div>
+<div style="color:#3C3C3C	;font-weight:bold;text-shadow: 10px 10px 10px #FF0000;font-size: 80px;margin:3px;border:3px;padding:3px;">
+    <p style="margin: 3px">总激活：{{activate_all}}</p>
+    <p style="margin: 3px">今日激活：{{activate_today}}</p></div>
+<div style="color:#8E8E8E;font-size: 50px">
     较昨日此时:{%if activate_yesterday|float>=0 %}<span style="color:red">↑
-    {%else%}<span style="color:green">↓{%endif%}
-        {{activate_yesterday}}%</span></div>
-<div style="color:#8E8E8E;font-size: 45px">
+    {%else%}<span style="color:green">↓
+        {%endif%}{{activate_yesterday}}%</span></div>
+<div style="color:#8E8E8E;font-size: 50px">
 较上周同期：{%if activate_lastweek|float>=0 %}<span style="color:red">↑
     {%else%}<span style="color:green">↓
     {%endif%} {{activate_lastweek}}%</span></div>
