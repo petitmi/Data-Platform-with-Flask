@@ -114,4 +114,11 @@ group by month(received_time))b on a.month=b.month ;"""
 sql_activate="""select count(distinct member_id) active_all from person_infos  
 where  actived_sites like '%unsung_hero%' and hero_actived_at between '{0}' and '{1}';"""
 sql_activate_all="""select count(distinct member_id) active_all from person_infos  
-where  actived_sites like '%unsung_hero%';;"""
+where  actived_sites like '%unsung_hero%';"""
+sql_new_member="""select id,`avatar`,real_name from members where id in 
+(select member_id from (SELECT member_id FROM person_infos WHERE actived_sites LIKE '%unsung%' order by id desc limit 1)b);"""
+
+sql_activate_org="""select count(distinct member_id) active_all from org_infos  
+where  actived_sites like '%unsung_hero%' and hero_actived_at between '{0}' and '{1}';"""
+sql_activate_all_org="""select count(distinct member_id) active_all from org_infos  
+where  actived_sites like '%unsung_hero%';"""

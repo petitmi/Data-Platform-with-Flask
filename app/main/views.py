@@ -17,6 +17,7 @@ import re
 import pymysql
 
 
+
 def pyec_bar(attr,bar1,bar2,bar3,bar4,bar1_title,bar2_title,bar3_title,bar4_title,title,width,height):
     bar = Bar(title,width=width,height=height)
     if bar1 !=0:
@@ -27,7 +28,6 @@ def pyec_bar(attr,bar1,bar2,bar3,bar4,bar1_title,bar2_title,bar3_title,bar4_titl
         bar.add(bar3_title, attr, bar3,is_label_show=True)
     if bar4 !=0:
         bar.add(bar4_title, attr, bar4,is_label_show=True)
-    bar.render()
     return bar
 def py_pie(attr,pie_v,v_title,title):
     pie = Pie(title,width=400)
@@ -98,10 +98,34 @@ def screen():
     results['activate_comp_yes']='%.1f'%((results['activate_today']/results['activate_yesterday']-1)*100)
     results['activate_comp_lasw']='%.1f'%((results['activate_today']/results['activate_lastweek']-1)*100)
 
+    results['activate_all_org']=pd.read_sql_query(sql_activate_all_org, con=db_circlecenter).values[0][0]
+    results['activate_today_org']=pd.read_sql_query(sql_activate_org.format(sql_today_start,sql_today_end), con=db_circlecenter).values[0][0]
+    new_member=pd.read_sql_query(sql_new_member, con=db_circlecenter)
+    results['new_member_id']=new_member.values[0][0]
+    results['new_member_realname']=new_member.values[0][2]
+    if  new_member.values[0][1] is None:
+        results['new_member_avater'] ='None'
+    else :
+        results['new_member_avater'] ='avator'
+
+
+    if new_member.values[0][1] is not None:
+        avator=requests.get('https://paipianbang.cdn.cinehello.com/uploads/avatars/%s'%new_member.values[0][1]).content
+        if os.path.exists(path_avator):
+            os.remove(path_avator)
+            with open(path_avator, 'wb') as f:
+                f.write(avator)
+        print(avator)
     return render_template('screen.html',activate_all=results['activate_all'],
                            activate_today=results['activate_today'],
                            activate_yesterday=results['activate_comp_yes'],
                            activate_lastweek=results['activate_comp_lasw'],
+                           activate_all_org=results['activate_all_org'],
+                           activate_today_org=results['activate_today_org'],
+                           new_member_realname=results['new_member_realname'],
+                           new_member_id=results['new_member_id'],
+                           new_member_avator=results['new_member_avater'],
+
                            now=sql_today_end)
 
 @main.route('/upload', methods=['GET', 'POST'])

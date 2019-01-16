@@ -2,22 +2,82 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta http-equiv="refresh" content="10">
+    <style type="text/css">
+.table-row{
+    display:table-row;
+    color:#3C3C3C;
+    font-size: 45px;
+    margin:2px;
+    padding-left: 0;
+}
+.table-cell{
+    display:table-cell;
+    padding-left:22px;
+    padding-right: 44px}
+/*表格黑色*/
+#table{color: #3C3C3C;}
+/*辅助灰色*/
+#auxillay {
+    color:#8E8E8E;
+    font-size: 30px}
+/*重点阴影*/
+#prominent{
+    color:#3C3C3C;
+    font-weight:bold;
+    text-shadow: 10px 10px 10px #FF0000;
+    font-size: 50px;
+}
+
+</style>
     <title>Screen Data</title>
 </head>
-<body bgcolor="#f5f5f5">
-<div style="color:#8E8E8E;font-size: 30px">now：{{now}}</div>
-<div style="color:#3C3C3C	;font-weight:bold;text-shadow: 10px 10px 10px #FF0000;font-size: 80px;margin:3px;border:3px;padding:3px;">
-    <p style="margin: 3px">总激活：{{activate_all}}</p>
-    <p style="margin: 3px">今日激活：{{activate_today}}</p></div>
-<div style="color:#8E8E8E;font-size: 50px">
-    较昨日此时:{%if activate_yesterday|float>=0 %}<span style="color:red">↑
-    {%else%}<span style="color:green">↓
-        {%endif%}{{activate_yesterday}}%</span></div>
-<div style="color:#8E8E8E;font-size: 50px">
-较上周同期：{%if activate_lastweek|float>=0 %}<span style="color:red">↑
-    {%else%}<span style="color:green">↓
-    {%endif%} {{activate_lastweek}}%</span></div>
 
+<body bgcolor="#f5f5f5">
+<div id="auxillay">{{now}}</div>
+<div>
+<div style="display: table;width: 700px">
+    <div class="table-row">
+        <div class="table-cell"></div>
+        <div id="table" class="table-cell">个人</div>
+        <div id="table" class="table-cell">机构</div>
+    </div>
+    <div  class="table-row">
+        <div class="table-cell" style="font-family:STHeiti">总激活 </div>
+        <div class="table-cell" id="prominent">{{activate_all}}</div>
+        <div class="table-cell" id="prominent">{{activate_all_org}}</div>
+
+    </div>
+    <div  class="table-row">
+        <div class="table-cell" style="font-family:STHeiti">今日激活</div>
+        <div class="table-cell" id="prominent">{{activate_today}}</div>
+        <div class="table-cell" id="prominent">{{activate_today_org}}</div>
+
+    </div>
 </div>
+    </div>
+<div >
+    <div style="display: table;width: 700px; ">
+<div style="display: table-row;height: 200px;" >
+    <div style="display:table-cell;  vertical-align: middle;">
+        <li id="auxillay" >较昨日此时:
+            <span style="color:{%if activate_yesterday|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_yesterday}}%</span>
+        </li>
+        <li id="auxillay">较上周同期：
+            <span style="color:{%if activate_lastweek|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_lastweek}}%</span>
+        </li>
+    </div>
+    <div style="display: table-cell;">
+        <div style="color:#8E8E8E;font-size: 30px;font-weight: bold ">{{new_member_realname}}-{{new_member_id}}</div>
+        {%if new_member_avator !='None'%}
+        <img src= "{{url_for('static',filename='images/avator.jpg')}}{{'?'+(range(0,599)|random)|string()}}" height="160px" width="160px">
+        {%else%}
+        <img src= "{{url_for('static',filename='images/yezhu.jpg')}}{{'?'+(range(0,599)|random)|string()}}" height="160px" width="160px">
+                <br>
+        <span style="font-size: 10px" id="auxillay">默认</span>
+        {%endif%}
+
+    </div>
+</div>
+    </div></div>
 </body>
 </html>
