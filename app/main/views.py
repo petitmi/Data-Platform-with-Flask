@@ -96,9 +96,6 @@ def screen():
     results['activate_lastweek']=pd.read_sql_query(sql_activate.format(sql_lastweek_start,sql_lastweek_end), con=db_circlecenter).values[0][0]
     results['activate_comp_yes']='%.1f'%((results['activate_today']/results['activate_yesterday']-1)*100)
     results['activate_comp_lasw']='%.1f'%((results['activate_today']/results['activate_lastweek']-1)*100)
-    print(results)
-    print('UA:',request.user_agent.string)
-    print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
 
     return render_template('screen.html',activate_all=results['activate_all'],
                            activate_today=results['activate_today'],
