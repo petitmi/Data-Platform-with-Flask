@@ -183,8 +183,8 @@ def get_rp_values():
     db_circlecenter= pymysql.connect(host=DB_HOST, port=DB_PORT,user=DB_USER, password=DB_PASSWORD, db=DB_DB, charset='utf8')
 
     results={'activate_all':pd.read_sql_query(sql_activate_all, con=db_circlecenter).values[0][0]}
-    results['contact_all']=pd.read_sql_query(sql_contact_all, con=db_circlecenter).values[0][0]
-    results['relation_contact_all']=pd.read_sql_query(sql_relation_contact_all, con=db_circlecenter).values[0][0]
+    # results['contact_all']=pd.read_sql_query(sql_contact_all, con=db_circlecenter).values[0][0]
+    # results['relation_contact_all']=pd.read_sql_query(sql_relation_contact_all, con=db_circlecenter).values[0][0]
     results['works_all']=pd.read_sql_query(sql_works_all,con=db_circlecenter).values[0][0]
     results['works_checked']=pd.read_sql_query(sql_works_checked,con=db_circlecenter).values[0][0]
     results['works_complete']=pd.read_sql_query(sql_works_complete,con=db_circlecenter).values[0][0]
@@ -234,12 +234,12 @@ def morning_rp():
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('morning-rp.html',
                            activate_all=results_rp['activate_all'],
-                           contact_all=results_rp['contact_all'],
-#                           active_all=results_rp['active_all'],
+                           # contact_all=results_rp['contact_all'],
+                           # relation_contact_all=results_rp['relation_contact_all'],
+                           #                           active_all=results_rp['active_all'],
                            columns_data=results_rp['columns_data'],
                            columncasts_data=results_rp['columncasts_data'],
                            columns_id=results_rp['columns_id'],
-                           relation_contact_all=results_rp['relation_contact_all'],
                            works_all=results_rp['works_all'],
                            works_checked=results_rp['works_checked'],
                            works_complete=results_rp['works_complete'],
@@ -276,8 +276,8 @@ def morning_dr():
     return render_template('morning-dr.html',thatdate=thatdate_sql,
                            activate_day=results_dr['activate_day'],
                            login_day_newly=results_dr['login_day_newly'],
-                           contact_day=results_dr['contact_day'],
-                           relation_contact_day=results_dr['relation_contact_day'],
+                           # contact_day=results_dr['contact_day'],
+                           # relation_contact_day=results_dr['relation_contact_day'],
                            process_date=results_dr['process_date'],
                            login_7days_uv=results_dr['login_7days_uv'],
                            login_7days_pv=results_dr['login_7days_pv'],
