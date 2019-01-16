@@ -35,23 +35,63 @@ def olp(attr,bar1,bar2,bar3,line1,line2,line3,bar1_title,bar2_title,bar3_title,l
 
 def get_dr_values(thatdate_sql):
     today_sql = datetime.datetime.now() .strftime('%Y-%m-%d')
+    # t_start=datetime.datetime.now()
     db_circlecenter= pymysql.connect(host=DB_HOST, port=DB_PORT,user=DB_USER, password=DB_PASSWORD, db=DB_DB, charset='utf8')
     results={'activate_day':pd.read_sql_query(sql_activate_day%thatdate_sql, con=db_circlecenter).values[0][0]}
-    results['contact_day']=pd.read_sql_query(sql_contact_day%thatdate_sql, con=db_circlecenter).values[0][0]
-    results['relation_contact_day']=pd.read_sql_query(sql_relation_contact_day%thatdate_sql, con=db_circlecenter).values[0][0]
+    # t_activate_day=datetime.datetime.now()
+    # d_activate_day=t_activate_day-t_start
+
+    # results['contact_day']=pd.read_sql_query(sql_contact_day%thatdate_sql, con=db_circlecenter).values[0][0]
+    # t_contact_day=datetime.datetime.now()
+    # d_contact_day=t_contact_day-t_activate_day
+
+    # results['relation_contact_day']=pd.read_sql_query(sql_relation_contact_day%thatdate_sql, con=db_circlecenter).values[0][0]
+    # t_relation_contact_day=datetime.datetime.now()
+    # d_relation_contact_day=t_relation_contact_day-t_contact_day
+
     results['login_day_newly']=pd.read_sql_query(sql_login_day_newly%thatdate_sql, con=db_circlecenter).values[0][0]
+    # t_login_day_newly=datetime.datetime.now()
+    # d_login_day_newly=t_login_day_newly-t_relation_contact_day
+
     results['7days_list']=get_days_list(days=14,thatdate=thatdate_sql).sql_list()
+    # t_7days_list=datetime.datetime.now()
+    # d_7days_list=t_7days_list-t_login_day_newly
+
+    # print('d_activate_day:',d_activate_day,'\nd_contact_day:',d_contact_day,'\nd_relation_contact_day:',
+    #       d_relation_contact_day,'\nd_login_day_newly:',d_login_day_newly,'\nd_7days_list:',d_7days_list)
+
     sql_7days=tuple(results['7days_list'])
 
     activate_7days=pd.read_sql_query(sql_activate_7days.format(today_sql), con=db_circlecenter)
+    # t_activate_7days=datetime.datetime.now()
+    # d_activate_7days=t_activate_7days-t_7days_list
+
     login_newly_7days=pd.read_sql_query(sql_login_newly_7days.format(today_sql), con=db_circlecenter)
+    # t_login_newly_7days=datetime.datetime.now()
+    # d_login_newly_7days=t_login_newly_7days-t_activate_7days
+
     feed_count_7days=pd.read_sql_query(sql_feed_count_7days.format(today_sql), con=db_circlecenter)
+    # t_feed_count_7days=datetime.datetime.now()
+    # d_feed_count_7days=t_feed_count_7days-t_login_newly_7days
+
     feed_author_7days=pd.read_sql_query(sql_feed_author_7days.format(today_sql), con=db_circlecenter)
+    # t_feed_author_7days=datetime.datetime.now()
+    # d_feed_author_7days=t_feed_author_7days-t_feed_count_7days
+
     works_7days=pd.read_sql_query(sql_works_7days.format(today_sql), con=db_circlecenter)
+    # t_works_7dayss=datetime.datetime.now()
+    # d_works_7days=t_works_7dayss-t_feed_author_7days
+
     claimers_7days=pd.read_sql_query(sql_claimers_7days.format(today_sql), con=db_circlecenter)
+    # t_claimers_7days=datetime.datetime.now()
+    # d_claimers_7days=t_claimers_7days-t_works_7dayss
+
+
+
+    # print('d_activate_7days:',d_activate_7days,'\nd_login_newly_7days:',d_login_newly_7days,'\nd_feed_count_7days:',
+    #       d_feed_count_7days,'\nd_feed_author_7days:',d_feed_author_7days,'\nd_works_7days:',d_works_7days,'\nd_claimers_7days:',d_claimers_7days)
+
     charts_data=activate_7days.merge(login_newly_7days,how='left',on=['date','date']).merge(feed_count_7days,how='left',on=['date','date']).merge(feed_author_7days,how='left',on=['date','date']).merge(works_7days,how='left',on=['date','date']).merge(claimers_7days,how='left',on=['date','date']).fillna(0)
-
-
 
     results['activate_7days']=charts_data['activate_7days'].values.tolist()
     results['login_newly_7days']=charts_data['login_newly_7days'].values.tolist()
