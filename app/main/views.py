@@ -79,6 +79,7 @@ def shitsweeper():
     return render_template('shitsweeper.html')
 
 @main.route('/screen')
+@login_required
 def screen():
     db_circlecenter = pymysql.connect(host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD, db=DB_DB,
                                       charset='utf8')
