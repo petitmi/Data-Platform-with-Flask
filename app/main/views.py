@@ -109,7 +109,7 @@ def screen():
     activity=pd.read_sql_query(sql_activity_content.format(activity_id), con=db_circlecenter).values
     results['activity_content']=activity[0][0]
     results['activity_type']=activity[0][1]
-    
+
     author=pd.read_sql_query(sql_activity_author.format(activity_author_id), con=db_circlecenter).values
     results['author_id']=author[0][0]
     results['author_name']=author[0][1]
