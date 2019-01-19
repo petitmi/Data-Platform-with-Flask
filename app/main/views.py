@@ -104,8 +104,10 @@ def screen():
     results['activate_comp_yes']='%.1f'%((results['activate_today']/results['activate_yesterday']-1)*100)
     results['activate_comp_lasw']='%.1f'%((results['activate_today']/results['activate_lastweek']-1)*100)
 
-    activity_id=pd.read_sql_query(sql_activity, con=db_circlecenter).values[0][0]
-    activity_author_id=pd.read_sql_query(sql_activity, con=db_circlecenter).values[0][1]
+    activity_post=pd.read_sql_query(sql_activity, con=db_circlecenter).values
+    activity_id=activity_post[0][0]
+    activity_author_id=activity_post[0][1]
+    results['activity_time']=str(activity_post[0][2])[-8:]
     activity=pd.read_sql_query(sql_activity_content.format(activity_id), con=db_circlecenter).values
     results['activity_content']=activity[0][0]
     results['activity_type']=activity[0][1]
@@ -162,6 +164,7 @@ def screen():
                            author_name=results['author_name'],
                            activity_type=results['activity_type'],
                            activity_content=results['activity_content'],
+                           activity_time=results['activity_time'],
                            now=sql_today_end)
 
 @main.route('/upload', methods=['GET', 'POST'])

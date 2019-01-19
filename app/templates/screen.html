@@ -66,8 +66,8 @@ width:40px}
 
 </div>
 <div style="display: table-row;width: 800px;column-count:3;">
-            <div style="display: table-cell;vertical-align: middle;">
-        <div style="color:#8E8E8E;font-size: 24px;font-weight: bold ">{{new_member_realname}}-{{new_member_id}}</div>
+            <div style="display: table-cell;vertical-align: top;">
+        <div style="color:#8E8E8E;font-size: 24px;font-weight: bold ">{{new_member_realname}}({{new_member_id}})</div>
         <div style="color:#8E8E8E;font-size: 17px ">职业：{{member_business}}</div>
 
         {%if new_member_avator !='None'%}
@@ -76,7 +76,7 @@ width:40px}
         <img src= "{{url_for('static',filename='images/yezhu.jpg')}}{{'?'+(range(0,12312312134134123)|random)|string()}}" height="160px" width="160px">
         {%endif%}
 </div>
-            <div style="display:table-cell; vertical-align: middle;">
+            <div style="display:table-cell; vertical-align: top;">
                 <li id="auxillay" >较昨日:
                     <span style="color:{%if activate_yesterday|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_yesterday}}%</span>
                 </li>
@@ -85,7 +85,7 @@ width:40px}
                 </li>
         </div>
                 <div style="display: table-cell;border: 2px solid black;width:400px;font-size:30px;height: 200px;background-color: dimgray;color: white">
-                    {{author_id}}-{{author_name}}发布了一条{{activity_type}}:<br>{{activity_content}} </div>
+                    {{author_name}}({{author_id}})在{{activity_time}}发布了一条{{activity_type}}:<br>{{activity_content}} </div>
 
 
 </div>

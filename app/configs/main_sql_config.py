@@ -124,7 +124,7 @@ sql_activate_all_org="""select count(distinct member_id) active_all from org_inf
 where  actived_sites like '%unsung_hero%';"""
 sql_member_business_id="""select `business_id` from `member_businesses` where `member_id`='{0}'"""
 sql_member_business="""select name from businesses where id='{0}'"""
-sql_activity="""select trackable_id,owner_id from activities 
+sql_activity="""select trackable_id,owner_id,created_at from activities 
 where recipient_id = 3865 and recipient_type = 'Board'  and `key` in ('video.create','album.create','link.create') and status='normal'
 order by created_at desc limit 1;"""
 sql_activity_author="""select id,real_name from members where id='{0}';"""
