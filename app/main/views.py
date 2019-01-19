@@ -15,6 +15,7 @@ from ..models import Permission
 import requests
 import re
 import pymysql
+from elasticsearch import Elasticsearch
 
 
 
@@ -81,6 +82,11 @@ def shitsweeper():
 @main.route('/screen')
 @login_required
 def screen():
+    es_conn = Elasticsearch(
+            [ES_host],
+            http_auth=ES_http_auth,
+            scheme=ES_scheme,
+            port=ES_port)
     db_circlecenter = pymysql.connect(host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD, db=DB_DB,
                                       charset='utf8')
     now=datetime.datetime.now()
@@ -98,6 +104,17 @@ def screen():
     results['activate_comp_yes']='%.1f'%((results['activate_today']/results['activate_yesterday']-1)*100)
     results['activate_comp_lasw']='%.1f'%((results['activate_today']/results['activate_lastweek']-1)*100)
 
+    activity_id=pd.read_sql_query(sql_activity, con=db_circlecenter).values[0][0]
+    activity_author_id=pd.read_sql_query(sql_activity, con=db_circlecenter).values[0][1]
+    activity=pd.read_sql_query(sql_activity_content.format(activity_id), con=db_circlecenter).values
+    results['activity_content']=activity[0][0]
+    results['activity_type']=activity[0][1]
+    
+    author=pd.read_sql_query(sql_activity_author.format(activity_author_id), con=db_circlecenter).values
+    results['author_id']=author[0][0]
+    results['author_name']=author[0][1]
+
+
     results['activate_all_org']=pd.read_sql_query(sql_activate_all_org, con=db_circlecenter).values[0][0]
     results['activate_today_org']=pd.read_sql_query(sql_activate_org.format(sql_today_start,sql_today_end), con=db_circlecenter).values[0][0]
     new_member=pd.read_sql_query(sql_new_member, con=db_circlecenter)
@@ -105,6 +122,7 @@ def screen():
     results['new_member_realname']=new_member.values[0][2]
     member_business_id=pd.read_sql_query(sql_member_business_id.format(results['new_member_id']), con=db_circlecenter).values[0][0]
     results['member_business']=pd.read_sql_query(sql_member_business.format(member_business_id), con=db_circlecenter).values[0][0]
+
     if  new_member.values[0][1] is None:
         results['new_member_avater'] ='None'
     else :
@@ -115,8 +133,20 @@ def screen():
         avator=requests.get('https://paipianbang.cdn.cinehello.com/uploads/avatars/%s'%new_member.values[0][1]).content
         if os.path.exists(path_avator):
             os.remove(path_avator)
-            with open(path_avator, 'wb') as f:
+            with open(path_avator.format(new_member.values[0][1]), 'wb') as f:
                 f.write(avator)
+
+    today_es_start = today.strftime('%Y-%m-%dT00:00:00+0800')
+    today_es_end = today.strftime('%Y-%m-%dT23:59:59+0800')
+    es_active_total['body']['query']['bool']['filter']['range']['time']['gte'] = today_es_start
+    es_active_total['body']['query']['bool']['filter']['range']['time']['lte'] = today_es_end
+    #查询总数
+    total = es_conn.search(index=es_active_total['index'],
+                        body=es_active_total['body'])
+    ##人数
+    active_today=total['aggregations']['member_count']
+    results['active_today']=active_today['value']
+
     return render_template('screen.html',activate_all=results['activate_all'],
                            activate_today=results['activate_today'],
                            activate_yesterday=results['activate_comp_yes'],
@@ -127,7 +157,11 @@ def screen():
                            new_member_id=results['new_member_id'],
                            new_member_avator=results['new_member_avater'],
                            member_business=results['member_business'],
-
+                           active_today=results['active_today'],
+                           author_id=results['author_id'],
+                           author_name=results['author_name'],
+                           activity_type=results['activity_type'],
+                           activity_content=results['activity_content'],
                            now=sql_today_end)
 
 @main.route('/upload', methods=['GET', 'POST'])

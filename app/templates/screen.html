@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta http-equiv="refresh" content="10">
+    <!--<meta http-equiv="refresh" content="10">-->
     <style type="text/css">
+/*单远行        */
 .table-row{
     display:table-row;
     color:#3C3C3C;
@@ -10,10 +11,12 @@
     margin:2px;
     padding-left: 0;
 }
+/*单元格*/
 .table-cell{
     display:table-cell;
-    padding-left:22px;
-    padding-right: 44px}
+    padding-left:11px;
+    padding-right: 11px;
+width:40px}
 /*表格黑色*/
 #table{color: #3C3C3C;}
 /*辅助灰色*/
@@ -27,6 +30,10 @@
     text-shadow: 10px 10px 10px #FF0000;
     font-size: 50px;
 }
+#sub-prominent{    color:#3C3C3C;
+    font-weight:bold;
+    text-shadow: 10px 10px 10px #FF0000;
+    font-size: 22px;}
 
 </style>
     <title>Screen Data</title>
@@ -34,50 +41,53 @@
 
 <body bgcolor="#f5f5f5">
 <div id="auxillay">{{now}}</div>
-<div>
-<div style="display: table;width: 700px">
+<div style="display: table;-webkit-column-span:all;
+ column-span:all;width: 800px;border: 1px #2d6ca2;margin: 11px;padding-bottom: 22px">
     <div class="table-row">
         <div class="table-cell"></div>
-        <div id="table" class="table-cell">个人</div>
-        <div id="table" class="table-cell">机构</div>
-    </div>
-    <div  class="table-row">
-        <div class="table-cell" style="font-family:STHeiti">总激活 </div>
-        <div class="table-cell" id="prominent">{{activate_all}}</div>
-        <div class="table-cell" id="prominent">{{activate_all_org}}</div>
+        <div id="table" class="table-cell" style="font-size: 30px">当前活跃</div>
+        <div id="table" class="table-cell" style="font-size: 30px">个人激活</div>
+        <div id="table" class="table-cell" style="font-size: 30px">机构激活</div>
 
     </div>
-    <div  class="table-row">
-        <div class="table-cell" style="font-family:STHeiti">今日激活</div>
+        <div  class="table-row">
+        <div class="table-cell" style="font-family:STHeiti">今日</div>
+        <div class="table-cell" id="prominent">{{active_today}}</div>
         <div class="table-cell" id="prominent">{{activate_today}}</div>
         <div class="table-cell" id="prominent">{{activate_today_org}}</div>
+    </div>
+    <div  class="table-row">
+        <div class="table-cell" style="font-family:STHeiti;font-size: 22px">总计 </div>
+        <div class="table-cell" id="sub-prominent">{{activate_all}}</div>
+        <div class="table-cell" id="sub-prominent">{{activate_all_org}}</div>
 
     </div>
+
 </div>
-    </div>
-<div >
-    <div style="display: table;width: 700px; ">
-<div style="display: table-row;height: 200px;" >
-    <div style="display:table-cell;  vertical-align: middle;">
-        <li id="auxillay" >较昨日此时:
-            <span style="color:{%if activate_yesterday|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_yesterday}}%</span>
-        </li>
-        <li id="auxillay">较上周同期：
-            <span style="color:{%if activate_lastweek|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_lastweek}}%</span>
-        </li>
-    </div>
-    <div style="display: table-cell;">
-        <div style="color:#8E8E8E;font-size: 30px;font-weight: bold ">{{new_member_realname}}-{{new_member_id}}</div>
-        <div style="color:#8E8E8E;font-size: 28px ">职业：{{member_business}}</div>
+<div style="display: table-row;width: 800px;column-count:3;">
+            <div style="display: table-cell;vertical-align: middle;">
+        <div style="color:#8E8E8E;font-size: 24px;font-weight: bold ">{{new_member_realname}}-{{new_member_id}}</div>
+        <div style="color:#8E8E8E;font-size: 17px ">职业：{{member_business}}</div>
 
         {%if new_member_avator !='None'%}
-        <img src= "{{url_for('static',filename='images/avator.jpg')}}{{'?'+(range(0,599)|random)|string()}}" height="160px" width="160px">
+        <img src= "{{url_for('static',filename='images/avator.jpg')}}{{'?'+(range(0,12312312134134123)|random)|string()}}" height="160px" width="160px">
         {%else%}
-        <img src= "{{url_for('static',filename='images/yezhu.jpg')}}{{'?'+(range(0,599)|random)|string()}}" height="160px" width="160px">
+        <img src= "{{url_for('static',filename='images/yezhu.jpg')}}{{'?'+(range(0,12312312134134123)|random)|string()}}" height="160px" width="160px">
         {%endif%}
-
-    </div>
 </div>
-    </div></div>
+            <div style="display:table-cell; vertical-align: middle;">
+                <li id="auxillay" >较昨日:
+                    <span style="color:{%if activate_yesterday|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_yesterday}}%</span>
+                </li>
+                <li id="auxillay">较上周:
+                    <span style="color:{%if activate_lastweek|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_lastweek}}%</span>
+                </li>
+        </div>
+                <div style="display: table-cell;border: 2px solid black;width:400px;font-size:30px;height: 200px;background-color: dimgray;color: white">
+                    {{author_id}}-{{author_name}}发布了一条{{activity_type}}:<br>{{activity_content}} </div>
+
+
+</div>
+</div>
 </body>
 </html>
