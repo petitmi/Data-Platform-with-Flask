@@ -108,8 +108,17 @@ def get_dr_values(thatdate_sql):
     date_es_list = get_days_list(days=14,thatdate=thatdate_sql).es_list()
     date_sql_list=get_days_list(days=14,thatdate=thatdate_sql).sql_list()
 
+    results['process_date']=[]
+    results['login_7days_uv']=[]
+    results['login_7days_pv']=[]
+    results['binding_7days_pv']=[]
+    results['binding_7days_uv']=[]
+    results['active_7days_pv']=[]
+    results['active_7days_uv']=[]
+    results['activate_7days_pv']=[]
+    results['activate_7days_uv']=[]
     for i in range(len(date_es_list)-1):
-        results['process_date']=[].append(date_sql_list[i])
+        results['process_date'].append(date_sql_list[i])
         login_7days=es.search(index="logstash-*",
                   body={"query": {"bool": {"must": [{"bool": {
                       "should": [{"bool": {"must": [{"term": {"path": "auth"}}, {"term": {"path": "wechat"}}]}},
@@ -117,8 +126,8 @@ def get_dr_values(thatdate_sql):
                                            "filter": {"range": {"time": {"gte": "%s" % date_es_list[i],"lte": "%s" % date_es_list[i + 1]}}}}},
                         "aggs": {"uv": {"cardinality": {"field": "member_uuid.keyword"}}},
                         "size": 0})
-        results['login_7days_uv']=[].append(login_7days["aggregations"]['uv']['value'])
-        results['login_7days_pv']=[].append(login_7days["hits"]['total'])
+        results['login_7days_uv'].append(login_7days["aggregations"]['uv']['value'])
+        results['login_7days_pv'].append(login_7days["hits"]['total'])
 
         binding_7days = es.search(index="logstash-*",
                             body={"query": {"bool": {"must": [{"bool": {
@@ -131,8 +140,8 @@ def get_dr_values(thatdate_sql):
                                                                                              i + 1]}}}}},
                                         "aggs": {"uv": {"cardinality": {"field": "member_uuid.keyword"}}},
                                         "size": 0})
-        results['binding_7days_pv']=[].append(binding_7days["hits"]['total'])
-        results['binding_7days_uv']=[].append(binding_7days["aggregations"]['uv']['value'])
+        results['binding_7days_pv'].append(binding_7days["hits"]['total'])
+        results['binding_7days_uv'].append(binding_7days["aggregations"]['uv']['value'])
 
         active_7days = es.search(index="logstash-*",
                            body={"query": {
@@ -143,8 +152,8 @@ def get_dr_values(thatdate_sql):
                                                                             "lte": "%s" % date_es_list[i + 1]}}}}},
                                        "aggs": {"uv": {"cardinality": {"field": "member_uuid.keyword"}}},
                                        "size": 0})
-        results['active_7days_pv']=[].append('%.1f'%(active_7days["hits"]['total']/active_7days["aggregations"]['uv']['value']))
-        results['active_7days_uv']=[].append(active_7days["aggregations"]['uv']['value'])
+        results['active_7days_pv'].append('%.1f'%(active_7days["hits"]['total']/active_7days["aggregations"]['uv']['value']))
+        results['active_7days_uv'].append(active_7days["aggregations"]['uv']['value'])
 
         activate_7days = es.search(index="logstash-*",
                                body={"query": {"bool": {"must": [{"term": {"path": "address_books"}},
@@ -155,8 +164,8 @@ def get_dr_values(thatdate_sql):
                                                                                               i + 1]}}}}},
                                          "aggs": {"uv": {"cardinality": {"field": "member_uuid.keyword"}}},
                                          "size": 0})
-        results['activate_7days_pv']=[].append(activate_7days["hits"]['total'])
-        results['activate_7days_uv']=[].append(activate_7days["aggregations"]['uv']['value'])
+        results['activate_7days_pv'].append(activate_7days["hits"]['total'])
+        results['activate_7days_uv'].append(activate_7days["aggregations"]['uv']['value'])
     results['authorized_days']=pd.read_sql_query(sql_authorized_days.format(today_sql), con=db_circlecenter).count_authorized.values.tolist()
     results['process_date']=list(reversed(results['process_date']))
     results['login_7days_uv']=list(reversed(results['login_7days_uv']))
