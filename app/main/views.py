@@ -120,7 +120,12 @@ def screen():
     activity_author_id=activity_post[0][1]
     results['activity_time']=str(activity_post[0][2])[-8:]
     activity=pd.read_sql_query(sql_activity_content.format(activity_id), con=db_circlecenter).values
-    results['activity_content']=activity[0][0][:30]
+    activity_content=activity[0][0]
+    if activity_content is not None and len(activity_content)>30:
+        results['activity_content']=activity[0][0][:30]
+    else:
+        results['activity_content']=activity[0][0]
+
     results['activity_type']=activity[0][1]
 
     author=pd.read_sql_query(sql_activity_author.format(activity_author_id), con=db_circlecenter).values
