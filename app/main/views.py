@@ -91,12 +91,23 @@ def screen():
                                       charset='utf8')
     now=datetime.datetime.now()
     today=datetime.date.today()
+    yesterday=today-datetime.timedelta(days=1)
+    lastweek=today-datetime.timedelta(days=7)
+
     sql_today_end=now.strftime('%Y-%m-%d %H:%M:%S')
     sql_today_start=today.strftime('%Y-%m-%d %H:%M:%S')
-    sql_yesterday_start=(today-datetime.timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')
+    sql_yesterday_start=yesterday.strftime('%Y-%m-%d %H:%M:%S')
     sql_yesterday_end=sql_yesterday_start[:11]+sql_today_end[-8:]
-    sql_lastweek_start=(today-datetime.timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')
+    sql_lastweek_start=lastweek.strftime('%Y-%m-%d %H:%M:%S')
     sql_lastweek_end=sql_lastweek_start[:11]+sql_today_end[-8:]
+
+    es_today_start = today.strftime('%Y-%m-%dT00:00:00+0800')
+    es_today_end = now.strftime('%Y-%m-%dT%H:%M:%S+0800')
+    es_yesterday_start=yesterday.strftime('%Y-%m-%dT00:00:00+0800')
+    es_yesterday_end = es_yesterday_start[:11]+es_today_end[11:]
+    es_lastweek_start=lastweek.strftime('%Y-%m-%dT00:00:00+0800')
+    es_lastweek_end = es_lastweek_start[:11]+es_today_end[11:]
+
     results = {'activate_all': pd.read_sql_query(sql_activate_all, con=db_circlecenter).values[0][0]}
     results['activate_today']=pd.read_sql_query(sql_activate.format(sql_today_start,sql_today_end), con=db_circlecenter).values[0][0]
     results['activate_yesterday']=pd.read_sql_query(sql_activate.format(sql_yesterday_start,sql_yesterday_end), con=db_circlecenter).values[0][0]
@@ -109,7 +120,7 @@ def screen():
     activity_author_id=activity_post[0][1]
     results['activity_time']=str(activity_post[0][2])[-8:]
     activity=pd.read_sql_query(sql_activity_content.format(activity_id), con=db_circlecenter).values
-    results['activity_content']=activity[0][0]
+    results['activity_content']=activity[0][0][:30]
     results['activity_type']=activity[0][1]
 
     author=pd.read_sql_query(sql_activity_author.format(activity_author_id), con=db_circlecenter).values
@@ -138,16 +149,32 @@ def screen():
             with open(path_avator.format(new_member.values[0][1]), 'wb') as f:
                 f.write(avator)
 
-    today_es_start = today.strftime('%Y-%m-%dT00:00:00+0800')
-    today_es_end = today.strftime('%Y-%m-%dT23:59:59+0800')
-    es_active_total['body']['query']['bool']['filter']['range']['time']['gte'] = today_es_start
-    es_active_total['body']['query']['bool']['filter']['range']['time']['lte'] = today_es_end
+
+    es_active_total['body']['query']['bool']['filter']['range']['time']['gte'] = es_today_start
+    es_active_total['body']['query']['bool']['filter']['range']['time']['lte'] = es_today_end
     #查询总数
-    total = es_conn.search(index=es_active_total['index'],
+    total_today = es_conn.search(index=es_active_total['index'],
                         body=es_active_total['body'])
     ##人数
-    active_today=total['aggregations']['member_count']
+    active_today=total_today['aggregations']['member_count']
     results['active_today']=active_today['value']
+
+    es_active_total['body']['query']['bool']['filter']['range']['time']['gte'] = es_yesterday_start
+    es_active_total['body']['query']['bool']['filter']['range']['time']['lte'] = es_yesterday_end
+    total_yesterday = es_conn.search(index=es_active_total['index'],
+                        body=es_active_total['body'])
+    active_yesterday=total_yesterday['aggregations']['member_count']
+    results['active_yesterday']=active_yesterday['value']
+    results['active_comp_yes']='%.1f'%((results['active_today']/results['active_yesterday']-1)*100)
+
+    es_active_total['body']['query']['bool']['filter']['range']['time']['gte'] = es_lastweek_start
+    es_active_total['body']['query']['bool']['filter']['range']['time']['lte'] = es_lastweek_end
+    total_lastweek = es_conn.search(index=es_active_total['index'],
+                                     body=es_active_total['body'])
+    active_lastweek = total_lastweek['aggregations']['member_count']
+    results['active_lastweek'] = active_lastweek['value']
+    results['active_comp_lasw']='%.1f'%((results['active_today']/results['active_lastweek']-1)*100)
+
 
     return render_template('screen.html',activate_all=results['activate_all'],
                            activate_today=results['activate_today'],
@@ -160,6 +187,8 @@ def screen():
                            new_member_avator=results['new_member_avater'],
                            member_business=results['member_business'],
                            active_today=results['active_today'],
+                           active_yesterday=results['active_comp_yes'],
+                           active_lastweek=results['active_comp_lasw'],
                            author_id=results['author_id'],
                            author_name=results['author_name'],
                            activity_type=results['activity_type'],

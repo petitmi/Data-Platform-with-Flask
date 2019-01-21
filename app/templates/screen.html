@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta http-equiv="refresh" content="10">
+    <!--<meta http-equiv="refresh" content="10">-->
     <style type="text/css">
 /*单远行        */
 .table-row{
@@ -65,8 +65,9 @@ width:40px}
     </div>
 
 </div>
-<div style="display: table-row;width: 800px;column-count:3;">
-            <div style="display: table-cell;vertical-align: top;">
+<div style="display: table-row;width: 800px;column-count:3;margin: 2px">
+    <div style="display: table-cell;vertical-align: top;padding: 12px">
+        <p style="font-weight: bold">最新用户</p>
         <div style="color:#8E8E8E;font-size: 24px;font-weight: bold ">{{new_member_realname}}({{new_member_id}})</div>
         <div style="color:#8E8E8E;font-size: 17px ">职业：{{member_business}}</div>
 
@@ -75,19 +76,26 @@ width:40px}
         {%else%}
         <img src= "{{url_for('static',filename='images/yezhu.jpg')}}{{'?'+(range(0,12312312134134123)|random)|string()}}" height="160px" width="160px">
         {%endif%}
-</div>
-            <div style="display:table-cell; vertical-align: top;">
-                <li id="auxillay" >较昨日:
-                    <span style="color:{%if activate_yesterday|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_yesterday}}%</span>
-                </li>
-                <li id="auxillay">较上周:
-                    <span style="color:{%if activate_lastweek|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_lastweek}}%</span>
-                </li>
-        </div>
-                <div style="display: table-cell;border: 2px solid black;width:400px;font-size:30px;height: 200px;background-color: dimgray;color: white">
-                    {{author_name}}({{author_id}})在{{activity_time}}发布了一条{{activity_type}}:<br>{{activity_content}} </div>
-
-
+    </div>
+    <div style="display:table-cell; vertical-align: top;padding: 12px">
+        <p style="font-weight: bold">激活</p>
+        <li id="auxillay" >较昨日:
+            <span style="color:{%if activate_yesterday|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_yesterday}}%</span>
+        </li>
+        <li id="auxillay">较上周:
+            <span style="color:{%if activate_lastweek|float>=0 %}red">↑{%else%}green">↓{%endif%}{{activate_lastweek}}%</span>
+        </li>
+        <p style="font-weight: bold">活跃</p>
+        <li id="auxillay" >较昨日:
+            <span style="color:{%if active_yesterday|float>=0 %}red">↑{%else%}green">↓{%endif%}{{active_yesterday}}%</span>
+        </li>
+        <li id="auxillay">较上周:
+            <span style="color:{%if active_lastweek|float>=0 %}red">↑{%else%}green">↓{%endif%}{{active_lastweek}}%</span>
+        </li>
+    </div>
+    <div style="display: table-cell;border: 2px solid black;width:400px;font-size:30px;height: 200px;background-color: dimgray;color: white">
+        {{author_name}}({{author_id}})在{{activity_time}}发布了一条{{activity_type}}:<br>{{activity_content}}
+    </div>
 </div>
 </div>
 </body>
