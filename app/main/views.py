@@ -153,6 +153,9 @@ def screen():
             os.remove(path_avator)
             with open(path_avator.format(new_member.values[0][1]), 'wb') as f:
                 f.write(avator)
+        else :
+            with open(path_avator.format(new_member.values[0][1]), 'wb') as f:
+                f.write(avator)
 
 
     es_active_total['body']['query']['bool']['filter']['range']['time']['gte'] = es_today_start
