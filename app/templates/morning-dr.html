@@ -48,11 +48,11 @@
             <div class="green_cell">信息流uv</div>
             <div class="green_cell">人均浏览次数</div>
 	    <!--            <div class="green_cell">登录uv</div> -->
-            <div class="green_cell">登录pv</div>
+            <div class="green_cell">登录uv</div>
 	    <!--            <div class="green_cell">绑定uv</div>  -->
-            <div class="green_cell">绑定pv</div>
+            <div class="green_cell">绑定uv</div>
 	    <!--            <div class="green_cell">激活uv</div>  -->
-            <div class="green_cell">激活pv</div>
+            <div class="green_cell">激活uv</div>
             <div class="green_cell">授权uv</div>
 
             <div class="green_cell">授权转化率</div>
@@ -63,14 +63,14 @@
                 <div class="green_cell"> 待录入</div>
                 <div class="green_cell">{{ active_7days_uv[i]|int }}</div>
                 <div class="green_cell">{{ active_7days_pv[i]|int }}</div>
-                <div class="green_cell">{{ login_7days_pv[i] }}</div>
+                <div class="green_cell">{{ login_7days_uv[i] }}</div>
 		<!--<div class="green_cell">{{ login_7days_uv[i]|int }}</div>-->
 		<!--<div class="green_cell">{{ binding_7days_uv[i]|int }}</div>-->
-                <div class="green_cell">{{ binding_7days_pv[i]|int }}</div>
+                <div class="green_cell">{{ binding_7days_uv[i]|int }}</div>
 		<!--<div class="green_cell">{{ activate_7days_uv[i]|int }}</div>-->
-                <div class="green_cell">{{ activate_7days_pv[i]|int }}</div>
+                <div class="green_cell">{{ activate_7days_uv[i]|int }}</div>
                 <div class="green_cell">{{ authorized_days[i]|int }}</div>
-                <div class="green_cell">{{ (authorized_days[i]*100/activate_7days_pv[i])|int }}%</div>
+                <div class="green_cell">{{ (authorized_days[i]*100/activate_7days_uv[i])|int }}%</div>
             </div>
             {% endfor %}
         </div>

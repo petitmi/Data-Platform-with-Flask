@@ -124,7 +124,7 @@ def get_dr_values(thatdate_sql):
                       "should": [{"bool": {"must": [{"term": {"path": "auth"}}, {"term": {"path": "wechat"}}]}},
                                  {"term": {"path": "sign_in"}}]}},{"bool": {"should": [{"term": {"ua": "ppb"}},{"term": {"ua": "okhttp"}}]}}],
                                            "filter": {"range": {"time": {"gte": "%s" % date_es_list[i],"lte": "%s" % date_es_list[i + 1]}}}}},
-                        "aggs": {"uv": {"cardinality": {"field": "member_uuid.keyword"}}},
+                        "aggs": {"uv": {"cardinality": {"field": "ex_data.sign_in_member_uuid.keyword"}}},
                         "size": 0})
         results['login_7days_uv'].append(login_7days["aggregations"]['uv']['value'])
         results['login_7days_pv'].append(login_7days["hits"]['total'])
@@ -138,7 +138,7 @@ def get_dr_values(thatdate_sql):
                                                            "filter": {"range": {"time": {"gte": "%s" % date_es_list[i],
                                                                                          "lte": "%s" % date_es_list[
                                                                                              i + 1]}}}}},
-                                        "aggs": {"uv": {"cardinality": {"field": "member_uuid.keyword"}}},
+                                        "aggs": {"uv": {"cardinality": {"field": "ex_data.sign_in_member_uuid.keyword"}}},
                                         "size": 0})
         results['binding_7days_pv'].append(binding_7days["hits"]['total'])
         results['binding_7days_uv'].append(binding_7days["aggregations"]['uv']['value'])
