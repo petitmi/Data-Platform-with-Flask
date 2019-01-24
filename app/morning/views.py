@@ -228,6 +228,7 @@ def get_rp_values():
 
 @morning.route('/morning-rp',methods=["POST","GET"])
 @login_required
+@permission_required(Permission.ADMIN)
 def morning_rp():
     results_rp=get_rp_values()
     print('UA:',request.user_agent.string)
@@ -249,6 +250,7 @@ def morning_rp():
 
 @morning.route('/morning-dr',methods=["POST","GET"])
 @login_required
+@permission_required(Permission.ADMIN)
 def morning_dr():
     yesterday_sql = (datetime.datetime.now() - datetime.timedelta(1)).strftime('%Y-%m-%d')
     if request.method == 'POST' :
