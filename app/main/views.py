@@ -157,9 +157,9 @@ def get_member_values(member_id,es_conn,db_circlecenter,time_end):
     results['time_start']=sql_start
     return results
 
-
 @main.route('/member', methods=['GET', 'POST'])
-def member():
+@main.route('/member/<member_id>', methods=['GET', 'POST'])
+def member(member_id=None):
     es_conn = Elasticsearch(
             [ES_host],
             http_auth=ES_http_auth,
@@ -178,7 +178,8 @@ def member():
             time_end=time_end_default
             flash('时间格式有误')
     elif request.method=='GET'or request.form.get('member_id') =='':
-        member_id='30724'
+        if member_id==None:
+            member_id='30724'
         time_end = time_end_default
     else:
         flash('时间格式有误')
