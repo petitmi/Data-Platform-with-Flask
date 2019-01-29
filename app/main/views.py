@@ -92,10 +92,6 @@ def get_member_values(member_id,es_conn,db_circlecenter,time_end):
 
     time_hours_df=pd.DataFrame({'hour':hour_lst})
 
-    # member_id='772170'
-    # member_id='759790'
-    # member_uuid='a4606041-1a13-4c5f-898d-475925ed6702'
-    # member_uuid='6321db99-6b5c-462b-84f9-f384faa2cd4b'
     member_uuid=pd.read_sql_query(sql_member_uuid%member_id, con=db_circlecenter).values[0][0]
     results={}
     #设置sql
@@ -140,7 +136,7 @@ def get_member_values(member_id,es_conn,db_circlecenter,time_end):
     hours = pd.merge(time_hours_df,follow_hours_df,on='hour',how='left')
     hours = pd.merge(hours,activity_hours_df,on='hour',how='left')
     hours=pd.merge(hours,profile_hours_df,on='hour',how='left')
-    hours=pd.merge(hours,all_hours_df,on='hour',how='left').fillna(0)
+    hours=pd.merge(hours,all_hours_df,on='hour',how='left').fillna(0).sort_index(ascending= False)
     time_lst=hours['hour'].tolist()
     time_hours_lst=[]
     for i in time_lst:
