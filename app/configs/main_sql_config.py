@@ -153,4 +153,4 @@ sql_activity_hours="""select DATE_FORMAT(concat(year(created_at),'-',month(creat
 where owner_id='%s' and recipient_id = 3865 and recipient_type = 'Board'  
 and `key` in ('video.create','album.create','link.create') and status='normal' 
 and created_at between '{0}' and '{1}'  group by day(created_at),hour(created_at)"""
-sql_member_uuid="""select uuid from members where id='%s'"""
+sql_member_uuid="""select uuid,real_name from members where id='%s'"""

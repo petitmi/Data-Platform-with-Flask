@@ -93,6 +93,7 @@ def get_member_values(member_id,es_conn,db_circlecenter,time_end):
     time_hours_df=pd.DataFrame({'hour':hour_lst})
 
     member_uuid=pd.read_sql_query(sql_member_uuid%member_id, con=db_circlecenter).values[0][0]
+    member_name=pd.read_sql_query(sql_member_uuid%member_id, con=db_circlecenter).values[0][1]
     results={}
     #设置sql
     sql_follows_hours=(sql_follow_hours % member_id).format(sql_start, sql_end)
@@ -155,6 +156,7 @@ def get_member_values(member_id,es_conn,db_circlecenter,time_end):
     results['overlap_popular']=overlap_popular.render_embed()
     results['overlap_active']=overlap_active.render_embed()
     results['time_start']=sql_start
+    results['member_name']=member_name
     return results
 
 @main.route('/member', methods=['GET', 'POST'])
@@ -189,6 +191,7 @@ def member(member_id=None):
                            overlap_popular=results_member['overlap_popular'],
                            overlap_active=results_member['overlap_active'],
                            member_id=member_id,
+                           member_name=results_member['member_name'],
                            time_end=time_end.strftime('%Y-%m-%d %H:%M:%S'),
                            time_start=results_member['time_start'])
 
