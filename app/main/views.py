@@ -9,7 +9,7 @@ from ..configs.config import *
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
-from pyecharts import Bar,Pie
+from pyecharts import Bar,Pie,Line,Overlap
 from .forms import *
 from ..models import Permission
 import requests
@@ -17,7 +17,26 @@ import re
 import pymysql
 from elasticsearch import Elasticsearch
 
+def olp(attr,bar1,bar2,bar3,line1,line2,line3,bar1_title,bar2_title,bar3_title,line1_title,line2_title,line3_title,title,width,height):
 
+    bar = Bar(title=title)
+    bar.add(bar1_title, attr, bar1,is_label_show=True)
+    if bar2 !=0:
+        bar.add(bar2_title, attr, bar2,yaxis_interval=5)
+    if bar3 !=0:
+        bar.add(bar3_title, attr, bar3,yaxis_interval=5)
+
+    line = Line()
+    line.add(line1_title, attr, line1, yaxis_formatter=" ￥", yaxis_interval=5,is_label_show=True)
+    if line2 !=0:
+        line.add(line2_title, attr, line2,yaxis_formatter=" ￥", yaxis_interval=5)
+    if line3 !=0:
+        line.add(line3_title, attr, line3, yaxis_formatter=" ￥", yaxis_interval=5)
+
+    overlap = Overlap(width=width, height=height)
+    overlap.add(bar)
+    overlap.add(line, yaxis_index=1, is_add_yaxis=True)
+    return overlap
 
 def pyec_bar(attr,bar1,bar2,bar3,bar4,bar1_title,bar2_title,bar3_title,bar4_title,title,width,height):
     bar = Bar(title,width=width,height=height)
@@ -38,25 +57,7 @@ def py_pie(attr,pie_v,v_title,title):
                 is_label_show=True)
     return pie
 
-@main.route('/brush-flow', methods=['GET', 'POST'])
-def brush_flow():
-    form = BrushForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        url=form.url.data
-        mutiple=form.mutiple.data
-        if not isinstance(mutiple, int) :
-            flash("乘数不对")
-        elif not re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", email) != None:
-            flash("email不对")
-        else:
-            try:
-                requests.head(url).status_code==200
-                flash("已开始，请查阅邮箱")
-            except :
-                flash("url格式不对或无法访问")
 
-    return render_template('brush-flow.html', form=form)
 
 @main.route("/")
 @login_required
@@ -73,11 +74,129 @@ def contact_me():
     print('\033[1;35m'+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('contact_me.html')
 
-@main.route('/shitsweeper')
-def shitsweeper():
-    print('UA:',request.user_agent.string)
-    print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
-    return render_template('shitsweeper.html')
+
+def get_member_values(member_id,es_conn,db_circlecenter,time_end):
+    #设置时间
+    time_start=time_end-datetime.timedelta(hours=48)
+
+    now_hour=datetime.datetime(time_end.year,time_end.month,time_end.day,time_end.hour)
+    hour_lst=[now_hour]
+    es_start=time_start.strftime('%Y-%m-%dT%H:%M:%S+0800')
+    es_end=time_end.strftime('%Y-%m-%dT%H:%M:%S+0800')
+    sql_start=time_start.strftime('%Y-%m-%d %H:%M:%S')
+    sql_end=time_end.strftime('%Y-%m-%d %H:%M:%S')
+
+    #时间Dataframe
+    for i in range(1,49):
+        hour_lst.append(now_hour-datetime.timedelta(hours=i))
+
+    time_hours_df=pd.DataFrame({'hour':hour_lst})
+
+    # member_id='772170'
+    # member_id='759790'
+    # member_uuid='a4606041-1a13-4c5f-898d-475925ed6702'
+    # member_uuid='6321db99-6b5c-462b-84f9-f384faa2cd4b'
+    member_uuid=pd.read_sql_query(sql_member_uuid%member_id, con=db_circlecenter).values[0][0]
+    results={}
+    #设置sql
+    sql_follows_hours=(sql_follow_hours % member_id).format(sql_start, sql_end)
+    sql_activities_hours=(sql_activity_hours % member_id).format(sql_start, sql_end)
+    #设置es
+    es_profile_hours['body']['query']['bool']['filter']['range']['time']['gte'] = es_start
+    es_profile_hours['body']['query']['bool']['filter']['range']['time']['lte'] = es_end
+    es_profile_hours['body']['query']['bool']['must'][1]['term']['path'] = member_id
+    es_all_hours['body']['query']['bool']['filter']['range']['time']['gte'] = es_start
+    es_all_hours['body']['query']['bool']['filter']['range']['time']['lte'] = es_end
+    es_all_hours['body']['query']['bool']['must'][0]['term']['member_uuid.keyword'] = member_uuid
+
+    #查询
+    #关注
+    follow_hours_df= pd.read_sql_query(sql_follows_hours, con=db_circlecenter)
+    #动态
+    activity_hours_df=pd.read_sql_query(sql_activities_hours, con=db_circlecenter)
+    #影人档案
+    profile = es_conn.search(index=es_profile_hours['index'],body=es_profile_hours['body'])['aggregations']['view_hours']['buckets']
+    #总动作
+    all= es_conn.search(index=es_all_hours['index'],body=es_all_hours['body'])['aggregations']['all_hours']['buckets']
+    profile_key_lst=[]
+    profile_value_lst=[]
+    all_key_lst=[]
+    all_value_lst=[]
+    for i in profile:
+        profile_key=datetime.datetime.strptime(i['key_as_string'],'%Y-%m-%dT%H:%M:%S.000Z')+datetime.timedelta(hours=8)
+        profile_key_lst.append(profile_key)
+        profile_value_lst.append(i['doc_count'])
+    for i in all:
+        all_key=datetime.datetime.strptime(i['key_as_string'],'%Y-%m-%dT%H:%M:%S.000Z')+datetime.timedelta(hours=8)
+        all_key_lst.append(all_key)
+        all_value_lst.append(i['doc_count'])
+    profile_hours_df=pd.DataFrame({'hour':profile_key_lst,'profile':profile_value_lst})
+    all_hours_df=pd.DataFrame({'hour':all_key_lst,'all':all_value_lst})
+    #时间格式
+    follow_hours_df['hour']=pd.to_datetime(follow_hours_df['hour'])
+    activity_hours_df['hour']=pd.to_datetime(activity_hours_df['hour'])
+
+    #结果集DataFrame
+    hours = pd.merge(time_hours_df,follow_hours_df,on='hour',how='left')
+    hours = pd.merge(hours,activity_hours_df,on='hour',how='left')
+    hours=pd.merge(hours,profile_hours_df,on='hour',how='left')
+    hours=pd.merge(hours,all_hours_df,on='hour',how='left').fillna(0)
+    time_lst=hours['hour'].tolist()
+    time_hours_lst=[]
+    for i in time_lst:
+        time_hours_lst.append(i.strftime('%m/%d-%Hh'))
+    follower_hours_lst=hours['follower_count'].tolist()
+    activity_hours_lst=hours['activity_count'].tolist()
+    profile_hours_lst=hours['profile'].tolist()
+    all_hours_lst=hours['all'].tolist()
+
+    overlap_popular = olp(attr=time_hours_lst, bar1=follower_hours_lst, bar2=0, bar3=0, line1=profile_hours_lst, line2=0, line3=0,
+                          bar1_title='被关注',bar2_title=0, bar3_title=0, line1_title='影人档案被查看', line2_title=0, line3_title=0,
+                          title='关注度数据', width=1200, height=260)
+    overlap_active = olp(attr=time_hours_lst, bar1=activity_hours_lst, bar2=0, bar3=0, line1=all_hours_lst, line2=0, line3=0,
+                          bar1_title='动态发布数',bar2_title=0, bar3_title=0, line1_title='所有活动', line2_title=0, line3_title=0,
+                          title='活跃数据', width=1200, height=260)
+    results['overlap_popular']=overlap_popular.render_embed()
+    results['overlap_active']=overlap_active.render_embed()
+    results['time_start']=sql_start
+    return results
+
+
+@main.route('/member', methods=['GET', 'POST'])
+def member():
+    es_conn = Elasticsearch(
+            [ES_host],
+            http_auth=ES_http_auth,
+            scheme=ES_scheme,
+            port=ES_port)
+    db_circlecenter = pymysql.connect(host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD, db=DB_DB,
+                                      charset='utf8')
+    time_end_default=datetime.datetime.now()
+    if request.method == 'POST' :
+        member_id = request.form.get('member_id')
+        print(request.form.get('time_end'))
+        time_end_form=datetime.datetime.strptime(request.form.get('time_end'),'%Y-%m-%d %H:%M:%S')
+        if time_end_form<time_end_default :
+            time_end=time_end_default
+        else:
+            time_end=time_end_default
+            flash('时间格式有误')
+    elif request.method=='GET'or request.form.get('member_id') =='':
+        member_id='30724'
+        time_end = time_end_default
+    else:
+        flash('时间格式有误')
+    results_member=get_member_values(member_id=member_id,es_conn=es_conn,db_circlecenter=db_circlecenter,
+                                     time_end=time_end)
+    return render_template('member.html',
+                           overlap_popular=results_member['overlap_popular'],
+                           overlap_active=results_member['overlap_active'],
+                           member_id=member_id,
+                           time_end=time_end.strftime('%Y-%m-%d %H:%M:%S'),
+                           time_start=results_member['time_start'])
+
+
+
 
 @main.route('/screen')
 @login_required
@@ -94,6 +213,7 @@ def screen():
     yesterday=today-datetime.timedelta(days=1)
     lastweek=today-datetime.timedelta(days=7)
 
+    #设置时间格式
     sql_today_end=now.strftime('%Y-%m-%d %H:%M:%S')
     sql_today_start=today.strftime('%Y-%m-%d %H:%M:%S')
     sql_yesterday_start=yesterday.strftime('%Y-%m-%d %H:%M:%S')
@@ -108,18 +228,23 @@ def screen():
     es_lastweek_start=lastweek.strftime('%Y-%m-%dT00:00:00+0800')
     es_lastweek_end = es_lastweek_start[:11]+es_today_end[11:]
 
+    #激活
     results = {'activate_all': pd.read_sql_query(sql_activate_all, con=db_circlecenter).values[0][0]}
     results['activate_today']=pd.read_sql_query(sql_activate.format(sql_today_start,sql_today_end), con=db_circlecenter).values[0][0]
     results['activate_yesterday']=pd.read_sql_query(sql_activate.format(sql_yesterday_start,sql_yesterday_end), con=db_circlecenter).values[0][0]
     results['activate_lastweek']=pd.read_sql_query(sql_activate.format(sql_lastweek_start,sql_lastweek_end), con=db_circlecenter).values[0][0]
     results['activate_comp_yes']='%.1f'%((results['activate_today']/results['activate_yesterday']-1)*100)
     results['activate_comp_lasw']='%.1f'%((results['activate_today']/results['activate_lastweek']-1)*100)
-
+    ##最新动态
     activity_post=pd.read_sql_query(sql_activity, con=db_circlecenter).values
+    #动态id
     activity_id=activity_post[0][0]
+    #作者id
     activity_author_id=activity_post[0][1]
+    #时间
     results['activity_time']=str(activity_post[0][2])[-8:]
     activity=pd.read_sql_query(sql_activity_content.format(activity_id), con=db_circlecenter).values
+    #动态内容
     activity_content=activity[0][0]
     if activity_content is not None and len(activity_content)>30:
         results['activity_content']=activity[0][0][:30]
@@ -132,21 +257,28 @@ def screen():
     results['author_id']=author[0][0]
     results['author_name']=author[0][1]
 
-
+    #总机构激活
     results['activate_all_org']=pd.read_sql_query(sql_activate_all_org, con=db_circlecenter).values[0][0]
+    #今日机构激活
     results['activate_today_org']=pd.read_sql_query(sql_activate_org.format(sql_today_start,sql_today_end), con=db_circlecenter).values[0][0]
+    #最新激活
     new_member=pd.read_sql_query(sql_new_member, con=db_circlecenter)
+    ##member_id
     results['new_member_id']=new_member.values[0][0]
+    ##真实姓名
     results['new_member_realname']=new_member.values[0][2]
+    ##职业id
     member_business_id=pd.read_sql_query(sql_member_business_id.format(results['new_member_id']), con=db_circlecenter).values[0][0]
+    ##获取职业
     results['member_business']=pd.read_sql_query(sql_member_business.format(member_business_id), con=db_circlecenter).values[0][0]
 
+    #判断是否有头像
     if  new_member.values[0][1] is None:
         results['new_member_avater'] ='None'
     else :
         results['new_member_avater'] ='avator'
 
-
+    #调用头像接口
     if new_member.values[0][1] is not None:
         avator=requests.get('https://paipianbang.cdn.cinehello.com/uploads/avatars/%s'%new_member.values[0][1]).content
         if os.path.exists(path_avator):
@@ -157,30 +289,32 @@ def screen():
             with open(path_avator.format(new_member.values[0][1]), 'wb') as f:
                 f.write(avator)
 
-
+    #今日
     es_active_total['body']['query']['bool']['filter']['range']['time']['gte'] = es_today_start
     es_active_total['body']['query']['bool']['filter']['range']['time']['lte'] = es_today_end
-    #查询总数
     total_today = es_conn.search(index=es_active_total['index'],
                         body=es_active_total['body'])
-    ##人数
-    active_today=total_today['aggregations']['member_count']
-    results['active_today']=active_today['value']
+    ##今日活跃
+    results['active_today']=total_today['aggregations']['member_count']['value']
 
+    #昨日
     es_active_total['body']['query']['bool']['filter']['range']['time']['gte'] = es_yesterday_start
     es_active_total['body']['query']['bool']['filter']['range']['time']['lte'] = es_yesterday_end
     total_yesterday = es_conn.search(index=es_active_total['index'],
                         body=es_active_total['body'])
-    active_yesterday=total_yesterday['aggregations']['member_count']
-    results['active_yesterday']=active_yesterday['value']
+    ##昨日活跃
+    results['active_yesterday']=total_yesterday['aggregations']['member_count']['value']
+    ##比较
     results['active_comp_yes']='%.1f'%((results['active_today']/results['active_yesterday']-1)*100)
 
+    #上周
     es_active_total['body']['query']['bool']['filter']['range']['time']['gte'] = es_lastweek_start
     es_active_total['body']['query']['bool']['filter']['range']['time']['lte'] = es_lastweek_end
     total_lastweek = es_conn.search(index=es_active_total['index'],
                                      body=es_active_total['body'])
-    active_lastweek = total_lastweek['aggregations']['member_count']
-    results['active_lastweek'] = active_lastweek['value']
+    ##上周活跃
+    results['active_lastweek'] = total_lastweek['aggregations']['member_count']['value']
+    ##较上周
     results['active_comp_lasw']='%.1f'%((results['active_today']/results['active_lastweek']-1)*100)
 
 

@@ -135,3 +135,22 @@ es_active_total={'index':"logstash-*",
                                              "filter": {"range": {"time": {"gte": '',"lte": ''}}}}},
                           "aggs": {"member_count": {"cardinality": {"field": "member_uuid.keyword"}}},
                           "size": 0}}
+
+#################3#####################################################################################################
+es_profile_hours={'index':"logstash-*",
+                  'body':{"query":{"bool":{"must":[{"term":{"path":"profile"}},{"term":{"path":""}}],
+                                   "filter":{"range":{"time":{"gte":"","lte":""}}}}},
+                          "aggs":{"view_hours":{"date_histogram":{"field":"@timestamp","interval":"hour"}}},
+                          "size":0}}
+es_all_hours={'index':"logstash-*",
+                  'body':{"query":{"bool":{"must":[{"term":{"member_uuid.keyword":""}}],
+                                   "filter":{"range":{"time":{"gte":"","lte":""}}}}},
+                          "aggs": {"all_hours": {"date_histogram": {"field": "@timestamp", "interval": "hour"}}},
+                          "size":0}}
+sql_follow_hours="""select DATE_FORMAT(concat(year(created_at),'-',month(created_at),'-',day(created_at),' ',hour(created_at),':','00',':','00'), '%%Y-%%m-%%d %%H:%%i:%%S') hour,count(1) follower_count from follows 
+where followable_id='%s' and created_at between '{0}' and '{1}'  group by day(created_at),hour(created_at)"""
+sql_activity_hours="""select DATE_FORMAT(concat(year(created_at),'-',month(created_at),'-',day(created_at),' ',hour(created_at),':','00',':','00'), '%%Y-%%m-%%d %%H:%%i:%%S') hour,count(1) activity_count from activities 
+where owner_id='%s' and recipient_id = 3865 and recipient_type = 'Board'  
+and `key` in ('video.create','album.create','link.create') and status='normal' 
+and created_at between '{0}' and '{1}'  group by day(created_at),hour(created_at)"""
+sql_member_uuid="""select uuid from members where id='%s'"""
