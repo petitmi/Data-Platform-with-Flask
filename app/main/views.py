@@ -75,9 +75,9 @@ def contact_me():
     return render_template('contact_me.html')
 
 
-def get_member_values(member_id,es_conn,db_circlecenter,time_end):
+def get_member_values(member_id,es_conn,db_circlecenter,time_end,hours_form):
     #设置时间
-    time_start=time_end-datetime.timedelta(hours=48)
+    time_start=time_end-datetime.timedelta(hours=hours_form)
 
     now_hour=datetime.datetime(time_end.year,time_end.month,time_end.day,time_end.hour)
     hour_lst=[now_hour]
@@ -87,7 +87,7 @@ def get_member_values(member_id,es_conn,db_circlecenter,time_end):
     sql_end=time_end.strftime('%Y-%m-%d %H:%M:%S')
 
     #时间Dataframe
-    for i in range(1,49):
+    for i in range(1,hours_form+1):
         hour_lst.append(now_hour-datetime.timedelta(hours=i))
 
     time_hours_df=pd.DataFrame({'hour':hour_lst})
@@ -170,9 +170,10 @@ def member(member_id=None):
     db_circlecenter = pymysql.connect(host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD, db=DB_DB,
                                       charset='utf8')
     time_end_default=datetime.datetime.now()
+    hours_form=48
     if request.method == 'POST' :
         member_id = request.form.get('member_id')
-        print(request.form.get('time_end'))
+        hours_form =int(request.form.get('hours_form'))
         time_end_form=datetime.datetime.strptime(request.form.get('time_end'),'%Y-%m-%d %H:%M:%S')
         if time_end_form<time_end_default :
             time_end=time_end_default
@@ -185,15 +186,15 @@ def member(member_id=None):
         time_end = time_end_default
     else:
         flash('时间格式有误')
-    results_member=get_member_values(member_id=member_id,es_conn=es_conn,db_circlecenter=db_circlecenter,
-                                     time_end=time_end)
+    results_member=get_member_values(member_id=member_id,es_conn=es_conn,db_circlecenter=db_circlecenter,time_end=time_end,hours_form=hours_form)
     return render_template('member.html',
                            overlap_popular=results_member['overlap_popular'],
                            overlap_active=results_member['overlap_active'],
                            member_id=member_id,
                            member_name=results_member['member_name'],
                            time_end=time_end.strftime('%Y-%m-%d %H:%M:%S'),
-                           time_start=results_member['time_start'])
+                           time_start=results_member['time_start'],
+                           hours_form=hours_form)
 
 
 
