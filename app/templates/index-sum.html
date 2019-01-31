@@ -59,7 +59,10 @@
 
         <div class="blue_table"  style="font-size: 17px;">
             <ul class="blue_head">
-                <li class="cell">部门</li><li class="cell">项目</li ><li class="cell">本月销售额</li ><li class="cell">本年销售额</li >
+                <li class="cell">部门</li>
+                <li class="cell">项目</li >
+                <li class="cell">本月销售额</li >
+                <li class="cell">本年销售额</li >
             </ul>
             {% for i in range(result_project|length) %}
             <ul class="blue_row" >
@@ -75,19 +78,17 @@
          <div class="green_row_head">
              <div class="green_cell" id="first_group" width="40%">部门</div>
              <div class="green_cell">合计</div>
-            <div class="green_cell">学习</div>
-            <div class="green_cell">学习</div>
-            <div class="green_cell">学习</div>
-            <div class="green_cell">学习</div>
-            <div class="green_cell">媒体</div>
-            <div class="green_cell">媒体</div>
-            <div class="green_cell">设备</div>
-            <div class="green_cell">设备</div>
-            <div class="green_cell">设备</div>
-            <div class="green_cell">设备</div>
-            <div class="green_cell">设备</div>
-            <div class="green_cell">城市</div>
-            <div class="green_cell">城市</div>
+             <div class="green_cell">学习</div>
+             <div class="green_cell">学习</div>
+             <div class="green_cell">学习</div>
+             <div class="green_cell">学习</div>
+             <div class="green_cell">学习</div>
+             <div class="green_cell">媒体</div>
+             <div class="green_cell">媒体</div>
+             <div class="green_cell">设备</div>
+             <div class="green_cell">设备</div>
+             <div class="green_cell">城市</div>
+             <div class="green_cell">城市</div>
              <div class="green_cell">城市</div>
 
         </div>
@@ -101,9 +102,6 @@
             <div class="green_cell">师徒制</div>
             <div class="green_cell">广告</div>
             <div class="green_cell">一录同行</div>
-            <div class="green_cell">维修</div>
-            <div class="green_cell">租赁</div>
-            <div class="green_cell">二手</div>
             <div class="green_cell">自主下单</div>
             <div class="green_cell">顾问销售</div>
             <div class="green_cell">场景库</div>
@@ -122,9 +120,9 @@
                 <div class="green_cell">￥{{ i[6]|int}}</div>
                 <div class="green_cell">￥{{ i[7]|int}}</div>
                 <div class="green_cell">￥{{ i[8]|int}}</div>
-                <div class="green_cell">￥{{ i[9]|int}}</div>
-                <div class="green_cell">￥{{ i[10]|int}}</div>
-                <div class="green_cell">￥{{ i[11]|int}}</div>
+                <!--<div class="green_cell">￥{{ i[9]|int}}</div>-->
+                <!--<div class="green_cell">￥{{ i[10]|int}}</div>-->
+                <!--<div class="green_cell">￥{{ i[11]|int}}</div>-->
                 <div class="green_cell">￥{{ i[12]|int}}</div>
                 <div class="green_cell">￥{{ i[13]|int}}</div>
                 <div class="green_cell">￥{{ i[14]|int}}</div>

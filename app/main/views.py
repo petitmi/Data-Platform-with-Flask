@@ -160,6 +160,7 @@ def get_member_values(member_id,es_conn,db_circlecenter,time_end,hours_form):
     return results
 
 @main.route('/member', methods=['GET', 'POST'])
+@main.route('/member/', methods=['GET', 'POST'])
 @main.route('/member/<member_id>', methods=['GET', 'POST'])
 def member(member_id=None):
     es_conn = Elasticsearch(
