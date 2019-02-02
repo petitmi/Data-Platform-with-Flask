@@ -35,13 +35,11 @@
                 <li class="cell">部门</li>
                 <li class="cell">销售额</li >
             </ul>
-            <ul class="blue_row" style="font-weight: bold">
-                <li class="cell">合计</li><li class="cell">￥{{ (result_department[0][1]+result_department[1][1]+result_department[2][1]+result_department[3][1])|int }}</li>
-            </ul>
-            {% for j in result_department %}
+
+            {% for department in result_department %}
                 <ul class="blue_row" >
-                    <li class="cell">{{ j[0] }}</li>
-                    <li class="cell">￥{{ j[1] |int}}</li>
+                    <li class="cell">{{ department }}</li>
+                    <li class="cell">￥{{ result_department[department] |int}}</li>
                 </ul>
             {% endfor %}
         </div>
@@ -64,72 +62,46 @@
                 <li class="cell">本月销售额</li >
                 <li class="cell">本年销售额</li >
             </ul>
-            {% for i in range(result_project|length) %}
+            {% for department in result_project_thisyear %}
+            {% for project in result_project_thisyear[department]%}
             <ul class="blue_row" >
-                <li class="cell">{{ result_project[i][0]}}</li>
-                <li class="cell">{{ result_project[i][1] }}</li>
-                <li class="cell">￥{{ result_project_thismonth[i][2]|int }}</li>
-                <li class="cell">￥{{ result_project[i][2]|int }}</li>
+                <li class="cell">{{ department}}</li>
+                <li class="cell">{{ project }}</li>
+                <li class="cell">￥{{ result_project_thismonth[department][project]|int }}</li>
+                <li class="cell">￥{{ result_project_thisyear[department][project]|int }}</li>
             </ul>
+            {% endfor%}
             {% endfor %}
+
+
         </div>
     <br><br><br>
      <div class="green_table">
-         <div class="green_row_head">
-             <div class="green_cell" id="first_group" width="40%">部门</div>
-             <div class="green_cell">合计</div>
-             <div class="green_cell">学习</div>
-             <div class="green_cell">学习</div>
-             <div class="green_cell">学习</div>
-             <div class="green_cell">学习</div>
-             <div class="green_cell">学习</div>
-             <div class="green_cell">媒体</div>
-             <div class="green_cell">媒体</div>
-             <div class="green_cell">设备</div>
-             <div class="green_cell">设备</div>
-             <div class="green_cell">城市</div>
-             <div class="green_cell">城市</div>
-             <div class="green_cell">城市</div>
 
+         <div class="green_row_head">
+             <div class="green_cell">部门</div>
+             {%for department in result_month[1]%}
+             {%for project in result_month[1][department]%}
+             <div class="green_cell">{{department}}</div>
+             {%endfor%}
+             {%endfor%}
         </div>
         <div class="green_row_head">
-            <div class="green_cell" id="first_group" width="40%">月份</div>
-            <div class="green_cell">合计</div>
-            <div class="green_cell">产教融合</div>
-            <div class="green_cell">csc</div>
-            <div class="green_cell">ppxy</div>
-            <div class="green_cell">媒体课程一体化</div>
-            <div class="green_cell">师徒制</div>
-            <div class="green_cell">广告</div>
-            <div class="green_cell">一录同行</div>
-            <div class="green_cell">自主下单</div>
-            <div class="green_cell">顾问销售</div>
-            <div class="green_cell">场景库</div>
-            <div class="green_cell">重庆</div>
-            <div class="green_cell">电影周</div>
-
+            <div class="green_cell" >月份</div>
+             {%for department in result_month[1]%}
+             {%for project in result_month[1][department]%}
+             <div class="green_cell">{{project}}</div>
+             {%endfor%}
+             {%endfor%}
         </div>
-        {% for i in result_month_compared %}
+         {% for month in result_month %}
             <div class="green_row">
-                <div class="green_cell" id="first_group" width="40%">{{ i[0]|int}}</div>
-                <div class="green_cell">￥{{ i[1]|int }}</div>
-                <div class="green_cell">￥{{ i[2]|int}}</div>
-                <div class="green_cell">￥{{ i[3]|int}}</div>
-                <div class="green_cell">￥{{ i[4]|int}}</div>
-                <div class="green_cell">￥{{ i[5]|int}}</div>
-                <div class="green_cell">￥{{ i[6]|int}}</div>
-                <div class="green_cell">￥{{ i[7]|int}}</div>
-                <div class="green_cell">￥{{ i[8]|int}}</div>
-                <!--<div class="green_cell">￥{{ i[9]|int}}</div>-->
-                <!--<div class="green_cell">￥{{ i[10]|int}}</div>-->
-                <!--<div class="green_cell">￥{{ i[11]|int}}</div>-->
-                <div class="green_cell">￥{{ i[12]|int}}</div>
-                <div class="green_cell">￥{{ i[13]|int}}</div>
-                <div class="green_cell">￥{{ i[14]|int}}</div>
-                <div class="green_cell">￥{{ i[15]|int}}</div>
-                <div class="green_cell">￥{{ i[16]|int}}</div>
-
-
+                <div class="green_cell">{{ month}}</div>
+                {%for department in result_month[month]%}
+                {%for project in result_month[month][department]%}
+                <div class="green_cell">￥{{ result_month[month][department][project]|int}}</div>
+                {% endfor %}
+                {% endfor %}
             </div>
         {% endfor %}
 

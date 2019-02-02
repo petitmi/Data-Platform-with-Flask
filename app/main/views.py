@@ -16,7 +16,7 @@ import requests
 import re
 import pymysql
 from elasticsearch import Elasticsearch
-
+import pprint
 def olp(attr,bar1,bar2,bar3,line1,line2,line3,bar1_title,bar2_title,bar3_title,line1_title,line2_title,line3_title,title,width,height):
 
     bar = Bar(title=title)
@@ -376,119 +376,111 @@ def upload_file():
 
 
 def get_sum_values(thatdate_sql):
+    # types={'学习': {'师徒制': 0, '产教融合': 0, 'CSC':0,'非CSC':0, '媒体课程一体化':0},
+    #         '媒体': {'媒体广告/活动': 0, '一录同行':0,'厂商服务/活动':0},
+    #         'VIP会员': {'器材-顾问销售': 0, '器材-自主下单': 0},
+    #         '城市':{'重庆':0,'电影周':0,'场景库':0}
+    #         }
     yesterday_month_1st_sql = get_month_1st(thatdate_sql)
     year_sql=thatdate_sql[:4]
-    result_csc= pd.read_sql(sql_csc%year_sql, db.engine).fillna(0)
-    result_ppxy= pd.read_sql(sql_ppxy%year_sql, db.engine).fillna(0)
-    result_ec_online=pd.read_sql(sql_ec_online%year_sql,db.engine).fillna(0)
-    result_ec_offline=pd.read_sql(sql_ec_offline%year_sql,db.engine).fillna(0)
-    result_ec_chanjet=pd.read_sql(sql_ec_chanjet%year_sql,db.engine).fillna(0)
-    result_littleclass=pd.read_sql(sql_littleclass%year_sql,db.engine).fillna(0)
 
-    result_ec_online_thismonth=pd.read_sql(sql_ec_online_thismonth.format(yesterday_month_1st_sql,thatdate_sql),db.engine).fillna(0)
-    result_ec_chanjet_thismonth=pd.read_sql(sql_ec_chanjet_thismonth.format(yesterday_month_1st_sql,thatdate_sql),db.engine).fillna(0)
-    result_csc_thismonth=pd.read_sql(sql_csc_thismonth.format(yesterday_month_1st_sql,thatdate_sql),db.engine).fillna(0)
-    result_ppxy_thismonth=pd.read_sql(sql_ppxy_thismonth.format(yesterday_month_1st_sql,thatdate_sql),db.engine).fillna(0)
-    result_littleclass_thismonth=pd.read_sql(sql_littleclass_thismonth.format(yesterday_month_1st_sql,thatdate_sql),db.engine).fillna(0)
+    #项目
 
 
-    ##部门
-    result_department =  pd.read_sql(sql_department%year_sql,  db.engine).fillna(0)
-    result_department.loc[result_department['department_name']=='学习','sales_amount']+=result_csc['sales_amount'].values+result_ppxy['sales_amount'].values
-    result_department.loc[result_department['department_name']=='设备','sales_amount']+=result_ec_online['sales_amount'].values+\
-                                                                                      result_ec_offline['sales_amount'].values+ \
-                                                                                      result_ec_chanjet['sales_amount'].values
-    result_department.loc[result_department['department_name']=='学习','sales_amount']+=result_littleclass['sales_amount'].values
-    result_department=result_department.values.tolist()
+    result_month_lst= pd.read_sql(sql_project_month%year_sql, db.engine).values.tolist()
+    result_ec_chanject_month_lst = pd.read_sql(sql_ec_chanjet_month%year_sql,  db.engine).values.tolist()
+    result_ec_offline_month_lst  = pd.read_sql(sql_ec_offline_month%year_sql,  db.engine).values.tolist()
+    result_ec_online_month_lst  = pd.read_sql(sql_ec_online_month%year_sql,  db.engine).values.tolist()
+    result_csc_month_month_lst  = pd.read_sql(sql_csc_month%year_sql,  db.engine).values.tolist()
+    result_ppxy_month_lst  = pd.read_sql(sql_ppxy_month%year_sql,  db.engine).values.tolist()
+    result_littleclass_month_lst  = pd.read_sql(sql_littleclass_month%year_sql,  db.engine).values.tolist()
+    for item in [result_ec_chanject_month_lst,result_ec_offline_month_lst,result_ec_online_month_lst,
+                 result_csc_month_month_lst,result_ppxy_month_lst,result_littleclass_month_lst]:
+        if item !=[]:
+            for i in item:
+                result_month_lst.append(i)
+    result_month_dct={}
+    for month in range(1,13):
+        result_month_dct[month]={'合计':{'合计':0},'学习': {'师徒制': 0, '产教融合': 0, 'CSC':0,'非CSC':0, '媒体课程一体化':0},
+            '媒体': {'媒体广告/活动': 0, '一录同行':0,'厂商服务/活动':0},
+            'VIP会员': {'器材-顾问销售': 0, '器材-自主下单': 0},
+            '城市':{'重庆':0,'电影周':0,'场景库':0}
+            }
+    #循环列表
+    for item_lst in result_month_lst:
+        #得到字典每个月
+        for month in result_month_dct:
+            #列表月=字典月
+            if item_lst[0]==month:
+                for department in result_month_dct[month]:
+                    for project in result_month_dct[month][department]:
+                        #列表project=字典project
+                        if item_lst[1]==project:
+                            result_month_dct[month][department][project]+=item_lst[2]
+    # 月合计
+    for month in result_month_dct:
+        project_sum = 0
+        for department in result_month_dct[month]:
+            for project in result_month_dct[month][department]:
+                project_sum += result_month_dct[month][department][project]
+        result_month_dct[month]['合计']['合计'] = project_sum
 
-    ##项目汇
-    result_project = pd.read_sql(sql_project%year_sql,  db.engine).fillna(0)
-    result_project.loc[result_project['project_name']=='CSC','sales_amount']+=result_csc['sales_amount'].values
-    result_project.loc[result_project['project_name']=='非CSC','sales_amount']+=result_ppxy['sales_amount'].values
-    result_project.loc[result_project['project_name']=='自主下单','sales_amount']+=result_ec_online['sales_amount'].values
-    result_project.loc[result_project['project_name']=='顾问销售','sales_amount']+= result_ec_offline['sales_amount'].values+ \
-                                                                                      result_ec_chanjet['sales_amount'].values
-    result_project.loc[result_project['project_name']=='媒体课程一体化','sales_amount']+=result_littleclass['sales_amount'].values
-    result_project=result_project.values.tolist()
-
-    #月数据
-    result_csc_month= pd.read_sql(sql_csc_month%year_sql,  db.engine).fillna(0)
-    result_csc_month.set_index('month', inplace=True)
-    result_ppxy_month= pd.read_sql(sql_ppxy_month%year_sql,  db.engine).fillna(0)
-    result_ppxy_month.set_index('month', inplace=True)
-    result_littleclass_month=pd.read_sql(sql_littleclass_month%year_sql,db.engine).fillna(0)
-    result_littleclass_month.set_index('month', inplace=True)
-    ##部门录入
-    result_class_month=pd.read_sql(sql_class_month%year_sql, db.engine).fillna(0)
-    result_class_month.set_index('month', inplace=True)
-    ##设备
-    result_ec_online_month = pd.read_sql_query(sql_ec_month_online%year_sql, db.engine).fillna(0).set_index('month')
-    result_ec_offline_month = pd.read_sql(sql_ec_month_offline%year_sql,  db.engine).fillna(0).set_index('month')
-    result_ec_chanjet_month=pd.read_sql(sql_ec_month_chanjet%year_sql,db.engine).fillna(0).set_index('month')
-
-    ###合并线下
-    result_ec_consult_month=result_ec_chanjet_month+result_ec_offline_month
+    print(result_month_dct)
+    
+    #部门
+    result_department={}
+    for department in result_month_dct[1]:
+        department_sum = 0
+        for month in result_month_dct:
+            for project in result_month_dct[month][department]:
+                department_sum+=result_month_dct[month][department][project]
+        result_department[department]=department_sum
 
 
+    #项目汇总
+    result_project_thismonth_dct=result_month_dct[datetime.date.today().month]
+    result_project_thisyear_dct={'合计':{'合计':0},'学习': {'师徒制': 0, '产教融合': 0, 'CSC':0,'非CSC':0, '媒体课程一体化':0},
+            '媒体': {'媒体广告/活动': 0, '一录同行':0,'厂商服务/活动':0},
+            'VIP会员': {'器材-顾问销售': 0, '器材-自主下单': 0},
+            '城市':{'重庆':0,'电影周':0,'场景库':0}
+            }
+    for department in result_month_dct[1]:
+        for project in result_month_dct[1][department]:
+            project_month_sum = 0
+            for month in result_month_dct:
+                project_month_sum+=result_month_dct[month][department][project]
+            result_project_thisyear_dct[department][project]=project_month_sum
 
-    ##合并设备、学习
-    result_class_month['sales_amount_edu']+=result_csc_month['sales_amount_edu']+result_ppxy_month['sales_amount_edu']+result_littleclass_month['sales_amount_edu']
-    result_class_month['sales_amount_device']+=result_ec_online_month['sales_amount_online']+result_ec_consult_month['sales_amount_consult']
-    attr=result_class_month.index.values.tolist()
-
-    attr_bar=[(str(x) + '月') for x in attr]
-    bar1=result_class_month['sales_amount_edu'].values.tolist()
-    bar2=result_class_month['sales_amount_media'].values.tolist()
-    bar3=result_class_month['sales_amount_device'].values.tolist()
-    bar4=result_class_month['sales_amount_city'].values.tolist()
+    #图表
+    result_pie={}
+    result_pie['attr']=result_month_dct.keys()
+    attr_bar=[(str(x) + '月') for x in result_pie['attr']]
+    for department in result_month_dct[1]:
+        department_sum_lst = []
+        for month in result_month_dct:
+            department_sum=0
+            for project in result_month_dct[month][department]:
+                department_sum+=result_month_dct[month][department][project]
+            department_sum_lst.append(department_sum)
+        result_pie[department]=department_sum_lst
+    bar1=result_pie['学习']
+    bar2=result_pie['媒体']
+    bar3=result_pie['VIP会员']
+    bar4=result_pie['城市']
     py_bar=pyec_bar(attr=attr_bar,bar1=bar1,bar2=bar2,bar3=bar3,bar4=bar4,bar1_title='学习',bar2_title='媒体',
-                    bar3_title='设备',bar4_title='城市',title='部门销售额月度图',
+                    bar3_title='VIP会员-器材',bar4_title='城市',title='部门销售额月度图',
                       width=1000,height=300)
-    attr_pie=[(x[0]) for x in result_department]
-    pie_v=[(x[1]) for x in result_department]
+    
+    
+    attr_pie=result_department.keys()
+    pie_v=result_department.values()
 
     pie_department=py_pie(attr=attr_pie,pie_v=pie_v,v_title='部门',title='部门销售额')
 
-    #项目
-    ##项目当月数据
-    result_project_thismonth = pd.read_sql(sql_project_thismonth.format(yesterday_month_1st_sql,thatdate_sql),  db.engine).fillna(0)
-    result_project_thismonth.loc[result_project_thismonth['project_name']=='CSC','sales_amount']+=result_csc_thismonth['sales_amount'].values
-    result_project_thismonth.loc[result_project_thismonth['project_name']=='非CSC','sales_amount']+=result_ppxy_thismonth['sales_amount'].values
-    result_project_thismonth.loc[result_project_thismonth['project_name']=='自主下单','sales_amount']+=result_ec_online_thismonth['sales_amount'].values
-    result_project_thismonth.loc[result_project_thismonth['project_name']=='顾问销售','sales_amount']+=result_ec_chanjet_thismonth['sales_amount'].values
-    result_project_thismonth.loc[result_project_thismonth['project_name']=='媒体课程一体化','sales_amount']+=result_littleclass_thismonth['sales_amount'].values
-
-    result_project_thismonth=result_project_thismonth.values.tolist()
-
-    ##项目月数据
-    result_project_month_compared = pd.read_sql(sql_project_month_compared%year_sql,  db.engine,index_col=['month']).fillna(0)
-    result_ec_chanject_month_compared = pd.read_sql(sql_ec_chanjet_month_compared%year_sql,  db.engine,index_col=['month']).fillna(0)
-    result_ec_offline_month_compared = pd.read_sql(sql_ec_offline_month_compared%year_sql,  db.engine,index_col=['month']).fillna(0)
-    result_ec_online_month_compared = pd.read_sql(sql_ec_online_month_compared%year_sql,  db.engine,index_col=['month']).fillna(0)
-    result_csc_month_month_compared = pd.read_sql(sql_csc_month_compared%year_sql,  db.engine,index_col=['month']).fillna(0)
-    result_ppxy_month_compared = pd.read_sql(sql_ppxy_month_compared%year_sql,  db.engine,index_col=['month']).fillna(0)
-    result_littleclass_month_compared = pd.read_sql(sql_littleclass_month_compared%year_sql,  db.engine,index_col=['month']).fillna(0)
-    ###合并线下
-    ####改名字才可以求和
-    result_ec_offline_month_compared.columns = ['sales_amount_ec_chanjet']
-    result_ec_chanject_month_compared+=result_ec_offline_month_compared
-    result_month_compared=pd.concat([result_project_month_compared, result_ec_chanject_month_compared], axis=1)
-    result_month_compared=pd.concat([result_month_compared,result_ec_online_month_compared], axis=1)
-    result_month_compared=pd.concat([result_month_compared,result_csc_month_month_compared], axis=1)
-    result_month_compared=pd.concat([result_month_compared,result_ppxy_month_compared], axis=1)
-    result_month_compared=pd.concat([result_month_compared,result_littleclass_month_compared], axis=1)
-    result_month_compared=result_month_compared.reset_index().sort_index(ascending=False)
-    result_month_compared=result_month_compared[['month','sales_amount_cjrh','sales_amount_csc','sales_amount_ppxy',
-                                                 'sales_amount_littleclass','sales_amount_stz','sales_amount_gg','sales_amount_yltx',
-                                                 'sales_amount_wx','sales_amount_zl','sales_amount_rs','sales_amount_ec_online',
-                                                 'sales_amount_ec_chanjet','sales_amount_cjk','sales_amount_cq','sales_amount_dyz']]
-    project_month_sum=result_month_compared.iloc[:,1:].sum(axis=1)
-    result_month_compared.insert(loc=1, column='sum', value=project_month_sum)
-    result_month_compared=result_month_compared.values.tolist()
     results={'result_department':result_department,
-             'result_project':result_project,
-             'result_project_thismonth':result_project_thismonth,
-             'result_month_compared':result_month_compared,
+             'result_project_thisyear':result_project_thisyear_dct,
+             'result_project_thismonth':result_project_thismonth_dct,
+             'result_month':result_month_dct,
              'pie_department':pie_department,
              'py_bar':py_bar}
     return results
@@ -516,9 +508,9 @@ def index_sum():
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('index-sum.html',
                            result_department=results_sum['result_department'],
-                           result_project=results_sum['result_project'],
+                           result_project_thisyear=results_sum['result_project_thisyear'],
                            result_project_thismonth=results_sum['result_project_thismonth'],
-                           result_month_compared=results_sum['result_month_compared'],
+                           result_month=results_sum['result_month'],
                            py_bar=py_bar.render_embed(),
                            pie_department=pie_department.render_embed(),
                            year_sql=year_sql,
