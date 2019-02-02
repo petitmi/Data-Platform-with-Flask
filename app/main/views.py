@@ -421,8 +421,6 @@ def get_sum_values(thatdate_sql):
                 project_sum += result_month_dct[month][department][project]
         result_month_dct[month]['合计']['合计'] = project_sum
 
-    print(result_month_dct)
-    
     #部门
     result_department={}
     for department in result_month_dct[1]:
@@ -431,7 +429,6 @@ def get_sum_values(thatdate_sql):
             for project in result_month_dct[month][department]:
                 department_sum+=result_month_dct[month][department][project]
         result_department[department]=department_sum
-    print(result_department)
 
     #项目汇总
     result_project_thismonth_dct=result_month_dct[datetime.date.today().month]
