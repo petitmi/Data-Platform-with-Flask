@@ -376,11 +376,7 @@ def upload_file():
 
 
 def get_sum_values(thatdate_sql):
-    # types={'学习': {'师徒制': 0, '产教融合': 0, 'CSC':0,'非CSC':0, '媒体课程一体化':0},
-    #         '媒体': {'媒体广告/活动': 0, '一录同行':0,'厂商服务/活动':0},
-    #         'VIP会员': {'器材-顾问销售': 0, '器材-自主下单': 0},
-    #         '城市':{'重庆':0,'电影周':0,'场景库':0}
-    #         }
+
     yesterday_month_1st_sql = get_month_1st(thatdate_sql)
     year_sql=thatdate_sql[:4]
 
@@ -435,7 +431,7 @@ def get_sum_values(thatdate_sql):
             for project in result_month_dct[month][department]:
                 department_sum+=result_month_dct[month][department][project]
         result_department[department]=department_sum
-
+    print(result_department)
 
     #项目汇总
     result_project_thismonth_dct=result_month_dct[datetime.date.today().month]
@@ -470,10 +466,12 @@ def get_sum_values(thatdate_sql):
     py_bar=pyec_bar(attr=attr_bar,bar1=bar1,bar2=bar2,bar3=bar3,bar4=bar4,bar1_title='学习',bar2_title='媒体',
                     bar3_title='VIP会员-器材',bar4_title='城市',title='部门销售额月度图',
                       width=1000,height=300)
-    
-    
-    attr_pie=result_department.keys()
-    pie_v=result_department.values()
+    department_key=list(result_department.keys())
+    department_value=list(result_department.values())
+    del department_key[0]
+    del department_value[0]
+    attr_pie=department_key
+    pie_v=department_value
 
     pie_department=py_pie(attr=attr_pie,pie_v=pie_v,v_title='部门',title='部门销售额')
 
