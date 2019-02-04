@@ -53,7 +53,9 @@ def get_dr_values(thatdate_sql):
     # t_login_day_newly=datetime.datetime.now()
     # d_login_day_newly=t_login_day_newly-t_relation_contact_day
 
-    results['7days_list']=get_days_list(days=14,thatdate=thatdate_sql).sql_list()
+    results['7days_list']=get_days_list(days=15,thatdate=thatdate_sql).sql_list()
+    sql_time_start=results['7days_list'][0]+' 00:00:00'
+    sql_time_end=results['7days_list'][14]+' 23:59:59'
     # t_7days_list=datetime.datetime.now()
     # d_7days_list=t_7days_list-t_login_day_newly
 
@@ -62,27 +64,28 @@ def get_dr_values(thatdate_sql):
 
     sql_7days=tuple(results['7days_list'])
 
-    activate_7days=pd.read_sql_query(sql_activate_7days.format(today_sql), con=db_circlecenter)
+    activate_7days=pd.read_sql_query(sql_activate_7days.format(sql_time_start,sql_time_end), con=db_circlecenter)
     # t_activate_7days=datetime.datetime.now()
     # d_activate_7days=t_activate_7days-t_7days_list
 
-    login_newly_7days=pd.read_sql_query(sql_login_newly_7days.format(today_sql), con=db_circlecenter)
+    login_newly_7days=pd.read_sql(sql_login_newly_7days.format(sql_time_start,sql_time_end), con=db_circlecenter)
+
     # t_login_newly_7days=datetime.datetime.now()
     # d_login_newly_7days=t_login_newly_7days-t_activate_7days
 
-    feed_count_7days=pd.read_sql_query(sql_feed_count_7days.format(today_sql), con=db_circlecenter)
+    feed_count_7days=pd.read_sql_query(sql_feed_count_7days.format(sql_time_start,sql_time_end), con=db_circlecenter)
     # t_feed_count_7days=datetime.datetime.now()
     # d_feed_count_7days=t_feed_count_7days-t_login_newly_7days
 
-    feed_author_7days=pd.read_sql_query(sql_feed_author_7days.format(today_sql), con=db_circlecenter)
+    feed_author_7days=pd.read_sql_query(sql_feed_author_7days.format(sql_time_start,sql_time_end), con=db_circlecenter)
     # t_feed_author_7days=datetime.datetime.now()
     # d_feed_author_7days=t_feed_author_7days-t_feed_count_7days
 
-    works_7days=pd.read_sql_query(sql_works_7days.format(today_sql), con=db_circlecenter)
+    works_7days=pd.read_sql_query(sql_works_7days.format(sql_time_start,sql_time_end), con=db_circlecenter)
     # t_works_7dayss=datetime.datetime.now()
     # d_works_7days=t_works_7dayss-t_feed_author_7days
 
-    claimers_7days=pd.read_sql_query(sql_claimers_7days.format(today_sql), con=db_circlecenter)
+    claimers_7days=pd.read_sql_query(sql_claimers_7days.format(sql_time_start,sql_time_end), con=db_circlecenter)
     # t_claimers_7days=datetime.datetime.now()
     # d_claimers_7days=t_claimers_7days-t_works_7dayss
 
@@ -166,7 +169,7 @@ def get_dr_values(thatdate_sql):
                                          "size": 0})
         results['activate_7days_pv'].append(activate_7days["hits"]['total'])
         results['activate_7days_uv'].append(activate_7days["aggregations"]['uv']['value'])
-    results['authorized_days']=pd.read_sql_query(sql_authorized_days.format(today_sql), con=db_circlecenter).count_authorized.values.tolist()
+    results['authorized_days']=pd.read_sql_query(sql_authorized_days.format(sql_time_start,sql_time_end), con=db_circlecenter).count_authorized.values.tolist()
     results['process_date']=list(reversed(results['process_date']))
     results['login_7days_uv']=list(reversed(results['login_7days_uv']))
     results['login_7days_pv']=list(reversed(results['login_7days_pv']))
@@ -261,7 +264,7 @@ def morning_dr():
         thatdate_sql = yesterday_sql
 
     results_dr=get_dr_values(thatdate_sql)
-
+    print(results_dr)
     overlap_newly_day=olp(attr=results_dr['7days_list'],bar1=results_dr['activate_7days'],bar2=0,bar3=0,
                     line1=results_dr['login_newly_7days'],line2=0,line3=0,bar1_title='新激活用户',bar2_title=0,bar3_title=0,
         line1_title='新登录用户',line2_title=0,line3_title=0,title='日拉新数据',width=1200,height=260)

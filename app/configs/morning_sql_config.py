@@ -21,32 +21,32 @@ sql_relation_contact_day="""select count(1) from address_books
 where date(created_at)='%s'"""
 
 sql_login_newly_7days="""select date(updated_at) date,count(distinct member_id) login_newly_7days from person_infos 
-where updated_at between date_add('{0}',interval -15 day)  and '{0}'group by date(updated_at) order by date(updated_at)
+where updated_at between '{0}' and '{1}'group by date(updated_at) order by date(updated_at)
 """
 sql_activate_7days="""select date(updated_at) date,count(distinct member_id) activate_7days
 from person_infos
-where actived_sites like '%unsung_hero%'  and updated_at between date_add('{0}',interval -15 day)  and '{0}'
+where actived_sites like '%unsung_hero%'  and updated_at between '{0}' and '{1}'
 group by date(updated_at) order by date(updated_at)"""
 
 sql_authorized_days="""select count(distinct member_id) count_authorized from `address_books` 
-where created_at between date_add('{0}',interval -15 day) and '{0}' group by date(created_at) order by date(created_at) desc"""
+where created_at between '{0}' and '{1}' group by date(created_at) order by date(created_at) desc"""
 
 sql_works_7days="""select date(created_at) date,count(1) works_7days from films 
-where `category`=1  and created_at between date_add('{0}',interval -15 day) and '{0}'
+where `category`=1  and created_at between '{0}' and '{1}'
 group by date(created_at) order by date(created_at) asc;"""
 # sql_workers_7days=""""""
 sql_claimers_7days="""select date(created_at) date,count(distinct member_id) claimers_7days from claim_logs 
-where status=1 and created_at between date_add('{0}',interval -15 day) and '{0}'
+where status=1 and created_at between '{0}' and '{1}'
 group by date(created_at) order by date(created_at) asc; """
 #动态
 sql_feed_author_7days="""select date(created_at) date,count(distinct owner_id) feed_author_7days from activities 
 where recipient_id = 3865 and recipient_type = 'Board' and `key` in ('video.create','album.create','link.create') 
-and  created_at between date_add('{0}',interval -15 day)  and '{0}' 
+and  created_at between '{0}' and '{1}' 
 group by date(created_at) order by date(created_at) asc;"""
 
 sql_feed_count_7days="""select date(created_at) date,count(1) feed_count_7days from activities 
 where recipient_id = 3865 and recipient_type = 'Board'  and `key` in ('video.create','album.create','link.create') 
-and created_at between date_add('{0}',interval -15 day)  and '{0}'
+and created_at between '{0}' and '{1}'
  group by date(created_at) order by date(created_at) asc;"""
 
 
