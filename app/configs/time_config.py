@@ -24,7 +24,7 @@ class get_days_list:
         return sql_list_days
     def es_list(self):
         es_list_days = []
-        for i in range(0,self.days):
+        for i in range(-1,self.days):
             daybefore = self.thedate - datetime.timedelta(i)
             es_list_days.append(daybefore.strftime('%Y-%m-%dT00:00:00+0800'))
         es_list_days.reverse()
