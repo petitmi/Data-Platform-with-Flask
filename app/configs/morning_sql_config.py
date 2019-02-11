@@ -5,32 +5,31 @@ sql_contact_all="""select count(distinct mobile) contact_all from address_books"
 
 sql_relation_contact_all="""select count(1) from address_books"""
 
-#当日登录用es
 
 #当日激活
 sql_activate_day="""select count(distinct member_id) active_day from person_infos  
 where  actived_sites like '%%unsung_hero%%' and date(hero_actived_at) = '%s';"""
 #新登录
 sql_login_day_newly="""select count(distinct member_id) login_day_newly from person_infos 
-where date(updated_at) = '%s';"""
-
+where date(created_at) = '%s';"""
+#总通讯录
 sql_contact_day="""select count(distinct mobile) contact_day from address_books 
 where date(created_at)='%s';"""
-
+#开启通讯录
 sql_relation_contact_day="""select count(1) from address_books 
 where date(created_at)='%s'"""
-
+#新登录
 sql_login_newly_7days="""select date(updated_at) date,count(distinct member_id) login_newly_7days from person_infos 
-where updated_at between '{0}' and '{1}'group by date(updated_at) order by date(updated_at)
-"""
+where created_at between '{0}' and '{1}'group by date(created_at) order by date(created_at)"""
+#激活
 sql_activate_7days="""select date(updated_at) date,count(distinct member_id) activate_7days
 from person_infos
-where actived_sites like '%unsung_hero%'  and updated_at between '{0}' and '{1}'
-group by date(updated_at) order by date(updated_at)"""
-
+where actived_sites like '%unsung_hero%'  and hero_actived_at between '{0}' and '{1}'
+group by date(hero_actived_at) order by date(hero_actived_at)"""
+#授权通讯录
 sql_authorized_days="""select count(distinct member_id) count_authorized from `address_books` 
 where created_at between '{0}' and '{1}' group by date(created_at) order by date(created_at) desc"""
-
+#作品
 sql_works_7days="""select date(created_at) date,count(1) works_7days from films 
 where `category`=1  and created_at between '{0}' and '{1}'
 group by date(created_at) order by date(created_at) asc;"""
@@ -38,18 +37,18 @@ group by date(created_at) order by date(created_at) asc;"""
 sql_claimers_7days="""select date(created_at) date,count(distinct member_id) claimers_7days from claim_logs 
 where status=1 and created_at between '{0}' and '{1}'
 group by date(created_at) order by date(created_at) asc; """
-#动态
+#动态发布者
 sql_feed_author_7days="""select date(created_at) date,count(distinct owner_id) feed_author_7days from activities 
 where recipient_id = 3865 and recipient_type = 'Board' and `key` in ('video.create','album.create','link.create') 
 and  created_at between '{0}' and '{1}' 
 group by date(created_at) order by date(created_at) asc;"""
-
+#动态数量
 sql_feed_count_7days="""select date(created_at) date,count(1) feed_count_7days from activities 
 where recipient_id = 3865 and recipient_type = 'Board'  and `key` in ('video.create','album.create','link.create') 
 and created_at between '{0}' and '{1}'
  group by date(created_at) order by date(created_at) asc;"""
 
-
+#激活职业
 sql_actived_business="""SELECT businesses.name,COUNT(member_businesses.id)
 FROM member_businesses INNER JOIN businesses ON businesses.id = member_businesses.`business_id` AND businesses.`kind`= 3
 WHERE member_id IN 

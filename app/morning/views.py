@@ -264,7 +264,6 @@ def morning_dr():
         thatdate_sql = yesterday_sql
 
     results_dr=get_dr_values(thatdate_sql)
-    print(results_dr)
     overlap_newly_day=olp(attr=results_dr['7days_list'],bar1=results_dr['activate_7days'],bar2=0,bar3=0,
                     line1=results_dr['login_newly_7days'],line2=0,line3=0,bar1_title='新激活用户',bar2_title=0,bar3_title=0,
         line1_title='新登录用户',line2_title=0,line3_title=0,title='日拉新数据',width=1200,height=260)
