@@ -171,7 +171,7 @@ def morning_dr():
     return render_template('morning-dr.html',thatdate=thatdate_sql,
                            activate_day=results_dr['activate_day'],
                            login_day_newly=results_dr['login_day_newly'],
-                           active_day=results_dr['active_members_days'][14],
+                           active_day=results_dr['active_members_days'][0],
                            claimers_day=results_dr['claimers_days'][14],
                            # contact_day=results_dr['contact_day'],
                            # relation_contact_day=results_dr['relation_contact_day'],
