@@ -106,7 +106,6 @@ def get_member_values(member_id,es_conn,db_circlecenter,time_end,hours_form):
     es_all_hours['body']['query']['bool']['filter']['range']['time']['gte'] = es_start
     es_all_hours['body']['query']['bool']['filter']['range']['time']['lte'] = es_end
     es_all_hours['body']['query']['bool']['must'][0]['term']['member_uuid.keyword'] = member_uuid
-    print(es_profile_hours)
 
     #查询
     ##关注
