@@ -26,7 +26,10 @@
          <ul class="blue_head">
              <li class="cell">下载</li>
              <li class="cell">首次登录(全平台)</li>
-             <li class="cell">激活</li>
+             <li class="cell">激活人数</li>
+             <li class="cell">活跃人数</li>
+             <li class="cell">认领人数</li>
+
              <!--<li class="cell">新增电话数</li>-->
              <!--<li class="cell">新增通讯录关系</li>-->
 
@@ -35,6 +38,9 @@
              <li class="cell">待输入</li>
              <li class="cell">{{login_day_newly}}</li>
              <li class="cell">{{activate_day}}</li>
+             <li class="cell">{{active_day}}</li>
+             <li class="cell">{{claimers_day}}</li>
+
              <!--<li class="cell">{{contact_day}}</li>-->
              <!--<li class="cell">{{relation_contact_day}}</li>-->
          </ul>
@@ -47,30 +53,25 @@
             <div class="green_cell">下载pv</div>
             <div class="green_cell">活跃uv</div>
             <div class="green_cell">人均浏览次数</div>
-	    <!--            <div class="green_cell">登录uv</div> -->
             <div class="green_cell">登录人数</div>
-	    <!--            <div class="green_cell">绑定uv</div>  -->
             <div class="green_cell">绑定人数</div>
-	    <!--            <div class="green_cell">激活uv</div>  -->
             <div class="green_cell">激活人数</div>
+            <div class="green_cell">激活成功人数</div>
             <div class="green_cell">授权人数</div>
-
             <div class="green_cell">授权转化率</div>
 	</div>
             {% for i in range(process_date|length) %}
             <div class="green_row">
                 <div class="green_cell" id="first_group" width="30%">{{ process_date[i] }}</div>
                 <div class="green_cell"> 待录入</div>
-                <div class="green_cell">{{ active_7days_uv[i]|int }}</div>
-                <div class="green_cell">{{ active_7days_pv[i]|int }}</div>
-                <div class="green_cell">{{ login_7days_uv[i] }}</div>
-		<!--<div class="green_cell">{{ login_7days_uv[i]|int }}</div>-->
-		<!--<div class="green_cell">{{ binding_7days_uv[i]|int }}</div>-->
-                <div class="green_cell">{{ binding_7days_uv[i]|int }}</div>
-		<!--<div class="green_cell">{{ activate_7days_uv[i]|int }}</div>-->
-                <div class="green_cell">{{ activate_7days_uv[i]|int }}</div>
-                <div class="green_cell">{{ authorized_days[i]|int }}</div>
-                <div class="green_cell">{{ (authorized_days[i]*100/activate_7days_uv[i])|int }}%</div>
+                <div class="green_cell">{{ active_members_days[i]|int }}</div>
+                <div class="green_cell">{{ (active_times_days[i]/active_members_days[i])|int }}</div>
+                <div class="green_cell">{{ login_members_days[i] }}</div>
+                <div class="green_cell">{{ binding_members_days[i]|int }}</div>
+                <div class="green_cell">{{ activate_members_days[i]|int }}</div>
+                <div class="green_cell">{{ activate_members_fine_days[i]|int }}</div>
+                <div class="green_cell">{{ authorized_members_days[i]|int }}</div>
+                <div class="green_cell">{{ (authorized_members_days[i]*100/activate_members_days[i])|int }}%</div>
             </div>
             {% endfor %}
         </div>
@@ -84,23 +85,7 @@
          <div class="table1-left" style="width:50%;height: 250px">
             {{ overlap_works_day|safe }}
         </div>
-{#    <h2 class="head2" style=" font-size: 18px; color: gray;">转化率</h2>#}
-{#     <div class="blue_table"  style="font-size: 15px;width: 60%;" >#}
-{#         <ul class="blue_head">#}
-{#             <li class="cell">下载-首登</li>#}
-{#             <li class="cell">首登-绑定</li>#}
-{#             <li class="cell">绑定-激活</li>#}
-{#         </ul>#}
-{#         <ul class="blue_row">#}
-{#             <li class="cell">待输入</li>#}
-{#             <li class="cell">待计算</li>#}
-{#             {% if activate_day>0 %}#}
-{#             <li class="cell">待计算</li>#}
-{#             {% else %}#}
-{#             <li class="cell">0%</li>#}
-{#             {% endif %}#}
-{#         </ul>#}
-{#     </div>#}
+
 <br><br>
 
     {% for message in get_flashed_messages() %}

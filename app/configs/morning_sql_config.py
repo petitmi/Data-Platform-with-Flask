@@ -5,48 +5,57 @@ sql_contact_all="""select count(distinct mobile) contact_all from address_books"
 
 sql_relation_contact_all="""select count(1) from address_books"""
 
-
-#当日激活
+#当日
+##激活
 sql_activate_day="""select count(distinct member_id) active_day from person_infos  
-where  actived_sites like '%%unsung_hero%%' and date(hero_actived_at) = '%s';"""
-#新登录
+where  actived_sites like '%%unsung_hero%%' and hero_actived_at  between '{0}' and '{1}';"""
+##新登录
 sql_login_day_newly="""select count(distinct member_id) login_day_newly from person_infos 
-where date(created_at) = '%s';"""
-#总通讯录
+where created_at between '{0}' and '{1}';"""
+##总通讯录
 sql_contact_day="""select count(distinct mobile) contact_day from address_books 
-where date(created_at)='%s';"""
-#开启通讯录
+where created_at between '{0}' and '{1}';"""
+##开启通讯录
 sql_relation_contact_day="""select count(1) from address_books 
-where date(created_at)='%s'"""
-#新登录
-sql_login_newly_7days="""select date(updated_at) date,count(distinct member_id) login_newly_7days from person_infos 
+where created_at between '{0}' and '{1}'"""
+
+#多日
+##新登录
+sql_login_newly_days="""select date(updated_at) date,count(distinct member_id) login_newly_days from person_infos 
 where created_at between '{0}' and '{1}'group by date(created_at) order by date(created_at)"""
-#激活
-sql_activate_7days="""select date(updated_at) date,count(distinct member_id) activate_7days
+##激活
+sql_activate_days="""select date(updated_at) date,count(distinct member_id) activate_days
 from person_infos
 where actived_sites like '%unsung_hero%'  and hero_actived_at between '{0}' and '{1}'
 group by date(hero_actived_at) order by date(hero_actived_at)"""
-#授权通讯录
+##授权通讯录
+###即便跳过授权也会返回一个空的通讯录
 sql_authorized_days="""select count(distinct member_id) count_authorized from `address_books` 
 where created_at between '{0}' and '{1}' group by date(created_at) order by date(created_at) desc"""
-#作品
-sql_works_7days="""select date(created_at) date,count(1) works_7days from films 
+##作品
+sql_works_days="""select date(created_at) date,count(1) works_days from films 
 where `category`=1  and created_at between '{0}' and '{1}'
 group by date(created_at) order by date(created_at) asc;"""
-# sql_workers_7days=""""""
-sql_claimers_7days="""select date(created_at) date,count(distinct member_id) claimers_7days from claim_logs 
+##认领人
+sql_claimers_days="""select date(created_at) date,count(distinct member_id) claimers_days from claim_logs 
 where status=1 and created_at between '{0}' and '{1}'
 group by date(created_at) order by date(created_at) asc; """
-#动态发布者
-sql_feed_author_7days="""select date(created_at) date,count(distinct owner_id) feed_author_7days from activities 
+##动态发布者
+sql_feed_author_days="""select date(created_at) date,count(distinct owner_id) feed_author_days from activities 
 where recipient_id = 3865 and recipient_type = 'Board' and `key` in ('video.create','album.create','link.create') 
 and  created_at between '{0}' and '{1}' 
 group by date(created_at) order by date(created_at) asc;"""
-#动态数量
-sql_feed_count_7days="""select date(created_at) date,count(1) feed_count_7days from activities 
+##动态数量
+sql_feed_count_days="""select date(created_at) date,count(1) feed_count_days from activities 
 where recipient_id = 3865 and recipient_type = 'Board'  and `key` in ('video.create','album.create','link.create') 
 and created_at between '{0}' and '{1}'
  group by date(created_at) order by date(created_at) asc;"""
+
+#es
+##
+sql_app_daily_days="""select date,login_members,binding_members,activate_members,active_members,active_times from app_daily 
+where date between '{0}' and '{1}' order by date desc """
+
 
 #激活职业
 sql_actived_business="""SELECT businesses.name,COUNT(member_businesses.id)
@@ -58,15 +67,20 @@ WHERE member_id IN
 
 
 #作品
+#作品总数
 sql_works_all="""select count(1) from films where `category`=1;"""
+#作品
 sql_works_checked="""select count(distinct film_id) from filmographies where real_name is not null"""
+#完全作品
 sql_works_complete="""select count(1) from (select film_id,count(1) count_film from filmographies 
 where real_name is not null group by film_id having count_film>50)a"""
+#职员人数
 sql_workers_all="""select count(distinct case when member_id is not null then 1 else null end)+count(case when member_id is null then 1 else null end) workers_all
 from filmographies where real_name is not null;"""
+#认领人数
 sql_claimers_all="""select count(distinct member_id) from filmographies where member_id is not null and real_name is not null;"""
 
-
+#######################################################################################################################################
 
 #栏目
 sql_columns_pv="""select b.id column_id,b.title column_title,sum(a.visits) column_pv
