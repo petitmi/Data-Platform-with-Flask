@@ -89,15 +89,16 @@ def get_member_values(member_id,es_conn,db_circlecenter,time_end,hours_form):
     #时间Dataframe
     for i in range(1,hours_form+1):
         hour_lst.append(now_hour-datetime.timedelta(hours=i))
-
     time_hours_df=pd.DataFrame({'hour':hour_lst})
-
+    #查member信息
     member_uuid=pd.read_sql_query(sql_member_uuid%member_id, con=db_circlecenter).values[0][0]
     member_name=pd.read_sql_query(sql_member_uuid%member_id, con=db_circlecenter).values[0][1]
     results={}
     #设置sql
     sql_follows_hours=(sql_follow_hours % member_id).format(sql_start, sql_end)
+    sql_follows_all =(sql_follow_all % member_id).format(sql_start, sql_end)
     sql_activities_hours=(sql_activity_hours % member_id).format(sql_start, sql_end)
+    sql_activities_all =(sql_activity_all% member_id).format(sql_start, sql_end)
     #设置es
     es_profile_hours['body']['query']['bool']['filter']['range']['time']['gte'] = es_start
     es_profile_hours['body']['query']['bool']['filter']['range']['time']['lte'] = es_end
@@ -105,21 +106,33 @@ def get_member_values(member_id,es_conn,db_circlecenter,time_end,hours_form):
     es_all_hours['body']['query']['bool']['filter']['range']['time']['gte'] = es_start
     es_all_hours['body']['query']['bool']['filter']['range']['time']['lte'] = es_end
     es_all_hours['body']['query']['bool']['must'][0]['term']['member_uuid.keyword'] = member_uuid
+    print(es_profile_hours)
 
     #查询
-    #关注
+    ##关注
     follow_hours_df= pd.read_sql_query(sql_follows_hours, con=db_circlecenter)
+    follow_all_df= pd.read_sql_query(sql_follows_all, con=db_circlecenter)
+
     #动态
     activity_hours_df=pd.read_sql_query(sql_activities_hours, con=db_circlecenter)
+    activity_all_df=pd.read_sql_query(sql_activities_all, con=db_circlecenter)
+
     #影人档案
-    profile = es_conn.search(index=es_profile_hours['index'],body=es_profile_hours['body'])['aggregations']['view_hours']['buckets']
+    profile = es_conn.search(index=es_profile_hours['index'],body=es_profile_hours['body'])
+    profile_hist=profile['aggregations']['view_hours']['buckets']
+    profile_all=profile['hits']['total']
     #总动作
     all= es_conn.search(index=es_all_hours['index'],body=es_all_hours['body'])['aggregations']['all_hours']['buckets']
+
+    results['follow_all']=follow_all_df.values.tolist()[0][0]
+    results['activity_all']=activity_all_df.values.tolist()[0][0]
+    results['profile_all']=profile_all
+
     profile_key_lst=[]
     profile_value_lst=[]
     all_key_lst=[]
     all_value_lst=[]
-    for i in profile:
+    for i in profile_hist:
         profile_key=datetime.datetime.strptime(i['key_as_string'],'%Y-%m-%dT%H:%M:%S.000Z')+datetime.timedelta(hours=8)
         profile_key_lst.append(profile_key)
         profile_value_lst.append(i['doc_count'])
@@ -188,6 +201,8 @@ def member(member_id=None):
     else:
         flash('时间格式有误')
     results_member=get_member_values(member_id=member_id,es_conn=es_conn,db_circlecenter=db_circlecenter,time_end=time_end,hours_form=hours_form)
+    print('UA:',request.user_agent.string)
+    print('\033[1;35m'+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('member.html',
                            overlap_popular=results_member['overlap_popular'],
                            overlap_active=results_member['overlap_active'],
@@ -195,6 +210,9 @@ def member(member_id=None):
                            member_name=results_member['member_name'],
                            time_end=time_end.strftime('%Y-%m-%d %H:%M:%S'),
                            time_start=results_member['time_start'],
+                           follow_all=results_member['follow_all'],
+                           activity_all=results_member['activity_all'],
+                           profile_all=results_member['profile_all'],
                            hours_form=hours_form)
 
 
@@ -248,8 +266,8 @@ def screen():
     activity=pd.read_sql_query(sql_activity_content.format(activity_id), con=db_circlecenter).values
     #动态内容
     activity_content=activity[0][0]
-    if activity_content is not None and len(activity_content)>30:
-        results['activity_content']=activity[0][0][:30]
+    if activity_content is not None and len(activity_content)>50:
+        results['activity_content']=activity[0][0][:50]
     else:
         results['activity_content']=activity[0][0]
 
