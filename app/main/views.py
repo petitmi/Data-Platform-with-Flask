@@ -189,7 +189,7 @@ def member(member_id=None):
         hours_form =int(request.form.get('hours_form'))
         time_end_form=datetime.datetime.strptime(request.form.get('time_end'),'%Y-%m-%d %H:%M:%S')
         if time_end_form<time_end_default :
-            time_end=time_end_default
+            time_end=time_end_form
         else:
             time_end=time_end_default
             flash('时间格式有误')
