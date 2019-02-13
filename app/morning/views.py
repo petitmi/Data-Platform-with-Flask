@@ -68,7 +68,7 @@ def get_dr_values(thatdate_sql):
     #绿表
     app_daily_days=pd.read_sql(sql_app_daily_days.format(sql_time_days_start,sql_time_days_end),con=db.engine)
     results['authorized_members_days']=pd.read_sql_query(sql_authorized_days.format(sql_time_days_start,sql_time_days_end), con=db_circlecenter).count_authorized.tolist()
-    results['activate_members_fine_days']=results['activate_days']
+    results['activate_members_fine_days']=results['activate_days'][:]
     results['activate_members_fine_days'].reverse()
     results['process_date']=app_daily_days.date.tolist()
     results['login_members_days']=app_daily_days.login_members.tolist()
