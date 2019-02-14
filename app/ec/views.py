@@ -224,7 +224,7 @@ def get_mr_values(thatdate_sql):
     result['ec_vip_month'] = db.session.execute(sql_ec_99vip.format(sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
     result['ec_vip_month_sale'] = db.session.execute(sql_ec_99vip_sale.format(sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
     result['ec_month'] = db.session.execute(sql_ec_month .format (sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
-    result['ec_chanjet_month'] = db.session.execute(sql_ec_chanjet_month .format ()).fetchall()
+    result['ec_chanjet_month'] = db.session.execute(sql_ec_chanjet_month .format (sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
     result['thatdate'] = thatdate_sql
     result['ec_type_month'] = db.session.execute(sql_ec_type  .format (sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
     result['ec_goods_month'] = db.session.execute(sql_ec_goods .format (sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
