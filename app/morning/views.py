@@ -47,6 +47,7 @@ def get_dr_values(thatdate_sql):
     #昨日
     results['activate_day']=pd.read_sql_query(sql_activate_day.format(sql_time_yest_start,sql_time_yest_end), con=db_circlecenter).values[0][0]
     results['login_day_newly']=pd.read_sql_query(sql_login_day_newly.format(sql_time_yest_start,sql_time_yest_end), con=db_circlecenter).values[0][0]
+    results['messages_day']=pd.read_sql_query(sql_messages_day.format(sql_time_yest_start,sql_time_yest_end), con=db_circlecenter).values[0][0]
 
     #图表
     sql_days=tuple(results['days_list'])
@@ -56,6 +57,7 @@ def get_dr_values(thatdate_sql):
     feed_author_days=pd.read_sql_query(sql_feed_author_days.format(sql_time_days_start,sql_time_days_end), con=db_circlecenter)
     works_days=pd.read_sql_query(sql_works_days.format(sql_time_days_start,sql_time_days_end), con=db_circlecenter)
     claimers_days=pd.read_sql_query(sql_claimers_days.format(sql_time_days_start,sql_time_days_end), con=db_circlecenter)
+
 
     charts_data=activate_days.merge(login_newly_days,how='left',on=['date','date']).merge(feed_count_days,how='left',on=['date','date']).merge(feed_author_days,how='left',on=['date','date']).merge(works_days,how='left',on=['date','date']).merge(claimers_days,how='left',on=['date','date']).fillna(0)
     results['activate_days']=charts_data['activate_days'].values.tolist()
@@ -72,7 +74,9 @@ def get_dr_values(thatdate_sql):
     results['activate_members_fine_days'].reverse()
     results['process_date']=app_daily_days.date.tolist()
     results['login_members_days']=app_daily_days.login_members.tolist()
-    results['binding_members_days']=app_daily_days.binding_members.tolist()
+    results['login_newly_members_days']=results['login_newly_days'][:]
+    results['login_newly_members_days'].reverse()
+    # results['binding_members_days']=app_daily_days.binding_members.tolist()
     results['activate_members_days']=app_daily_days.activate_members.tolist()
     results['active_members_days']=app_daily_days.active_members.tolist()
     results['active_times_days']=app_daily_days.active_times.tolist()
@@ -91,7 +95,6 @@ def get_rp_values():
     results['works_complete']=pd.read_sql_query(sql_works_complete,con=db_circlecenter).values[0][0]
     results['workers_all']=pd.read_sql_query(sql_workers_all,con=db_circlecenter).values[0][0]
     results['claimers_all']=pd.read_sql_query(sql_claimers_all,con=db_circlecenter).values[0][0]
-
 
     #栏目数据
     columns_casts_count=pd.read_sql_query(sql_columns_casts_count, con=db_circlecenter,index_col=['column_id'])
@@ -171,13 +174,16 @@ def morning_dr():
     return render_template('morning-dr.html',thatdate=thatdate_sql,
                            activate_day=results_dr['activate_day'],
                            login_day_newly=results_dr['login_day_newly'],
+                           messages_day=results_dr['messages_day'],
                            active_day=results_dr['active_members_days'][0],
                            claimers_day=results_dr['claimers_days'][14],
+                           feed_author_days=results_dr['feed_author_days'][14],
                            # contact_day=results_dr['contact_day'],
                            # relation_contact_day=results_dr['relation_contact_day'],
                            process_date=results_dr['process_date'],
                            login_members_days=results_dr['login_members_days'],
-                           binding_members_days=results_dr['binding_members_days'],
+                           # binding_members_days=results_dr['binding_members_days'],
+                           login_newly_members_days=results_dr['login_newly_members_days'],
                            active_members_days=results_dr['active_members_days'],
                            active_times_days=results_dr['active_times_days'],
                            activate_members_days=results_dr['activate_members_days'],

@@ -9,20 +9,22 @@ sql_relation_contact_all="""select count(1) from address_books"""
 ##激活
 sql_activate_day="""select count(distinct member_id) active_day from person_infos  
 where  actived_sites like '%%unsung_hero%%' and hero_actived_at  between '{0}' and '{1}';"""
-##新登录
-sql_login_day_newly="""select count(distinct member_id) login_day_newly from person_infos 
-where created_at between '{0}' and '{1}';"""
+##首次登录
+sql_login_day_newly="""select count(0) from tracks where created_at between '{0}' and '{1}' and trackable_type='Member'and `action`=100"""
 ##总通讯录
 sql_contact_day="""select count(distinct mobile) contact_day from address_books 
 where created_at between '{0}' and '{1}';"""
 ##开启通讯录
 sql_relation_contact_day="""select count(1) from address_books 
 where created_at between '{0}' and '{1}'"""
-
+##私信人数
+sql_messages_day="""select count(distinct `sender_id`) from messages where kind=0 and created_at between '{0}' and '{1}'"""
 #多日
 ##新登录
-sql_login_newly_days="""select date(updated_at) date,count(distinct member_id) login_newly_days from person_infos 
-where created_at between '{0}' and '{1}'group by date(created_at) order by date(created_at)"""
+# sql_login_newly_days="""select date(updated_at) date,count(distinct member_id) login_newly_days from person_infos
+# where created_at between '{0}' and '{1}' group by date(created_at) order by date(created_at)"""
+sql_login_newly_days="""select date(created_at) date,count(0) login_newly_days from tracks where created_at between '{0}' and '{1}'
+ and trackable_type='Member'and `action`=100 group by date(created_at)  order by date(created_at) limit 15"""
 ##激活
 sql_activate_days="""select date(updated_at) date,count(distinct member_id) activate_days
 from person_infos
@@ -53,7 +55,7 @@ and created_at between '{0}' and '{1}'
 
 #es
 ##
-sql_app_daily_days="""select date,login_members,binding_members,activate_members,active_members,active_times from app_daily 
+sql_app_daily_days="""select date,login_members,activate_members,active_members,active_times from app_daily 
 where date between '{0}' and '{1}' order by date desc """
 
 
