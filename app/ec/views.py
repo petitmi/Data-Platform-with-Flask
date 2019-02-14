@@ -71,7 +71,6 @@ def get_dr_values(thatdate_sql):
     result={}
 
     result['ec_vip_day' ]= db.session.execute(sql_ec_99vip.format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
-    print(sql_ec_99vip_sale.format(sql_yest['time_start'], sql_yest['time_end']))
     result['ec_vip_day_sale' ]= db.session.execute(sql_ec_99vip_sale.format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
     result['ec_yesterday'] = db.session.execute(sql_ec_yesterday.format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
     result['ec_1day'] = db.session.execute(sql_ec_1day.format(sql_1day['time_start'], sql_1day['time_end'])).fetchall()
