@@ -25,10 +25,13 @@ def ec_tables():
 
 def get_rp_values():
     today_sql=datetime.datetime.now().strftime('%Y-%m-%d')
-    result={'ec_year':db.session.execute(sql_ec_year.format(today_sql)).fetchall()}
-    result['ec_offline_2018']=db.session.execute(sql_ec_offline_2018.format(today_sql)).fetchall()
-    result['ec_vip']=db.session.execute(sql_ec_99vip.format('2015-01-01', today_sql)).fetchall()
-    result['ec_goods'] = db.session.execute(sql_ec_goods % ('2010-01-01', today_sql)).fetchall()
+    sql_today = get_sql_time(today_sql,0)
+    result={}
+    result['ec_year']=db.session.execute(sql_ec_year.format(today_sql)).fetchall()
+    result['ec_offline_2018']=db.session.execute(sql_ec_offline_2018.format(sql_today['time_end'])).fetchall()
+    result['ec_vip']=db.session.execute(sql_ec_99vip.format('2015-01-01', sql_today['time_end'])).fetchall()
+    result['ec_vip_sale']=db.session.execute(sql_ec_99vip_sale_all).fetchall()
+    result['ec_goods'] = db.session.execute(sql_ec_goods .format ('2010-01-01', sql_today['time_end'])).fetchall()
     return result
 
 @ec.route('/ec-rp',methods=["POST","GET"])
@@ -41,24 +44,42 @@ def ec_rp():
     return render_template('ec-rp.html',ec_year=result_rp['ec_year'],
                            offline_2018=result_rp['ec_offline_2018'],
                            ec_goods=result_rp['ec_goods'],
-                           ec_vip=result_rp['ec_vip'])
+                           ec_vip=result_rp['ec_vip'],
+                           ec_vip_sale=result_rp['ec_vip_sale'])
+
+
+def get_sql_time(thatdate_sql,day):
+    thatdate=datetime.datetime.strptime(thatdate_sql, '%Y-%m-%d')
+    sql_someday=(thatdate-datetime.timedelta(days=day)).strftime('%Y-%m-%d')
+    sql_time={}
+    sql_time['time_start']=sql_someday+ ' 00:00:00'
+    sql_time['time_end']=sql_someday+ ' 23:59:59'
+    return sql_time
 
 def get_dr_values(thatdate_sql):
-    days_tuple=str(tuple(get_days_list(thatdate=thatdate_sql,days=7).sql_list()))
-    result_ec = pd.read_sql_query(sql_ec_7days.format(days_tuple), db.engine).fillna(0)
+    sql_yest = get_sql_time(thatdate_sql,0)
+    sql_1day=get_sql_time(thatdate_sql,1)
+    sql_7day=get_sql_time(thatdate_sql,7)
+
+    result_ec = pd.read_sql_query(sql_ec_7days.format(sql_7day['time_start'],sql_yest['time_end']), db.engine).fillna(0)
     attr_day = result_ec['date'].sort_index(ascending=False).values.tolist()
     bar1_day = result_ec['sales_count'].sort_index(ascending=False).values.tolist()
     line1_day = result_ec['sales_amount'].sort_index(ascending=False).values.tolist()
     overlap_day = olp(attr=attr_day, bar1=bar1_day, bar2=0, bar3=0, line1=line1_day, line2=0, line3=0, bar1_title='日销量',
                       bar2_title=0, bar3_title=0, line1_title='日流水', line2_title=0, line3_title=0,
                       title='自主下单日数据', width=600, height=260)
-    result={'ec_vip_day' : db.session.execute(sql_ec_99vip.format(thatdate_sql, thatdate_sql)).fetchall()}
-    result['ec_yesterday'] = db.session.execute(sql_ec_yesterday.format(thatdate_sql)).fetchall()
-    result['ec_1day'] = db.session.execute(sql_ec_1day.format(thatdate_sql)).fetchall()
-    result['ec_7day'] = db.session.execute(sql_ec_7day.format(thatdate_sql)).fetchall()
-    result['ec_type_day'] = db.session.execute(sql_ec_type % (thatdate_sql, thatdate_sql)).fetchall()
+    result={}
+
+    result['ec_vip_day' ]= db.session.execute(sql_ec_99vip.format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
+    print(sql_ec_99vip_sale.format(sql_yest['time_start'], sql_yest['time_end']))
+    result['ec_vip_day_sale' ]= db.session.execute(sql_ec_99vip_sale.format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
+    result['ec_yesterday'] = db.session.execute(sql_ec_yesterday.format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
+    result['ec_1day'] = db.session.execute(sql_ec_1day.format(sql_1day['time_start'], sql_1day['time_end'])).fetchall()
+    result['ec_7day'] = db.session.execute(sql_ec_7day.format(sql_7day['time_start'], sql_7day['time_end'])).fetchall()
+    result['ec_type_day'] = db.session.execute(sql_ec_type .format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
     result['script_list'] = overlap_day.get_js_dependencies()
     result['overlap_day'] = overlap_day.render_embed()
+
     return result
 
 @ec.route('/ec-dr',methods=["POST","GET"])
@@ -74,9 +95,11 @@ def ec_dr():
     if request.method=='GET'or request.form.get('input') =='':
         thatdate_sql = yesterday_sql
     result_dr=get_dr_values(thatdate_sql)
+    print(result_dr)
     print('UA:',request.user_agent.string)
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('ec-dr.html',ec_vip_day=result_dr['ec_vip_day'],
+                           ec_vip_day_sale=result_dr['ec_vip_day_sale'],
                            ec_yesterday=result_dr['ec_yesterday'],
                            ec_1day=result_dr['ec_1day'],
                            ec_7day=result_dr['ec_7day'],
@@ -88,8 +111,11 @@ def ec_dr():
 
 def get_wr_values(thatdate_sql):
     thatdate_monday_sql = get_monday(thatdate_sql)
-    result_ec_week = pd.read_sql_query(sql_ec_week_compared % thatdate_sql, db.engine).fillna(0)
-    result_ec_chanjet_week = pd.read_sql_query(sql_ec_chanjet_week_compared % thatdate_sql, db.engine).fillna(0)
+    sql_monday_time=get_sql_time(thatdate_monday_sql,0)
+    sql_yest_time=get_sql_time(thatdate_sql,0)
+
+    result_ec_week = pd.read_sql_query(sql_ec_week_compared .format(sql_yest_time['time_end']), db.engine).fillna(0)
+    result_ec_chanjet_week = pd.read_sql_query(sql_ec_chanjet_week_compared .format(sql_yest_time['time_end']), db.engine).fillna(0)
     attr_week = result_ec_week['week_num'].sort_index(ascending=False).values.tolist()
     # bar1_week = result_ec_week['周目标'].sort_index(ascending=False).values.tolist()
     bar2_week = result_ec_week['sales_count'].sort_index(ascending=False).values.tolist()
@@ -99,10 +125,12 @@ def get_wr_values(thatdate_sql):
                        bar2_title='周目标',
                        bar1_title='周自主销量', bar3_title=0, line1_title='周顾问流水', line2_title='周自主流水', line3_title=0,
                        title='自主下单周数据', width=1000, height=300)
-    result={'ec_vip_week' : db.session.execute(sql_ec_99vip.format(thatdate_monday_sql, thatdate_sql)).fetchall()}
-    result['ec_week'] = db.session.execute(sql_ec_week % (thatdate_monday_sql, thatdate_sql)).fetchall()
-    result['ec_type_week'] = db.session.execute(sql_ec_type % (thatdate_monday_sql, thatdate_sql)).fetchall()
-    result['ec_goods_week'] = db.session.execute(sql_ec_goods % (thatdate_monday_sql, thatdate_sql)).fetchall()
+    result={}
+    result['ec_vip_week']=db.session.execute(sql_ec_99vip.format(sql_monday_time['time_start'],sql_yest_time['time_end'])).fetchall()
+    result['ec_vip_week_sale']=db.session.execute(sql_ec_99vip_sale.format(sql_monday_time['time_start'],sql_yest_time['time_end'])).fetchall()
+    result['ec_week'] = db.session.execute(sql_ec_week .format(sql_monday_time['time_start'],sql_yest_time['time_end'])).fetchall()
+    result['ec_type_week'] = db.session.execute(sql_ec_type .format (sql_monday_time['time_start'],sql_yest_time['time_end'])).fetchall()
+    result['ec_goods_week'] = db.session.execute(sql_ec_goods .format (sql_monday_time['time_start'],sql_yest_time['time_end'])).fetchall()
     result['overlap_week'] = overlap_week.render_embed()
     return result
 
@@ -123,6 +151,7 @@ def ec_wr():
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('ec-wr.html',ec_vip_week=result_wr['ec_vip_week'],
                            ec_week=result_wr['ec_week'],
+                           ec_vip_week_sale=result_wr['ec_vip_week_sale'],
                            thatdate=thatdate_sql,
                            ec_type_week=result_wr['ec_type_week'],
                            ec_goods_week=result_wr['ec_goods_week'],
@@ -130,6 +159,7 @@ def ec_wr():
 
 def get_mr_values(thatdate_sql):
     thatdate_month_1st_sql = get_month_1st(thatdate_sql)
+
 
     result_ec = pd.read_sql_query(sql_ec_month_compared, db.engine).fillna(0)
     # 线下2017
@@ -183,15 +213,22 @@ def get_mr_values(thatdate_sql):
                                 line3_title=0,
                                 title='2018月数据', width=1000, height=300)
 
-    result={'overlap_month_online':overlap_month_online.render_embed()}
+
+    sql_month_1st_time=get_sql_time(thatdate_month_1st_sql,0)
+    sql_yest_time=get_sql_time(thatdate_sql,0)
+
+    result={}
+    result['overlap_month_online']=overlap_month_online.render_embed()
     result['overlap_month_consult']=overlap_month_consult.render_embed()
-    result['ec_vip_month'] = db.session.execute(sql_ec_99vip.format(thatdate_month_1st_sql, thatdate_sql)).fetchall()
-    result['ec_month'] = db.session.execute(sql_ec_month % (thatdate_month_1st_sql, thatdate_sql)).fetchall()
-    result['ec_chanjet_month'] = db.session.execute(sql_ec_chanjet_month % (thatdate_month_1st_sql, thatdate_sql)).fetchall()
+
+    result['ec_vip_month'] = db.session.execute(sql_ec_99vip.format(sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
+    result['ec_vip_month_sale'] = db.session.execute(sql_ec_99vip_sale.format(sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
+    result['ec_month'] = db.session.execute(sql_ec_month .format (sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
+    result['ec_chanjet_month'] = db.session.execute(sql_ec_chanjet_month .format ()).fetchall()
     result['thatdate'] = thatdate_sql
-    result['ec_type_month'] = db.session.execute(sql_ec_type % (thatdate_month_1st_sql, thatdate_sql)).fetchall()
-    result['ec_goods_month'] = db.session.execute(sql_ec_goods % (thatdate_month_1st_sql, thatdate_sql)).fetchall()
-    result['ec_goods_day'] = db.session.execute(sql_ec_goods % (thatdate_sql, thatdate_sql)).fetchall()
+    result['ec_type_month'] = db.session.execute(sql_ec_type  .format (sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
+    result['ec_goods_month'] = db.session.execute(sql_ec_goods .format (sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
+    result['ec_goods_day'] = db.session.execute(sql_ec_goods  .format (sql_month_1st_time['time_start'], sql_yest_time['time_end'])).fetchall()
     host = REMOTE_HOST
     my_width = "100%"
     my_height = 300
@@ -219,6 +256,7 @@ def ec_mr():
                            overlap_month_online= result_mr['overlap_month_online'],
                            overlap_month_consult=result_mr['overlap_month_consult'],
                            ec_vip_month=result_mr['ec_vip_month'],
+                           ec_vip_month_sale=result_mr['ec_vip_month_sale'],
                            ec_month=result_mr['ec_month'],
                            ec_chanjet_month=result_mr['ec_chanjet_month'],
                            thatdate=result_mr['thatdate'],

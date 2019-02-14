@@ -35,7 +35,8 @@ def olp(attr,bar1,bar2,bar3,line1,line2,line3,bar1_title,bar2_title,bar3_title,l
 
 
 def get_dr_values(thatdate_sql):
-    sql_yest = (datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+    thatdate=datetime.datetime.strptime(thatdate_sql, '%Y-%m-%d')
+    sql_yest = thatdate.strftime('%Y-%m-%d')
     db_circlecenter= pymysql.connect(host=DB_HOST, port=DB_PORT,user=DB_USER, password=DB_PASSWORD, db=DB_DB, charset='utf8')
     results={}
     results['days_list']=get_days_list(days=15,thatdate=thatdate_sql).sql_list()

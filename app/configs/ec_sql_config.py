@@ -14,51 +14,54 @@ sum( pay_amount ) sales_amount,count(distinct member_id) sales_buyers
 order by year_num;"""
 
 sql_ec_99vip="""select '总数据',count(distinct member_id) sales_members_vip,count(distinct order_id) sales_count_vip,sum(pay_amount) sales_amount_vip
-  from ec_orders where member_id in(select member_id from ec_99vip )  and order_state=1 and date(pay_time) between '{0}'and '{1}'
-  union
-  select case when b.ec_type='local' then '本地' else '影音店' end ,count(distinct b.member_id),count(distinct order_id),sum(pay_amount) 
-  from ec_orders a left join ec_99vip b on a.member_id=b.member_id
-where   order_state=1  and b.member_id is not null  and date(pay_time) between '{0}'and '{1}' group by b.ec_type ;"""
+  from ec_orders where member_id in(select member_id from ec_99vip )  and order_state=1 and pay_time between '{0}'and '{1}'
+;"""
+# """  union
+#   select case when b.ec_type='local' then '本地' else '影音店' end ,count(distinct b.member_id),count(distinct order_id),sum(pay_amount)
+#   from ec_orders a left join ec_99vip b on a.member_id=b.member_id
+# where   order_state=1  and b.member_id is not null  and pay_time between '{0}'and '{1}' group by b.ec_type """
 
+sql_ec_99vip_sale="""select count(0) 
+from ec_orders a left join ec_order_goods b on a.order_id=b.order_id 
+where pay_time between '{0}'and '{1}' and goods_id in ('w_3979','m_748')  and a.order_state=1;"""
+
+sql_ec_99vip_sale_all="""select count(distinct member_id) from ec_99vip """
 
 sql_ec_offline_2018="""select sum(a.sales_amount) from ec_month_offline a  where a.year=2018;"""
 
-sql_ec_yesterday="""select 
-count(distinct  order_id )'日销量',
-ifnull(sum( pay_amount),0)'日流水'
- from ec_orders a  where date(pay_time)= '{0}' and order_state= 1  ;"""
-sql_ec_1day="""select 
-count(distinct  order_id )'日销量',
-ifnull(sum( pay_amount ),0)'日流水'
- from ec_orders a  where date(pay_time) = date_add('{0}',interval -1 day) and order_state= 1  ;"""
-sql_ec_7day="""select 
-count(distinct  order_id )'日销量',
-ifnull(sum(pay_amount),0)'日流水'
- from ec_orders a  where date(pay_time)= date_add('{0}',interval -7 day)  and order_state= 1  ;"""
+sql_ec_yesterday="""select count(distinct  order_id )'日销量',ifnull(sum( pay_amount),0)'日流水'
+ from ec_orders a  where pay_time between '{0}'and '{1}' and order_state= 1  ;"""
+
+sql_ec_1day="""select count(distinct  order_id )'日销量',ifnull(sum( pay_amount ),0)'日流水'
+ from ec_orders a  where pay_time  between '{0}'and '{1}'  and order_state= 1  ;"""
+
+sql_ec_7day="""select count(distinct  order_id )'日销量',ifnull(sum(pay_amount),0)'日流水'
+ from ec_orders a  where pay_time between '{0}'and '{1}' and order_state= 1  ;"""
 
 sql_ec_7days="""select date(pay_time) date,count(distinct order_id) sales_count,cast(sum( pay_amount ) as UNSIGNED) sales_amount
 from ec_orders 
-where date(pay_time) in {0} group by date(pay_time) order by date(pay_time) desc ;"""
+where pay_time between '{0}' and '{1}' group by date(pay_time) order by date(pay_time) desc ;"""
 
 
 sql_ec_week="""select concat(year(pay_time),'-',week(pay_time,1)) week_num,count(distinct order_id) '周销量',
 cast(sum( pay_amount ) as UNSIGNED) '周流水'
- from ec_orders  where date(pay_time) between '%s' and '%s' and order_state=1 ;"""
+ from ec_orders  where pay_time between '{0}' and '{1}' and order_state=1 ;"""
 
 
 
 sql_ec_month = """select month(pay_time) '月份',count(distinct order_id)'月销量',cast(sum( pay_amount) as UNSIGNED)'月流水'
- from ec_orders where date(pay_time) between '%s'and '%s' and order_state=1 """
+ from ec_orders where pay_time between '{0}' and '{1}' and order_state=1 """
 
 sql_ec_chanjet_month="""select ifnull(count(distinct order_id),0) '月销量',
 ifnull(cast(sum(price_tax_sell*goods_num)as UNSIGNED),0) '月流水'
- from ec_orders_chanjet where date(order_date) between '%s' and '%s' and ec_type='consult'"""
+ from ec_orders_chanjet where order_date between '{0}' and '{1}' and ec_type='consult'"""
 
 
-sql_ec_type="""select case when ec_type='yydweb' then '影音店'  when ec_type='localweb' then '本地官网' else '本地小程序' end ,count(distinct order_id),count(distinct case when post_id!=0 then order_id else null end)
+sql_ec_type="""select case when ec_type='yydweb' then '影音店'  when ec_type='localweb' then '本地官网' else '本地小程序' end ,
+count(distinct order_id),count(distinct case when post_id!=0 then order_id else null end)
 ,cast(sum( pay_amount ) as UNSIGNED),
 cast(sum( pay_amount )/count(distinct  member_id) as UNSIGNED)
- from ec_orders a  where date(pay_time) between  '%s' and '%s' and order_state= 1  group by ec_type order by ec_type desc;"""
+ from ec_orders a  where pay_time between '{0}' and '{1}' and order_state= 1  group by ec_type order by ec_type desc;"""
 
 
 # sql_ec_week_compared="""select a.week_num'周',b.target_count'周目标',a.sales_count'周销量',a.sales_amount'周流水' from
@@ -67,11 +70,12 @@ cast(sum( pay_amount )/count(distinct  member_id) as UNSIGNED)
 #  from ec_orders  where date(pay_time) <= '%s' and order_state= 1
 #  group by year(pay_time),week(pay_time,1) order by year(pay_time) desc,week(pay_time,1) desc limit 12)a
 #  left join ec_week_target b on a.week_num=b.week order by week_num desc;"""
+
 sql_ec_week_compared="""select a.week_num,ifnull(b.sales_count,0) sales_count,ifnull(b.sales_amount,0) sales_amount from 
 (select concat(year(date),'-',week(date,1)) week_num from date_list group by year(date),week(date,1) order by date desc)a left join
 (select concat(year(pay_time),'-',week(pay_time,1)) week_num,count(distinct order_id) sales_count,
 cast(sum( pay_amount ) as UNSIGNED) sales_amount
- from ec_orders  where date(pay_time) <= '%s' and order_state= 1 
+ from ec_orders  where pay_time < '{0}' and order_state= 1 
  group by year(pay_time),week(pay_time,1) order by year(pay_time) desc,week(pay_time,1) desc limit 12)b
 on a.week_num=b.week_num limit 12"""
 
@@ -84,7 +88,7 @@ sql_ec_chanjet_week_compared="""select a.week_num,ifnull(b.sales_count,0) sales_
 (select concat(year(date),'-',week(date,1)) week_num from date_list group by year(date),week(date,1) order by date desc)a left join
 (select concat(year(order_date),'-',week(order_date,1)) week_num,count(distinct order_id) sales_count,
 cast(sum(price_tax_sell*goods_num)as UNSIGNED) sales_amount
- from ec_orders_chanjet where date(order_date) <= '%s' and ec_type='consult'
+ from ec_orders_chanjet where order_date <= '{0}' and ec_type='consult'
  group by year(order_date),week(order_date,1) order by year(order_date) desc,week(order_date,1) desc limit 12)b
 on a.week_num=b.week_num limit 12"""
 
@@ -101,9 +105,11 @@ sql_ec_month_offline_2017="""select month,sales_count,sales_amount from ec_month
 sql_ec_month_chanjet_2018="""select month(order_date) month,count(distinct order_id) sales_count,sum(price_tax_sell*goods_num) sales_amount 
 from ec_orders_chanjet where ec_type='consult' group by month(order_date)"""
 
-sql_ec_goods="""select case when a.ec_type = 'yydweb' then '影音店' when a.ec_type = 'localweb' then '本地官网' else '本地小程序'  end platform,goods_name,sum(goods_num),goods_price 
+sql_ec_goods="""select case when a.ec_type = 'yydweb' then '影音店' when a.ec_type = 'localweb' then '本地官网' else '本地小程序'  end platform,
+goods_name,sum(goods_num),goods_price 
 from ec_order_goods a left join ec_orders b on a.order_id=b.order_id 
-where goods_id in ('m_939','m_918','w_4130','w_4143') and date(pay_time) between '%s' and '%s' and a.order_state=1  group by goods_id order by sum(goods_num) desc ; """
+where goods_id in ('m_939','m_918','w_4130','w_4143') and pay_time between '{0}' and '{1}' and a.order_state=1  
+group by goods_id order by sum(goods_num) desc ; """
 
 sql_ec_table_week="""  select concat(year(order_date),'-',week(order_date,1)) week_num,
 ifnull(sum(price_tax_sell*goods_num),0) sales_amount,
