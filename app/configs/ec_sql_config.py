@@ -13,8 +13,8 @@ sum( pay_amount ) sales_amount,count(distinct member_id) sales_buyers
 )c on a.year_num=c.year_num
 order by year_num;"""
 
-sql_ec_99vip="""select '总数据',count(distinct member_id) sales_members_vip,count(distinct order_id) sales_count_vip,sum(pay_amount) sales_amount_vip
-  from ec_orders where member_id in(select member_id from ec_99vip )  and order_state=1 and pay_time between '{0}'and '{1}'
+sql_ec_99vip="""select '总数据',count(distinct uid) sales_uid_vip,count(distinct order_id) sales_count_vip,sum(pay_amount) sales_amount_vip
+  from ec_orders where uid in(select uid from ec_99vip )  and order_state=1 and pay_time between '{0}'and '{1}'
 ;"""
 # """  union
 #   select case when b.ec_type='local' then '本地' else '影音店' end ,count(distinct b.member_id),count(distinct order_id),sum(pay_amount)
@@ -25,7 +25,7 @@ sql_ec_99vip_sale="""select count(0)
 from ec_orders a left join ec_order_goods b on a.order_id=b.order_id 
 where pay_time between '{0}'and '{1}' and goods_id in ('w_3979','m_748')  and a.order_state=1;"""
 
-sql_ec_99vip_sale_all="""select count(distinct member_id) from ec_99vip """
+sql_ec_99vip_sale_all="""select count(distinct uid,member_id) from ec_99vip; """
 
 sql_ec_offline_2018="""select sum(a.sales_amount) from ec_month_offline a  where a.year=2018;"""
 

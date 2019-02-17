@@ -37,6 +37,7 @@ def olp(attr,bar1,bar2,bar3,line1,line2,line3,bar1_title,bar2_title,bar3_title,l
 def get_dr_values(thatdate_sql):
     thatdate=datetime.datetime.strptime(thatdate_sql, '%Y-%m-%d')
     sql_yest = thatdate.strftime('%Y-%m-%d')
+
     db_circlecenter= pymysql.connect(host=DB_HOST, port=DB_PORT,user=DB_USER, password=DB_PASSWORD, db=DB_DB, charset='utf8')
     results={}
     results['days_list']=get_days_list(days=15,thatdate=thatdate_sql).sql_list()
@@ -44,7 +45,7 @@ def get_dr_values(thatdate_sql):
     sql_time_days_end=results['days_list'][14]+' 23:59:59'
     sql_time_yest_start=sql_yest+' 00:00:00'
     sql_time_yest_end=sql_yest+' 23:59:59'
-
+    print(sql_time_days_end)
     #昨日
     results['activate_day']=pd.read_sql_query(sql_activate_day.format(sql_time_yest_start,sql_time_yest_end), con=db_circlecenter).values[0][0]
     results['login_day_newly']=pd.read_sql_query(sql_login_day_newly.format(sql_time_yest_start,sql_time_yest_end), con=db_circlecenter).values[0][0]
@@ -81,7 +82,6 @@ def get_dr_values(thatdate_sql):
     results['activate_members_days']=app_daily_days.activate_members.tolist()
     results['active_members_days']=app_daily_days.active_members.tolist()
     results['active_times_days']=app_daily_days.active_times.tolist()
-
 
     return results
 
