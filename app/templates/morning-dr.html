@@ -69,7 +69,7 @@
                 <div class="green_cell" id="first_group" width="30%">{{ process_date[i] }}</div>
                 <div class="green_cell"> 待录入</div>
                 <div class="green_cell">{{ active_members_days[i]|int }}</div>
-                <div class="green_cell">{{ (active_times_days[i]/active_members_days[i])|int }}</div>
+                <div class="green_cell">{{ (active_times_days[i]/active_members_days[i])|round(1)}}</div>
                 <div class="green_cell">{{ login_members_days[i] }}</div>
                 <div class="green_cell">{{ login_newly_members_days[i]|int }}</div>
                 <div class="green_cell">{{ activate_members_days[i]|int }}</div>

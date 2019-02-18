@@ -45,7 +45,6 @@ def get_dr_values(thatdate_sql):
     sql_time_days_end=results['days_list'][14]+' 23:59:59'
     sql_time_yest_start=sql_yest+' 00:00:00'
     sql_time_yest_end=sql_yest+' 23:59:59'
-    print(sql_time_days_end)
     #昨日
     results['activate_day']=pd.read_sql_query(sql_activate_day.format(sql_time_yest_start,sql_time_yest_end), con=db_circlecenter).values[0][0]
     results['login_day_newly']=pd.read_sql_query(sql_login_day_newly.format(sql_time_yest_start,sql_time_yest_end), con=db_circlecenter).values[0][0]
