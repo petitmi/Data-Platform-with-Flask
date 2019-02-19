@@ -61,8 +61,9 @@
             <div class="green_cell">首登人数</div>
             <div class="green_cell">激活人数</div>
             <div class="green_cell">激活成功人数</div>
+            <div class="green_cell">请求激活-成功</div>
             <div class="green_cell">授权人数</div>
-            <div class="green_cell">授权转化率</div>
+            <div class="green_cell">激活-授权</div>
 	</div>
             {% for i in range(process_date|length) %}
             <div class="green_row">
@@ -74,6 +75,7 @@
                 <div class="green_cell">{{ login_newly_members_days[i]|int }}</div>
                 <div class="green_cell">{{ activate_members_days[i]|int }}</div>
                 <div class="green_cell">{{ activate_members_fine_days[i]|int }}</div>
+                <div class="green_cell">{{ (activate_members_fine_days[i]*100/activate_members_days[i])|int }}%</div>
                 <div class="green_cell">{{ authorized_members_days[i]|int }}</div>
                 <div class="green_cell">{{ (authorized_members_days[i]*100/activate_members_days[i])|int }}%</div>
             </div>

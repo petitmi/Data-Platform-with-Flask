@@ -182,3 +182,9 @@ and `key` in ('video.create','album.create','link.create') and status='normal'
 and created_at between '{0}' and '{1}' """
 
 sql_member_uuid="""select uuid,real_name from members where id='%s'"""
+
+# ########################################################################################################################
+# sql_vip_id="""select distinct id uid, member_id,uname,FROM_UNIXTIME(addtime,'%Y-%m-%d %H:%i:%s') from `lr_user` where is_member>0;"""
+# sql_vip_goods="""select order_id,FROM_UNIXTIME(paytime,'%Y-%m-%d %H:%i:%s') paytime,b.name good_name,b.price good_price,
+# address_xq address,tel phone,receiver receiver_name from lr_order a left join lr_order_product b on a.id=b.order_id
+# where status in (20,30,40,50) and uid='{0}' ;"""

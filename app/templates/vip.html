@@ -1,0 +1,43 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script src="https://cdn.bootcss.com/echarts/4.1.0-release/echarts-en.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+{% endblock %}
+
+{% block page_content %}
+    <form method=post enctype=multipart/form-data>
+        <span>
+            <span style="text-align: center;display:block;">
+                <span style="border: #0d3349;font-weight: bold"> member id :</span>
+                <input type="text" name="member_id" value="{{member_id}}" style="font-size: 20px">
+                <input type="submit" class="startButton" value="查询">
+            </span>
+            <br>
+
+
+        </span>
+    </form>
+
+    <script type="text/javascript">
+    $(".datetimepicker1").datetimepicker({format: "yyyy-mm-dd hh:ii:ss",
+        autoclose: true,
+        todayBtn: true,
+        minuteStep: 5,
+        forceParse: 0});
+    </script>
+
+<br>
+<div>
+        {{ overlap_popular|safe }}
+    <br>    <br>
+
+        {{ overlap_active|safe }}
+    </div>
+
+
+
+{% endblock %}
+
