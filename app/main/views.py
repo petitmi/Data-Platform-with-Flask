@@ -260,18 +260,21 @@ def screen():
     activity_id=activity_post[0][0]
     #作者id
     activity_author_id=activity_post[0][1]
-    #时间
+    #动态类型
+    results['activity_type']=activity_post[0][4][:-7]
+    #动态发布时间
     results['activity_time']=str(activity_post[0][2])[-8:]
-    activity=pd.read_sql_query(sql_activity_content.format(activity_id), con=db_circlecenter).values
+    if activity_post[0][3]=='Link':
+        activity=pd.read_sql_query(sql_activity_link.format(activity_id), con=db_circlecenter).values
+    else:
+        activity=pd.read_sql_query(sql_activity_content.format(activity_id), con=db_circlecenter).values
     #动态内容
     activity_content=activity[0][0]
     if activity_content is not None and len(activity_content)>50:
         results['activity_content']=activity[0][0][:50]
     else:
         results['activity_content']=activity[0][0]
-
-    results['activity_type']=activity[0][1]
-
+    #作者信息
     author=pd.read_sql_query(sql_activity_author.format(activity_author_id), con=db_circlecenter).values
     results['author_id']=author[0][0]
     results['author_name']=author[0][1]
