@@ -10,13 +10,14 @@
     font-size: 45px;
     margin:2px;
     padding-left: 0;
+    width:100px
 }
 /*单元格*/
 .table-cell{
     display:table-cell;
     padding-left:11px;
     padding-right: 11px;
-width:40px}
+width:50px}
 /*表格黑色*/
 #table{color: #3C3C3C;}
 /*辅助灰色*/
@@ -48,19 +49,23 @@ width:40px}
         <div id="table" class="table-cell" style="font-size: 30px">当前活跃</div>
         <div id="table" class="table-cell" style="font-size: 30px">个人激活</div>
         <div id="table" class="table-cell" style="font-size: 30px">机构激活</div>
+        <div id="table" class="table-cell" style="font-size: 30px">认领</div>
 
     </div>
-        <div  class="table-row">
+    <div  class="table-row">
         <div class="table-cell" style="font-family:STHeiti">今日</div>
         <div class="table-cell" id="prominent">{{active_today}}</div>
         <div class="table-cell" id="prominent">{{activate_today}}</div>
         <div class="table-cell" id="prominent">{{activate_today_org}}</div>
+        <div class="table-cell" id="prominent">{{claimers_day}}</div>
+
     </div>
     <div  class="table-row">
         <div class="table-cell" style="font-family:STHeiti;font-size: 22px">总计 </div>
         <div class="table-cell" id="sub-prominent"> </div>
         <div class="table-cell" id="sub-prominent">{{activate_all}}</div>
         <div class="table-cell" id="sub-prominent">{{activate_all_org}}</div>
+        <div class="table-cell" id="sub-prominent">{{claimers_all}}</div>
 
     </div>
 

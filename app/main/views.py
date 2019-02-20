@@ -339,6 +339,9 @@ def screen():
     ##较上周
     results['active_comp_lasw']='%.1f'%((results['active_today']/results['active_lastweek']-1)*100)
 
+    #认领
+    results['claimers_day']=pd.read_sql_query(sql_claimers_day.format(sql_today_start,sql_today_end), con=db_circlecenter).values[0][0]
+    results['claimers_all']=pd.read_sql_query(sql_claimers_all, con=db_circlecenter).values[0][0]
 
     return render_template('screen.html',activate_all=results['activate_all'],
                            activate_today=results['activate_today'],
@@ -358,6 +361,9 @@ def screen():
                            activity_type=results['activity_type'],
                            activity_content=results['activity_content'],
                            activity_time=results['activity_time'],
+                           claimers_day=results['claimers_day'],
+                           claimers_all=results['claimers_all'],
+
                            now=sql_today_end)
 
 @main.route('/upload', methods=['GET', 'POST'])

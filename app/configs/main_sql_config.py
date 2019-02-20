@@ -153,6 +153,10 @@ es_active_total={'index':"logstash-*",
                           "aggs": {"member_count": {"cardinality": {"field": "member_uuid.keyword"}}},
                           "size": 0}}
 
+sql_claimers_day="""select count(distinct member_id) claimers_days from claim_logs 
+where status=1 and created_at between '{0}' and '{1}';"""
+sql_claimers_all="""select count(distinct member_id) claimers_days from claim_logs 
+where status=1"""
 #################3#####################################################################################################
 es_profile_hours={'index':"logstash-*",
                   'body':{"query":{"bool":{"must":[{"term":{"path":"profile"}},{"term":{"path":""}}],
