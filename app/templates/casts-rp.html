@@ -1,0 +1,74 @@
+<!doctype html>
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <script src="https://cdn.bootcss.com/echarts/4.1.0-release/echarts-en.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+{% endblock %}
+{% block page_content %}
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <ul class=flashes>
+        <li><font color="red"> {{ message }}</font></li></ul>
+</div>
+{% endfor %}
+<br>
+<h2 class="head2" style=" font-size: 18px; color: gray;">直播栏目数据</h2>
+<div class="accordion_hder" style="width:950px">
+    <span style="padding: 6px;">栏目名称</span>
+    <span style="padding:3px">观看数</span>
+    <span>期数</span>
+    <span>聊天总数</span>
+    <span>回放总数</span>
+</div>
+<div class="panel-group" id="accordion">
+    <div class="panel panel-default " style="width:950px">
+        {% for i in range(columns_id|length) %}
+        <div class="panel-heading" style="padding: 4px">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{columns_id[i]|string}}" style="text-decoration: none">
+                    <div class="accordion_hd">
+                        <span>{{ columns_data[columns_id[i]][0] }}</span>
+                        <span>{{ columns_data[columns_id[i]][1]|int}}</span>
+                        <span>{{ columns_data[columns_id[i]][2]|int}}</span>
+                        <span>{{ columns_data[columns_id[i]][3]|int}}</span>
+                        <span>{{ columns_data[columns_id[i]][4]|int}}</span>
+                        <span  style="font-size:5px;font-weight: bold;border-color: #444444;color: #942a25">展开</span>
+                    </div>
+                </a>
+            </h4>
+        </div>
+        {% if i==0  %}
+        <div id="collapse{{columns_id[i]|string}}" class="panel-collapse collapse in">
+            {% else %}
+            <div id="collapse{{columns_id[i]|string}}" class="panel-collapse collapse">
+                {% endif %}
+                <div class="panel-body">
+                    <div class="green_table">
+                        <div class="green_row_head">
+                        <div class="green_cell" id="first_group" width="30%">直播名称</div>
+                        <div class="green_cell">开播时间</div>
+                        <div class="green_cell">pv</div>
+                        <div class="green_cell">聊天数量</div>
+                        <div class="green_cell">回放数量</div>
+                    </div>
+                    {% for j in columncasts_data[columns_id[i]] %}
+                    <div class="green_row">
+                        <div class="green_cell" id="first_group">{{ j[2] }}</div>
+                        <div class="green_cell"> {{j[3]}}</div>
+                        <div class="green_cell"> {{j[4]|int}}</div>
+                        <div class="green_cell"> {{j[5]|int}}</div>
+                        <div class="green_cell"> {{j[6]|int}}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            </div>
+             {% endfor %}
+             </div>
+         </div>
+
+<br><br><br>
+
+         {% endblock %}
+

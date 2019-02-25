@@ -4,6 +4,8 @@ sql_activate_all="""select count(distinct member_id) active_all from person_info
 sql_contact_all="""select count(distinct mobile) contact_all from address_books"""
 
 sql_relation_contact_all="""select count(1) from address_books"""
+sql_circle_all="""select total_boards,active_boards,total_article_posts,total_video_posts,total_publishers,total_marks,total_comments,total_messages
+ from data_totality where data_date ='%s'"""
 
 #当日
 ##激活
@@ -19,6 +21,8 @@ sql_relation_contact_day="""select count(1) from address_books
 where created_at between '{0}' and '{1}'"""
 ##私信人数
 sql_messages_day="""select count(distinct `sender_id`) from messages where kind=0 and created_at between '{0}' and '{1}'"""
+
+
 #多日
 ##新登录
 # sql_login_newly_days="""select date(updated_at) date,count(distinct member_id) login_newly_days from person_infos

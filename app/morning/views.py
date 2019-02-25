@@ -84,19 +84,10 @@ def get_dr_values(thatdate_sql):
 
     return results
 
-def get_rp_values():
-    db_circlecenter= pymysql.connect(host=DB_HOST, port=DB_PORT,user=DB_USER, password=DB_PASSWORD, db=DB_DB, charset='utf8')
-
-    results={'activate_all':pd.read_sql_query(sql_activate_all, con=db_circlecenter).values[0][0]}
-    # results['contact_all']=pd.read_sql_query(sql_contact_all, con=db_circlecenter).values[0][0]
-    # results['relation_contact_all']=pd.read_sql_query(sql_relation_contact_all, con=db_circlecenter).values[0][0]
-    results['works_all']=pd.read_sql_query(sql_works_all,con=db_circlecenter).values[0][0]
-    results['works_checked']=pd.read_sql_query(sql_works_checked,con=db_circlecenter).values[0][0]
-    results['works_complete']=pd.read_sql_query(sql_works_complete,con=db_circlecenter).values[0][0]
-    results['workers_all']=pd.read_sql_query(sql_workers_all,con=db_circlecenter).values[0][0]
-    results['claimers_all']=pd.read_sql_query(sql_claimers_all,con=db_circlecenter).values[0][0]
-
+def get_cast_rp_values():
+    results={}
     #栏目数据
+    db_circlecenter= pymysql.connect(host=DB_HOST, port=DB_PORT,user=DB_USER, password=DB_PASSWORD, db=DB_DB, charset='utf8')
     columns_casts_count=pd.read_sql_query(sql_columns_casts_count, con=db_circlecenter,index_col=['column_id'])
     columns_clips_count=pd.read_sql_query(sql_columns_clips_count, con=db_circlecenter,index_col=['column_id'])
     columns_chats_count=pd.read_sql_query(sql_columns_chats_count, con=db_circlecenter,index_col=['column_id'])
@@ -123,26 +114,51 @@ def get_rp_values():
     results['columns_data']=columns_data
     return results
 
+def get_morning_rp_values():
+    yesterday_sql=(datetime.datetime.now()-datetime.timedelta(1)).strftime('%Y-%m-%d')
+    db_circlecenter= pymysql.connect(host=DB_HOST, port=DB_PORT,user=DB_USER, password=DB_PASSWORD, db=DB_DB, charset='utf8')
+    results={}
+    results['circle_all']=db.session.execute(sql_circle_all%yesterday_sql).fetchall()[0]
+    results['activate_all']=pd.read_sql_query(sql_activate_all, con=db_circlecenter).values[0][0]
+    # results['contact_all']=pd.read_sql_query(sql_contact_all, con=db_circlecenter).values[0][0]
+    # results['relation_contact_all']=pd.read_sql_query(sql_relation_contact_all, con=db_circlecenter).values[0][0]
+    results['works_all']=pd.read_sql_query(sql_works_all,con=db_circlecenter).values[0][0]
+    results['works_checked']=pd.read_sql_query(sql_works_checked,con=db_circlecenter).values[0][0]
+    results['works_complete']=pd.read_sql_query(sql_works_complete,con=db_circlecenter).values[0][0]
+    results['workers_all']=pd.read_sql_query(sql_workers_all,con=db_circlecenter).values[0][0]
+    results['claimers_all']=pd.read_sql_query(sql_claimers_all,con=db_circlecenter).values[0][0]
+
+    return results
+
+@morning.route('/casts-rp',methods=["POST","GET"])
+@login_required
+@permission_required(Permission.ADMIN)
+def casts_rp():
+    results_casts_rp=get_cast_rp_values()
+    print('UA:',request.user_agent.string)
+    print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
+    return render_template('casts-rp.html',
+                           columns_data=results_casts_rp['columns_data'],
+                           columncasts_data=results_casts_rp['columncasts_data'],
+                           columns_id=results_casts_rp['columns_id'])
 @morning.route('/morning-rp',methods=["POST","GET"])
 @login_required
 @permission_required(Permission.ADMIN)
 def morning_rp():
-    results_rp=get_rp_values()
+    results_morning_rp=get_morning_rp_values()
     print('UA:',request.user_agent.string)
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('morning-rp.html',
-                           activate_all=results_rp['activate_all'],
+                           activate_all=results_morning_rp['activate_all'],
                            # contact_all=results_rp['contact_all'],
                            # relation_contact_all=results_rp['relation_contact_all'],
-                           #                           active_all=results_rp['active_all'],
-                           columns_data=results_rp['columns_data'],
-                           columncasts_data=results_rp['columncasts_data'],
-                           columns_id=results_rp['columns_id'],
-                           works_all=results_rp['works_all'],
-                           works_checked=results_rp['works_checked'],
-                           works_complete=results_rp['works_complete'],
-                           workers_all=results_rp['workers_all'],
-                           claimers_all=results_rp['claimers_all']
+                           # active_all=results_rp['active_all'],
+                           works_all=results_morning_rp['works_all'],
+                           works_checked=results_morning_rp['works_checked'],
+                           works_complete=results_morning_rp['works_complete'],
+                           workers_all=results_morning_rp['workers_all'],
+                           claimers_all=results_morning_rp['claimers_all'],
+                           circle_all=results_morning_rp['circle_all']
                            )
 
 @morning.route('/morning-dr',methods=["POST","GET"])
