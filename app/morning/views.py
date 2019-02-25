@@ -13,6 +13,8 @@ import pymysql
 from ..configs.config import *
 from elasticsearch import Elasticsearch
 from app import db
+import itertools
+
 
 def olp(attr,bar1,bar2,bar3,line1,line2,line3,bar1_title,bar2_title,bar3_title,line1_title,line2_title,line3_title,title,width,height):
     bar = Bar(title=title)
@@ -127,7 +129,27 @@ def get_morning_rp_values():
     results['works_complete']=pd.read_sql_query(sql_works_complete,con=db_circlecenter).values[0][0]
     results['workers_all']=pd.read_sql_query(sql_workers_all,con=db_circlecenter).values[0][0]
     results['claimers_all']=pd.read_sql_query(sql_claimers_all,con=db_circlecenter).values[0][0]
-
+    results['members_genres']={}
+    genres_o=['edu','ec','vip','activate']
+    genres_1=list(itertools.combinations(genres_o, 1))
+    genres_2=list(itertools.combinations(genres_o, 2))
+    genres_3=list(itertools.combinations(genres_o, 3))
+    genres_4=list(itertools.combinations(genres_o, 4))
+    genres=[genres_1,genres_2,genres_3,genres_4]
+    for genres_pc in genres:
+        for genres in genres_pc:
+            if len(genres)==1:
+                sql_condition='is_%s=1 '%genres[0]
+                key=genres[0]
+            else:
+                sql_condition ='is_%s=1 '%genres[0]
+                key=genres[0]
+                for genre in genres[1:]:
+                    sql_condition+='and is_%s=1 '%genre
+                    key+='_%s'%genre
+            key=key.replace('edu','学员').replace('ec','电商').replace('activate','激活')
+            results['members_genres'][key]=db.session.execute(sql_genres%sql_condition).fetchall()[0][0]
+    print(results['members_genres'])
     return results
 
 @morning.route('/casts-rp',methods=["POST","GET"])
@@ -150,7 +172,7 @@ def morning_rp():
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('morning-rp.html',
                            activate_all=results_morning_rp['activate_all'],
-                           # contact_all=results_rp['contact_all'],
+                           # contact_all=results_morning_rp['contact_all'],
                            # relation_contact_all=results_rp['relation_contact_all'],
                            # active_all=results_rp['active_all'],
                            works_all=results_morning_rp['works_all'],
@@ -158,7 +180,8 @@ def morning_rp():
                            works_complete=results_morning_rp['works_complete'],
                            workers_all=results_morning_rp['workers_all'],
                            claimers_all=results_morning_rp['claimers_all'],
-                           circle_all=results_morning_rp['circle_all']
+                           circle_all=results_morning_rp['circle_all'],
+                           members_genres=results_morning_rp['members_genres']
                            )
 
 @morning.route('/morning-dr',methods=["POST","GET"])

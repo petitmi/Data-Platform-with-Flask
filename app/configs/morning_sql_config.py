@@ -6,7 +6,10 @@ sql_contact_all="""select count(distinct mobile) contact_all from address_books"
 sql_relation_contact_all="""select count(1) from address_books"""
 sql_circle_all="""select total_boards,active_boards,total_article_posts,total_video_posts,total_publishers,total_marks,total_comments,total_messages
  from data_totality where data_date ='%s'"""
+sql_genres="""select count(*) from members where %s ;"""
 
+
+#######################################################################################################################
 #当日
 ##激活
 sql_activate_day="""select count(distinct member_id) active_day from person_infos  
