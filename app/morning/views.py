@@ -128,6 +128,8 @@ def get_morning_rp_values():
     results['works_checked']=pd.read_sql_query(sql_works_checked,con=db_circlecenter).values[0][0]
     results['works_complete']=pd.read_sql_query(sql_works_complete,con=db_circlecenter).values[0][0]
     results['workers_all']=pd.read_sql_query(sql_workers_all,con=db_circlecenter).values[0][0]
+    results['workers_checked']=pd.read_sql_query(sql_workers_checked,con=db_circlecenter).values[0][0]
+    results['workers_unclaimed']=pd.read_sql_query(sql_workers_unclaimed,con=db_circlecenter).values[0][0]
     results['claimers_all']=pd.read_sql_query(sql_claimers_all,con=db_circlecenter).values[0][0]
     results['members_genres']={}
     genres_o=['edu','ec','vip','activate']
@@ -181,7 +183,9 @@ def morning_rp():
                            workers_all=results_morning_rp['workers_all'],
                            claimers_all=results_morning_rp['claimers_all'],
                            circle_all=results_morning_rp['circle_all'],
-                           members_genres=results_morning_rp['members_genres']
+                           members_genres=results_morning_rp['members_genres'],
+                           workers_checked=results_morning_rp['workers_checked'],
+                           workers_unclaimed=results_morning_rp['workers_unclaimed']
                            )
 
 @morning.route('/morning-dr',methods=["POST","GET"])

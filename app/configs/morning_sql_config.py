@@ -4,9 +4,31 @@ sql_activate_all="""select count(distinct member_id) active_all from person_info
 sql_contact_all="""select count(distinct mobile) contact_all from address_books"""
 
 sql_relation_contact_all="""select count(1) from address_books"""
+
 sql_circle_all="""select total_boards,active_boards,total_article_posts,total_video_posts,total_publishers,total_marks,total_comments,total_messages
  from data_totality where data_date ='%s'"""
+
 sql_genres="""select count(*) from members where %s ;"""
+
+
+#作品
+#作品总数
+sql_works_all="""select count(1) from films where `category`=1;"""
+#作品
+sql_works_checked="""select count(distinct film_id) from filmographies where real_name is not null"""
+#完全作品
+sql_works_complete="""select count(1) from (select film_id,count(1) count_film from filmographies 
+where real_name is not null group by film_id having count_film>50)a"""
+
+#已录入职务总数
+sql_workers_all="""select count(*) workers_all from unsung_heros2;"""
+#已审核职务总数
+sql_workers_checked="""select count(*) workers_workers_confirmed from filmographies where real_name is not null;"""
+#待认领职务总数
+sql_workers_unclaimed="""select count(case when member_id is null then 1 else null end) workers_all
+from filmographies where real_name is not null;"""
+#认领人数
+sql_claimers_all="""select count(distinct member_id) from filmographies where member_id is not null and real_name is not null;"""
 
 
 #######################################################################################################################
@@ -74,20 +96,6 @@ WHERE member_id IN
 
 
 
-
-#作品
-#作品总数
-sql_works_all="""select count(1) from films where `category`=1;"""
-#作品
-sql_works_checked="""select count(distinct film_id) from filmographies where real_name is not null"""
-#完全作品
-sql_works_complete="""select count(1) from (select film_id,count(1) count_film from filmographies 
-where real_name is not null group by film_id having count_film>50)a"""
-#职员人数
-sql_workers_all="""select count(distinct case when member_id is not null then 1 else null end)+count(case when member_id is null then 1 else null end) workers_all
-from filmographies where real_name is not null;"""
-#认领人数
-sql_claimers_all="""select count(distinct member_id) from filmographies where member_id is not null and real_name is not null;"""
 
 #######################################################################################################################################
 

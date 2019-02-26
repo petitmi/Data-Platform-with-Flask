@@ -6,23 +6,20 @@
     <h1><font size="6">登录</font></h1>
 </div>
 {% from "macros.html" import render_field %}
-    <form action="/auth/login" method="post" name="login">
-        {{ form.hidden_tag() }}
-  <table>
-         {{render_field( form.username) }}
-         {{ render_field(form.password) }}
-  </table>
-        {{ form.submit }}
-        <a href="/contact_me"><input type="button" name="button" value="没有账号？"></a>
-    </form>
-
-    {% for message in get_flashed_messages() %}
-    <div class="alert alert-warning">
-        <ul class=flashes>
-
-            <li><font color="red"> {{ message }}</font></li></ul>
-    </div>
-    {% endfor %}
-
+<form action="/auth/login" method="post" name="login">
+    {{ form.hidden_tag() }}
+    <table>
+        {{render_field( form.username) }}
+        {{ render_field(form.password) }}
+    </table>
+    {{ form.submit }}
+    <a href="/contact_me"><input type="button" name="button" value="没有账号？"></a>
+</form>
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <ul class=flashes>
+        <li><font color="red"> {{ message }}</font></li></ul>
+</div>
+{% endfor %}
 {% endblock %}
 

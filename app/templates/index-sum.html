@@ -10,21 +10,20 @@
 
 
 
-        <br><br>
-        <form action="/index-sum" method=post >
+<br><br>
+<form action="/index-sum" method=post >
 选择日期：<input size="16" type="text" name="input" value="{{ thatdate }}" readonly class="form_datetime">
-            <input type="submit" class="startButton" value="查询">
-
-        </form>
+    <input type="submit" class="startButton" value="查询">
+</form>
 <script type="text/javascript">
     $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd',minView:2});
 </script>
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <div class=flashes>
-                <div><font color="red"> {{ message }}</font></div></div>
-        </div>
-    {% endfor %}
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <div class=flashes>
+        <div><font color="red"> {{ message }}</font></div></div>
+</div>
+{% endfor %}
 
 <br>
    <h1 class="head1">{{year_sql}}部门汇总</h1>
@@ -35,7 +34,6 @@
                 <li class="cell">部门</li>
                 <li class="cell">销售额</li >
             </ul>
-
             {% for department in result_department %}
                 <ul class="blue_row" >
                     <li class="cell">{{ department }}</li>
@@ -43,68 +41,62 @@
                 </ul>
             {% endfor %}
         </div>
-
 <div style="float: left">
 {{ pie_department|safe }}
 </div>
     </div>
-    <br><br>
-    {{ py_bar|safe }}
-
-    <br><br>
-   <h1 class="head1">{{year_sql}}项目汇总</h1>
+<br><br>
+{{ py_bar|safe }}
+ <br><br>
+<h1 class="head1">{{year_sql}}项目汇总</h1>
 <hr width="70%" align="left">
+<div class="blue_table"  style="font-size: 17px;">
+    <ul class="blue_head">
+        <li class="cell">部门</li>
+        <li class="cell">项目</li >
+        <li class="cell">本月销售额</li >
+        <li class="cell">本年销售额</li >
+    </ul>
+    {% for department in result_project_thisyear %}
+    {% for project in result_project_thisyear[department]%}
+    <ul class="blue_row" >
+        <li class="cell">{{ department}}</li>
+        <li class="cell">{{ project }}</li>
+        <li class="cell">￥{{ result_project_thismonth[department][project]|int }}</li>
+        <li class="cell">￥{{ result_project_thisyear[department][project]|int }}</li>
+    </ul>
+    {% endfor%}
+    {% endfor %}
 
-        <div class="blue_table"  style="font-size: 17px;">
-            <ul class="blue_head">
-                <li class="cell">部门</li>
-                <li class="cell">项目</li >
-                <li class="cell">本月销售额</li >
-                <li class="cell">本年销售额</li >
-            </ul>
-            {% for department in result_project_thisyear %}
-            {% for project in result_project_thisyear[department]%}
-            <ul class="blue_row" >
-                <li class="cell">{{ department}}</li>
-                <li class="cell">{{ project }}</li>
-                <li class="cell">￥{{ result_project_thismonth[department][project]|int }}</li>
-                <li class="cell">￥{{ result_project_thisyear[department][project]|int }}</li>
-            </ul>
-            {% endfor%}
-            {% endfor %}
-
-
-        </div>
-    <br><br><br>
-     <div class="green_table">
-
-         <div class="green_row_head">
-             <div class="green_cell">部门</div>
-             {%for department in result_month[1]%}
-             {%for project in result_month[1][department]%}
-             <div class="green_cell">{{department}}</div>
-             {%endfor%}
-             {%endfor%}
-        </div>
-        <div class="green_row_head">
-            <div class="green_cell" >月份</div>
-             {%for department in result_month[1]%}
-             {%for project in result_month[1][department]%}
-             <div class="green_cell">{{project}}</div>
-             {%endfor%}
-             {%endfor%}
-        </div>
-         {% for month in result_month %}
-            <div class="green_row">
-                <div class="green_cell">{{ month}}</div>
-                {%for department in result_month[month]%}
-                {%for project in result_month[month][department]%}
-                <div class="green_cell">￥{{ result_month[month][department][project]|int}}</div>
-                {% endfor %}
-                {% endfor %}
-            </div>
+</div>
+<br><br><br>
+<div class="green_table">
+    <div class="green_row_head">
+        <div class="green_cell">部门</div>
+        {%for department in result_month[1]%}
+        {%for project in result_month[1][department]%}
+        <div class="green_cell">{{department}}</div>
+        {%endfor%}
+        {%endfor%}
+    </div>
+    <div class="green_row_head">
+        <div class="green_cell" >月份</div>
+        {%for department in result_month[1]%}
+        {%for project in result_month[1][department]%}
+        <div class="green_cell">{{project}}</div>
+        {%endfor%}
+        {%endfor%}
+    </div>
+    {% for month in result_month %}
+    <div class="green_row">
+        <div class="green_cell">{{ month}}</div>
+        {%for department in result_month[month]%}
+        {%for project in result_month[month][department]%}
+        <div class="green_cell">￥{{ result_month[month][department][project]|int}}</div>
         {% endfor %}
-
+        {% endfor %}
+    </div>
+    {% endfor %}
     </div>
 
 

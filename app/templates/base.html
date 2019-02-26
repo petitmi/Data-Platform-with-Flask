@@ -1,12 +1,10 @@
 {% extends "bootstrap/base.html"%}
 {% block title %}Petitmi{% endblock %}
-
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation" >
     <div class="container" >
         <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse"
-                data-target=".navbar-collapse">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">切换导航</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -16,11 +14,6 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-{#                <li class="dropdown"><a href="/shitsweeper" class="dropdown-toggle" data-toggle="dropdown">新鲜感 <b class="caret"></b></a>#}
-{#                    <ul class="dropdown-menu">#}
-{#                        <li><a href="/shitsweeper">扫翔</a></li>#}
-{#                        <li><a href="/plane">翔打翔</a></li>#}
-{#                    </ul>#}
                 <li class="dropdown"><a href="/edu-rp"  class="dropdown-toggle" data-toggle="dropdown">课程<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="/edu-rp" style="font-weight: bold">总数据(实时)</a></li>
@@ -45,14 +38,13 @@
                     <ul class="dropdown-menu">
                         <li><a href="/casts-rp" style="font-weight: bold">直播数据</a></li>
                         <li><a href="/morning-rp" style="font-weight: bold">总数据</a></li>
-                        <li><a href="/screen" style="font-weight: bold">APP实时</a></li>
                         <li><a href="/morning-dr" style="font-weight: bold">APP日报</a></li>
                         <li><a href="/circle-dr" style="font-weight: bold">内容日报</a></li>
-                        <!--<li><a href="/circle-mr" style="font-weight: bold">内容月报</a></li>-->
-                        <!--<li><a href="/screen" style="font-weight: bold">实时screen</a></li>-->
                     </ul>
                 </li>
-
+                <li>
+                    <a href="/screen">实时看板 </a>
+                </li>
 
             </ul>
             <ul class='nav navbar-nav navbar-right'>
