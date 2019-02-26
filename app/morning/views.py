@@ -201,25 +201,22 @@ def morning_dr():
         thatdate_sql = yesterday_sql
 
     results_dr=get_dr_values(thatdate_sql)
-    overlap_newly_day=olp(attr=results_dr['days_list'],bar1=results_dr['activate_days'],bar2=0,bar3=0,
-                    line1=results_dr['login_newly_days'],line2=0,line3=0,bar1_title='新激活用户',bar2_title=0,bar3_title=0,
-        line1_title='新登录用户',line2_title=0,line3_title=0,title='日拉新数据',width=1200,height=260)
-    overlap_au_day=olp(attr=results_dr['days_list'],bar1=results_dr['feed_count_days'],bar2=0,bar3=0,
-                    line1=results_dr['feed_author_days'],line2=0,line3=0,bar1_title='动态条数',bar2_title=0,bar3_title=0,
-        line1_title='动态发布者',line2_title=0,line3_title=0,title='日动态数据',width=1200,height=260)
-
-    overlap_works_day=olp(attr=results_dr['days_list'],bar1=results_dr['works_days'],bar2=0,bar3=0,
-                    line1=results_dr['claimers_days'],line2=0,line3=0,bar1_title='作品数量',bar2_title=0,bar3_title=0,
-        line1_title='认领人数',line2_title=0,line3_title=0,title='日作品认领数据',width=1200,height=260)
+    overlap_newly_day=olp(attr=results_dr['days_list'],bar1=results_dr['activate_days'],bar2=results_dr['feed_count_days'],bar3=results_dr['works_days'],
+                    line1=results_dr['login_newly_days'],line2=results_dr['feed_author_days'],line3=results_dr['claimers_days'],
+                          bar1_title='新激活用户',bar2_title='动态条数',bar3_title='作品数量',
+        line1_title='新登录用户',line2_title='动态发布者',line3_title='认领人数',title='',width=1200,height=350)
+    # overlap_au_day=olp(attr=results_dr['days_list'],bar1=results_dr['feed_count_days'],bar2=0,bar3=0,
+    #                 line1=results_dr['feed_author_days'],line2=0,line3=0,bar1_title='动态条数',bar2_title=0,bar3_title=0,
+    #     line1_title='动态发布者',line2_title=0,line3_title=0,title='日动态数据',width=1200,height=260)
+    #
+    # overlap_works_day=olp(attr=results_dr['days_list'],bar1=results_dr['works_days'],bar2=0,bar3=0,
+    #                 line1=results_dr['claimers_days'],line2=0,line3=0,bar1_title='作品数量',bar2_title=0,bar3_title=0,
+    #     line1_title='认领人数',line2_title=0,line3_title=0,title='日作品认领数据',width=1200,height=260)
 
     print('UA:',request.user_agent.string)
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('morning-dr.html',thatdate=thatdate_sql,
-                           activate_day=results_dr['activate_day'],
-                           login_day_newly=results_dr['login_day_newly'],
-                           messages_day=results_dr['messages_day'],
-                           active_day=results_dr['active_members_days'][0],
-                           claimers_day=results_dr['claimers_days'][14],
+
                            feed_author_days=results_dr['feed_author_days'][14],
                            # contact_day=results_dr['contact_day'],
                            # relation_contact_day=results_dr['relation_contact_day'],
@@ -232,8 +229,7 @@ def morning_dr():
                            activate_members_days=results_dr['activate_members_days'],
                            activate_members_fine_days=results_dr['activate_members_fine_days'],
                            authorized_members_days=results_dr['authorized_members_days'],
-                           overlap_newly_day=overlap_newly_day.render_embed(),
-                           overlap_au_day=overlap_au_day.render_embed(),
-                           overlap_works_day=overlap_works_day.render_embed())
+                           overlap_newly_day=overlap_newly_day.render_embed()
+                           )
 
 
