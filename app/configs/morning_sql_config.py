@@ -25,7 +25,7 @@ sql_workers_all="""select count(*) workers_all from unsung_heros2;"""
 #已审核职务总数
 sql_workers_checked="""select count(*) workers_workers_confirmed from filmographies where real_name is not null;"""
 #待认领职务总数
-sql_workers_unclaimed="""select count(case when member_id is null then 1 else null end) workers_all
+sql_workers_unclaimed="""select count(case when member_id is null then 1 else null end) workers_unclaimed
 from filmographies where real_name is not null;"""
 #认领人数
 sql_claimers_all="""select count(distinct member_id) from filmographies where member_id is not null and real_name is not null;"""

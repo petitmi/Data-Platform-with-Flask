@@ -9,18 +9,15 @@
  <br>
 <h1 class="head1">APP总数据(实时)</h1>
 <hr width="70%" align="left">
-<div class="blue_table"  style="font-size: 20px;width: 80%;">
-    <ul class="blue_head">
+<div class="blue_table"  style="font-size: 20px;width: auto;;">
+    <ul class="blue_head" style="font-size: 18px">
         <li class="cell">总激活</li>
              <li class="cell">电话总数</li>
              <!--<li class="cell">通讯录关系数</li>-->
         <li class="cell">作品总数</li>
         <li class="cell">已审核作品</li>
         <li class="cell">字幕>50作品</li>
-        <li class="cell">已录入职务总数</li>
-        <li class="cell">已审核职务总数</li>
-        <li class="cell">待认领职务总数</li>
-        <li class="cell">认领用户总数</li>
+
     </ul>
     <ul class="blue_row">
         <li class="cell">{{activate_all}}</li>
@@ -29,13 +26,27 @@
         <li class="cell">{{ works_all }}</li>
         <li class="cell">{{ works_checked }}</li>
         <li class="cell">{{ works_complete }}</li>
-        <li class="cell">{{ workers_all }}</li>
-        <li class="cell">{{ workers_checked }}</li>
-        <li class="cell">{{ workers_uncaimed }}</li>
-        <li class="cell">{{ claimers_all }}</li>
+
     </ul>
 </div>
  <br>
+<div class="blue_table"  style="font-size: 20px;width: auto;">
+    <ul class="blue_head" style="font-size: 18px">
+        <li class="cell">总激活</li>
+        <li class="cell">已录入职务总数</li>
+        <li class="cell">已审核职务总数</li>
+        <li class="cell">待认领职务总数</li>
+        <li class="cell">认领用户总数</li>
+    </ul>
+    <ul class="blue_row">
+        <li class="cell">{{ workers_all }}</li>
+        <li class="cell">{{ workers_checked }}</li>
+        <li class="cell">{{ workers_unclaimed }}</li>
+        <li class="cell">{{ claimers_all }}</li>
+    </ul>
+
+    <br>
+</div>
 <h1 class="head1">内容数据</h1>
 <hr width="70%" align="left">
 <div class="blue_table "  style="font-size: 20px;width: 80%;" >

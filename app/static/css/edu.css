@@ -38,6 +38,8 @@
             }
             .cell{
                 display: table-cell;
+                padding-right: 30px;
+
                 /*width: 100px;*/
             }
 

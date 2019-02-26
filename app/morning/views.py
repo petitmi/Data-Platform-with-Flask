@@ -151,7 +151,6 @@ def get_morning_rp_values():
                     key+='_%s'%genre
             key=key.replace('edu','学员').replace('ec','电商').replace('activate','激活')
             results['members_genres'][key]=db.session.execute(sql_genres%sql_condition).fetchall()[0][0]
-    print(results['members_genres'])
     return results
 
 @morning.route('/casts-rp',methods=["POST","GET"])
