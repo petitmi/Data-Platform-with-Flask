@@ -10,7 +10,7 @@ sql_data_totality="""select total_boards,active_boards,total_login_uv,total_pv,t
  from data_totality where data_date='%s'"""
 
 
-sql_data_daily="""select data_date,login_uv,newly_login_uv,pv,cast(anony_pv*100/pv as UNSIGNED),boards,article_posts,video_posts,publishers,comments,marks,messages
+sql_data_daily="""select data_date,login_uv,newly_login_uv,pv,cast(anony_pv*100/pv as UNSIGNED)
     from data_daily where data_date between date_add('%s',interval -7 day) and '%s' order by data_date desc"""
 
 sql_data_monthly="""select data_date,login_uv,newly_login_uv,pv,cast(anony_pv*100/pv as UNSIGNED),boards,article_posts,video_posts,publishers,comments,marks,messages

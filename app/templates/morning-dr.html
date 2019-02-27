@@ -30,9 +30,8 @@
 
 <h1 class="head1">日数据</h1>
 <hr width="70%" align="left">
-
 <br>
-<div class="green_table">
+<div class="green_table" style="width: 125%">
     <div class="green_row_head">
         <div class="green_cell" id="first_group" width="30%">日期</div>
         <div class="green_cell">活跃uv</div>
@@ -44,18 +43,31 @@
         <div class="green_cell">请求激活-成功</div>
         <div class="green_cell">授权人数</div>
         <div class="green_cell">激活-授权</div>
+        <div class="green_cell">认领人数</div>
+        <div class="green_cell">编辑动态发布数</div>
+        <div class="green_cell">用户动态发布人数</div>
+        <div class="green_cell">评论人数</div>
+        <div class="green_cell">点赞收藏人数</div>
+        <div class="green_cell">私信</div>
     </div>
-            <div class="green_row" style="font-weight: bold;font-size: 16px;color:mediumvioletred">
+    <div class="green_row" style="font-weight: bold;font-size: 16px;color:mediumvioletred">
         <div class="green_cell" id="first_group" width="30%">{{ process_date[0] }}</div>
         <div class="green_cell">{{ active_members_days[0]|int }}</div>
         <div class="green_cell">{{ (active_times_days[0]/active_members_days[0])|round(1)}}</div>
         <div class="green_cell">{{ login_members_days[0] }}</div>
         <div class="green_cell">{{ login_newly_members_days[0]|int }}</div>
         <div class="green_cell">{{ activate_members_days[0]|int }}</div>
-        <div class="green_cell">{{ activate_members_fine_days[0]|int }}</div>
-        <div class="green_cell">{{ (activate_members_fine_days[0]*100/activate_members_days[0])|int }}%</div>
+        <div class="green_cell">{{ activate_members_fin_days[0]|int }}</div>
+        <div class="green_cell">{{ (activate_members_fin_days[0]*100/activate_members_days[0])|int }}%</div>
         <div class="green_cell">{{ authorized_members_days[0]|int }}</div>
         <div class="green_cell">{{ (authorized_members_days[0]*100/activate_members_days[0])|int }}%</div>
+        <div class="green_cell">{{ claimers_days[0]|int }}</div>
+        <div class="green_cell">{{ feed_count_editor_days[0]|int }}</div>
+        <div class="green_cell">{{ feed_author_user_days[0]|int }}</div>
+        <div class="green_cell">{{ comments_days[0]|int }}</div>
+        <div class="green_cell">{{ marks_days[0]|int }}</div>
+        <div class="green_cell">{{ messages_days[0]|int }}</div>
+
     </div>
     {% for i in range(1,process_date|length) %}
     <div class="green_row" >
@@ -65,10 +77,16 @@
         <div class="green_cell">{{ login_members_days[i] }}</div>
         <div class="green_cell">{{ login_newly_members_days[i]|int }}</div>
         <div class="green_cell">{{ activate_members_days[i]|int }}</div>
-        <div class="green_cell">{{ activate_members_fine_days[i]|int }}</div>
-        <div class="green_cell">{{ (activate_members_fine_days[i]*100/activate_members_days[i])|int }}%</div>
+        <div class="green_cell">{{ activate_members_fin_days[i]|int }}</div>
+        <div class="green_cell">{{ (activate_members_fin_days[i]*100/activate_members_days[i])|int }}%</div>
         <div class="green_cell">{{ authorized_members_days[i]|int }}</div>
         <div class="green_cell">{{ (authorized_members_days[i]*100/activate_members_days[i])|int }}%</div>
+        <div class="green_cell">{{ claimers_days[i]|int }}</div>
+        <div class="green_cell">{{ feed_count_editor_days[i]|int }}</div>
+        <div class="green_cell">{{ feed_author_user_days[i]|int }}</div>
+        <div class="green_cell">{{ comments_days[i]|int }}</div>
+        <div class="green_cell">{{ marks_days[i]|int }}</div>
+        <div class="green_cell">{{ messages_days[i]|int }}</div>
     </div>
     {% endfor %}
     </div>

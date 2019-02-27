@@ -50,40 +50,43 @@ sql_messages_day="""select count(distinct `sender_id`) from messages where kind=
 
 #多日
 ##新登录
-# sql_login_newly_days="""select date(updated_at) date,count(distinct member_id) login_newly_days from person_infos
-# where created_at between '{0}' and '{1}' group by date(created_at) order by date(created_at)"""
+
 sql_login_newly_days="""select date(created_at) date,count(0) login_newly_days from tracks where created_at between '{0}' and '{1}'
  and trackable_type='Member'and `action`=100 group by date(created_at)  order by date(created_at) limit 15"""
-##激活
-sql_activate_days="""select date(updated_at) date,count(distinct member_id) activate_days
+##激活成功
+sql_activate_members_fin_days="""select date(updated_at) date,count(distinct member_id) activate_members_fin_days
 from person_infos
 where actived_sites like '%unsung_hero%'  and hero_actived_at between '{0}' and '{1}'
-group by date(hero_actived_at) order by date(hero_actived_at)"""
+group by date(hero_actived_at) order by date(hero_actived_at) desc"""
 ##授权通讯录
 ###即便跳过授权也会返回一个空的通讯录
-sql_authorized_days="""select count(distinct member_id) count_authorized from `address_books` 
+sql_authorized_days="""select date(created_at) date,count(distinct member_id) authorized_days from `address_books` 
 where created_at between '{0}' and '{1}' group by date(created_at) order by date(created_at) desc"""
 ##作品
 sql_works_days="""select date(created_at) date,count(1) works_days from films 
 where `category`=1  and created_at between '{0}' and '{1}'
-group by date(created_at) order by date(created_at) asc;"""
+group by date(created_at) order by date(created_at) desc;"""
 ##认领人
 sql_claimers_days="""select date(created_at) date,count(distinct member_id) claimers_days from claim_logs 
 where status=1 and created_at between '{0}' and '{1}'
-group by date(created_at) order by date(created_at) asc; """
-##动态发布者
-sql_feed_author_days="""select date(created_at) date,count(distinct owner_id) feed_author_days from activities 
+group by date(created_at) order by date(created_at) desc; """
+##用户动态发布人数
+sql_feed_author_user_days="""select date(created_at) date,count(distinct owner_id) feed_author_user_days from activities 
 where recipient_id = 3865 and recipient_type = 'Board' and `key` in ('video.create','album.create','link.create') 
-and  created_at between '{0}' and '{1}' 
-group by date(created_at) order by date(created_at) asc;"""
-##动态数量
-sql_feed_count_days="""select date(created_at) date,count(1) feed_count_days from activities 
+and  created_at between '{0}' and '{1}' and owner_id not in (46562,777367,770325,28017,900368,34797,759790)
+group by date(created_at) order by date(created_at) desc;"""
+##编辑动态数量
+sql_feed_count_editor_days="""select date(created_at) date,count(1) feed_count_editor_days from activities 
 where recipient_id = 3865 and recipient_type = 'Board'  and `key` in ('video.create','album.create','link.create') 
-and created_at between '{0}' and '{1}'
- group by date(created_at) order by date(created_at) asc;"""
+and created_at between '{0}' and '{1}' and owner_id in (46562,777367,770325,28017,900368,34797,759790)
+ group by date(created_at) order by date(created_at) desc;"""
 
-#es
-##
+##评论点赞私信
+sql_circle_days="""select data_date date,comments comments_days,marks marks_days,messages messages_days
+    from data_daily where data_date between '{0}' and '{1}' order by data_date desc"""
+
+
+##es活跃登录激活授权
 sql_app_daily_days="""select date,login_members,activate_members,active_members,active_times from app_daily 
 where date between '{0}' and '{1}' order by date desc """
 
