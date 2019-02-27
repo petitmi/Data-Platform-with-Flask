@@ -87,7 +87,7 @@ sql_circle_days="""select data_date date,comments comments_days,marks marks_days
 
 
 ##es活跃登录激活授权
-sql_app_daily_days="""select date,login_members,activate_members,active_members,active_times from app_daily 
+sql_app_daily_days="""select date,activate_members,active_members,active_times from app_daily 
 where date between '{0}' and '{1}' order by date desc """
 
 
