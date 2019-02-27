@@ -132,7 +132,7 @@ def get_dr_values(thatdate_sql):
     results['claimers_days_chart'].reverse()
     o=gt()
     ctime['reverse'] = o-n
-    pprint.pprint(ctime)
+    # pprint.pprint(ctime)
     return results
 
 
