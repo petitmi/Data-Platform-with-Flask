@@ -23,58 +23,75 @@
         </div>
     {% endfor %}
 <br>
-    <h1 class="head1">日数据</h1>
-    <hr width="70%" align="left">
-    <div style="overflow: hidden">
-        <div class="table1-left" style="float: left;width:400px;height: 250px">
-        <div class="blue_table"  >
-            <ul class="blue_head" style="font-size: 20px">
-                <li class="cell"></li>
-                <li class="cell">自主下单销量</li >
-                <li class="cell">自主下单销售额</li >
-            </ul>
-                <ul class="blue_row" style="font-size: 20px">
-                    <li class="cell"></li>
-                    <li class="cell">{{ ec_yesterday[0][0] }}</li>
-                    <li class="cell">￥{{ ec_yesterday[0][1]| int  }}</li>
-                </ul>
-        {% if  ec_1day[0][0]!=0 %}
-            <ul class="blue_row" >
-                <li class="cell">较前一日</li>
-               {% if  ec_yesterday[0][0]/ec_1day[0][0]-1>0%} <li class="cell" style="color: red">↑
-               {% else %}<li class="cell" style="color: green">↓{% endif %}
-                {{ (ec_yesterday[0][0]*100/ec_1day[0][0]-100 )| round(1, 'floor')  }}%</li>
-
-               {% if  ec_yesterday[0][1]/ec_1day[0][1]-1>0%} <li class="cell" style="color: red">↑
-               {% else %}<li class="cell" style="color: green">↓{% endif %}
-                {{ (ec_yesterday[0][1]*100/ec_1day[0][1]-100) | round(1, 'floor')  }}%</li>
-            </ul>
+<h1 class="head1">日数据</h1>
+<hr width="70%" align="left">
+<div style="overflow: hidden">
+    <div class="table1-left" style="float: left;width:400px;height: 250px">
+        <table class="blue_table"  >
+            <thead class="blue_head" style="font-size: 20px">
+            <tr>
+                <th class="cell"></th>
+                <th class="cell">自主下单销量</th >
+                <th class="cell">自主下单销售额</th >
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="blue_row" style="font-size: 20px">
+                <td class="cell"></td>
+                <td class="cell">{{ ec_yesterday[0][0] }}</td>
+                <td class="cell">￥{{ ec_yesterday[0][1]| int  }}</td>
+            </tr>
+            {% if  ec_1day[0][0]!=0 %}
+            <tr class="blue_row" >
+                <td class="cell">较前一日</td>
+                {% if  ec_yesterday[0][0]/ec_1day[0][0]-1>0%}
+                <td class="cell" style="color: red">↑
+                    {% else %}
+                <td class="cell" style="color: green">↓
+                {% endif %}
+                {{ (ec_yesterday[0][0]*100/ec_1day[0][0]-100 )| round(1, 'floor')  }}%
+                </td>
+                {% if  ec_yesterday[0][1]/ec_1day[0][1]-1>0%}
+                <td class="cell" style="color: red">↑
+                    {% else %}
+                <td class="cell" style="color: green">↓
+                {% endif %}
+                {{ (ec_yesterday[0][1]*100/ec_1day[0][1]-100) | round(1, 'floor')  }}%
+                </td>
+            </tr>
             {% else %}
-            <ul class="blue_row" >
-                <li class="cell" >较前一日</li>
-                <li class="cell" style="color: green">0%</li>
-                <li class="cell" style="color: green">0%</li>
-            </ul>
+            <tr class="blue_row" >
+                <td class="cell" >较前一日</td>
+                <td class="cell" style="color: green">0%</td>
+                <td class="cell" style="color: green">0%</td>
+            </tr>
             {% endif %}
             {% if   ec_7day[0][0]!=0%}
-            <ul class="blue_row" >
-                <li class="cell">较上周同期</li>
-               {% if  ec_yesterday[0][0]/ec_7day[0][0]-1>0%} <li class="cell" style="color: red">↑
-               {% else %}<li class="cell" style="color: green">↓{% endif %}
-                    {{ (ec_yesterday[0][0]*100/ec_7day[0][0]-100)| round(1, 'floor')  }}%</li>
-
-               {% if  ec_yesterday[0][1]/ec_7day[0][1]-1>0%} <li class="cell" style="color: red">↑
-               {% else %}<li class="cell" style="color: green">↓{% endif %}
-                {{ (ec_yesterday[0][1]*100/ec_7day[0][1]-100)| round(1, 'floor')  }}%</li>
-            </ul>
+            <tr class="blue_row" >
+                <td class="cell">较上周同期</td>
+               {% if  ec_yesterday[0][0]/ec_7day[0][0]-1>0%}
+                <td class="cell" style="color: red">↑
+                    {% else %}
+                <td class="cell" style="color: green">↓
+                {% endif %}
+                {{ (ec_yesterday[0][0]*100/ec_7day[0][0]-100)| round(1, 'floor')  }}%
+                </td>
+                {% if  ec_yesterday[0][1]/ec_7day[0][1]-1>0%}
+                <td class="cell" style="color: red">↑
+                    {% else %}
+                <td class="cell" style="color: green">↓{% endif %}
+                {{ (ec_yesterday[0][1]*100/ec_7day[0][1]-100)| round(1, 'floor')  }}%
+                </td>
+            </tr>
             {% else %}
-            <ul class="blue_row" >
-                <li class="cell">较上周同期</li>
-                <li class="cell" style="color: green">0%</li>
-                <li class="cell" style="color: green">0%</li>
-            </ul>
-        {% endif %}
-        </div>
+            <tr class="blue_row" >
+                <td class="cell">较上周同期</td>
+                <td class="cell" style="color: green">0%</td>
+                <td class="cell" style="color: green">0%</td>
+            </tr>
+            {% endif %}
+            </tbody>
+        </table>
         </div>
     <br>
         <div class="table1-left" style="float: left;width:50%;height: 250px">{{ overlap_day|safe }}</div>

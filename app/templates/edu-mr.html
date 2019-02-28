@@ -24,20 +24,24 @@
 
 <h1 class="head1">月数据</h1>
 <hr width="70%" align="left">
-<div class="blue_table"  style="font-size: 20px">
-    <ul class="blue_head">
-        <li class="cell">本月</li>
-        <li class="cell">销量</li >
-        <li class="cell">销售额</li>
-        <li class="cell">毛利</li>
-    </ul>
-    <ul class="blue_row" >
-        <li class="cell">{{ edu_month[0][0] }}</li>
-        <li class="cell">{{ edu_month[0][1] }}</li>
-        <li class="cell">￥{{ edu_month[0][2] }}</li>
-        <li class="cell">￥{{ edu_month[0][3] }}</li>
-    </ul>
-</div>
+<table class="blue_table"  style="font-size: 20px">
+    <thead class="blue_head">
+    <tr>
+        <th class="cell">本月</th>
+        <th class="cell">销量</th >
+        <th class="cell">销售额</th>
+        <th class="cell">毛利</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="blue_row" >
+        <td class="cell">{{ edu_month[0][0] }}</td>
+        <td class="cell">{{ edu_month[0][1] }}</td>
+        <td class="cell">￥{{ edu_month[0][2] }}</td>
+        <td class="cell">￥{{ edu_month[0][3] }}</td>
+    </tr>
+    </tbody>
+</table>
 <br>
 <div class="table3-top" style="width: 90%;height: 80%;  margin: 0 auto;">
     {{ overlap_month|safe }}

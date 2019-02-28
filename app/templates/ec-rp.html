@@ -6,81 +6,99 @@
 {% endblock %}
 
 {% block page_content %}
-    <br>
-        <h1 class="head1" >总数据</h1>
-    <hr width="70%" align="left">
-        <div class="blue_table"  style="font-size: 20px;width: 50%;">
-        <ul class="blue_head">
-            <li class="cell">年份</li>
-            <li class="cell">总销量</li >
-            <li class="cell">总销售额</li>
-            <li class="cell">总购买人数</li>
-        </ul>
-                <ul class="blue_row"> <li class="cell">2016</li>
-            <li class="cell">1470</li>
-            <li class="cell">￥19193200</li>
-            <li class="cell">952</li></ul>
-            <ul class="blue_row"> <li class="cell">2017</li>
-            <li class="cell">{{ ec_year[1][1] }} </li>
-            <li class="cell">￥47652570</li>
-            <li class="cell">{{ ec_year[1][3] }}</li></ul>
-            <ul class="blue_row"> <li class="cell">{{ec_year[2][0]}}</li>
-            <li class="cell">{{ec_year[2][1]}}</li>
-            <li class="cell">￥{{ec_year[2][2]}}</li>
-            <li class="cell">{{ec_year[2][3]}}</li></ul>
-            <ul class="blue_row"> <li class="cell">{{ec_year[3][0]}}</li>
-            <li class="cell">{{ec_year[3][1]}}</li>
-            <li class="cell">￥{{ec_year[3][2]}}</li>
-            <li class="cell">{{ec_year[3][3]}}</li></ul>
+<h1 class="head1" >总数据</h1>
+<hr width="70%" align="left">
+<table class="blue_table"  style="font-size: 20px;width: 50%;">
+    <thead class="blue_head">
+    <tr>
+        <th class="cell">年份</th>
+        <th class="cell">总销量</th >
+        <th class="cell">总销售额</th>
+        <th class="cell">总购买人数</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="blue_row">
+        <th class="cell">2016</th>
+        <th class="cell">1470</th>
+        <th class="cell">￥19193200</th>
+        <th class="cell">952</th>
+    </tr>
+    <tr class="blue_row">
+        <td class="cell">2017</td>
+        <td class="cell">{{ ec_year[1][1] }} </td>
+        <td class="cell">￥47652570</td>
+        <td class="cell">{{ ec_year[1][3] }}</td>
+    </tr>
+    <tr class="blue_row">
+        <td class="cell">{{ec_year[2][0]}}</td>
+        <td class="cell">{{ec_year[2][1]}}</td>
+        <td class="cell">￥{{ec_year[2][2]}}</td>
+        <td class="cell">{{ec_year[2][3]}}</td>
+    </tr>
+    <tr class="blue_row">
+        <td class="cell">{{ec_year[3][0]}}</td>
+        <td class="cell">{{ec_year[3][1]}}</td>
+        <td class="cell">￥{{ec_year[3][2]}}</td>
+        <td class="cell">{{ec_year[3][3]}}</td>
+    </tr>
 {#        +2925729#}
-    </div>
-    <h2 class="head2" style=" font-size: 18px;
+    </tbody>
+</table>
+<h2 class="head2" style=" font-size: 18px;
                 color: gray;">99元会员</h2>
-
-        <div class="green_table">
-        <div class="green_row_head">
-            <div class="green_cell" >类别</div>
-            <div class="green_cell">新增会员数</div>
-            <div class="green_cell">下单会员数</div>
-            <div class="green_cell">订单数</div>
-            <div class="green_cell">总订单金额</div>
-            <div class="green_cell">人均订单数</div>
-            <div class="green_cell">人均订单金额</div>
-        </div>
-            <div class="green_row">
-                <div class="green_cell" >{{ ec_vip[0][0] }}</div>
-                <div class="green_cell">{{ ec_vip_sale[0][0] }}</div>
-                <div class="green_cell">{{ ec_vip[0][1] }}</div>
-                <div class="green_cell">{{ ec_vip[0][2] }}</div>
-                <div class="green_cell">￥{{ ec_vip[0][3]|int }}</div>
-                {% if ec_vip[0][1] %}
-                    <div class="green_cell">{{ (ec_vip[0][2]/ec_vip[0][1])|int }}</div>
-                    <div class="green_cell">￥{{ (ec_vip[0][3]/ec_vip[0][1])|int }}</div>
-                {% else %}
-                    <div class="green_cell">0</div>
-                    <div class="green_cell">0</div>
-                {% endif %}
-                </div>
-        </div>
-    <br>
-            <h2 class="head2" style=" font-size: 18px;
+<table class="green_table">
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell" >类别</th>
+        <th class="green_cell">新增会员数</th>
+        <th class="green_cell">下单会员数</th>
+        <th class="green_cell">订单数</th>
+        <th class="green_cell">总订单金额</th>
+        <th class="green_cell">人均订单数</th>
+        <th class="green_cell">人均订单金额</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="green_row">
+        <td class="green_cell" >{{ ec_vip[0][0] }}</td>
+        <td class="green_cell">{{ ec_vip_sale[0][0] }}</td>
+        <td class="green_cell">{{ ec_vip[0][1] }}</td>
+        <td class="green_cell">{{ ec_vip[0][2] }}</td>
+        <td class="green_cell">￥{{ ec_vip[0][3]|int }}</td>
+        {% if ec_vip[0][1] %}
+        <td class="green_cell">{{ (ec_vip[0][2]/ec_vip[0][1])|int }}</td>
+        <td class="green_cell">￥{{ (ec_vip[0][3]/ec_vip[0][1])|int }}</td>
+        {% else %}
+        <td class="green_cell">0</td>
+        <td class="green_cell">0</td>
+        {% endif %}
+    </tr>
+    </tbody>
+</table>
+<br>
+<h2 class="head2" style=" font-size: 18px;
                 color: gray;">重点产品自主下单</h2>
-        <div class="green_table">
-        <div class="green_row_head">
-            <div class="green_cell" >平台</div>
-            <div class="green_cell">产品</div>
-            <div class="green_cell">销量</div>
-            <div class="green_cell">价格</div>
-        </div>
-        {% for i in ec_goods %}
-            <div class="green_row">
-                <div class="green_cell" >{{ i[0] }}</div>
-                <div class="green_cell">{{ i[1] }}</div>
-                <div class="green_cell" >{{ i[2] }}</div>
-                <div class="green_cell">￥{{ i[3]|int}}</div>
-            </div>
-        {% endfor %}
-    </div>
+<table class="green_table">
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell" >平台</th>
+        <th class="green_cell">产品</th>
+        <th class="green_cell">销量</th>
+        <th class="green_cell">价格</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in ec_goods %}
+    <tr class="green_row">
+        <td class="green_cell" >{{ i[0] }}</td>
+        <td class="green_cell">{{ i[1] }}</td>
+        <td class="green_cell" >{{ i[2] }}</td>
+        <td class="green_cell">￥{{ i[3]|int}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}
 

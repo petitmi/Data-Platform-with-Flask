@@ -15,68 +15,79 @@
 {% endfor %}
 <h1 class="head1">APP总数据(实时)</h1>
 <hr width="70%" align="left">
-<div class="blue_table"  style="font-size: 20px;width: auto;;">
-    <ul class="blue_head" style="font-size: 18px">
-        <li class="cell">总激活</li>
-             <li class="cell">电话总数</li>
+<table class="blue_table"  style="font-size: 20px;width: 60%;">
+    <thead class="blue_head" style="font-size: 18px">
+    <tr>
+        <th class="cell">总激活</th>
+        <th class="cell">电话总数</th>
              <!--<li class="cell">通讯录关系数</li>-->
-        <li class="cell">作品总数</li>
-        <li class="cell">已审核作品</li>
-        <li class="cell">字幕>50作品</li>
-
-    </ul>
-    <ul class="blue_row">
-        <li class="cell">{{activate_all}}</li>
-        <li class="cell">{{contact_all}}</li>
+        <th class="cell">作品总数</th>
+        <th class="cell">已审核作品</th>
+        <th class="cell">字幕>50作品</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="blue_row">
+        <td class="cell">{{activate_all}}</td>
+        <td class="cell">{{contact_all}}</td>
              <!--<li class="cell">{{ relation_contact_all }}</li>-->
-        <li class="cell">{{ works_all }}</li>
-        <li class="cell">{{ works_checked }}</li>
-        <li class="cell">{{ works_complete }}</li>
-
-    </ul>
-</div>
+        <td class="cell">{{ works_all }}</td>
+        <td class="cell">{{ works_checked }}</td>
+        <td class="cell">{{ works_complete }}</td>
+    </tr>
+    </tbody>
+</table>
  <br>
-<div class="blue_table"  style="font-size: 20px;width: auto;">
-    <ul class="blue_head" style="font-size: 18px">
-        <li class="cell">总激活</li>
-        <li class="cell">已录入职务总数</li>
-        <li class="cell">已审核职务总数</li>
-        <li class="cell">待认领职务总数</li>
-        <li class="cell">认领用户总数</li>
-    </ul>
-    <ul class="blue_row">
-        <li class="cell">{{ workers_all }}</li>
-        <li class="cell">{{ workers_checked }}</li>
-        <li class="cell">{{ workers_unclaimed }}</li>
-        <li class="cell">{{ claimers_all }}</li>
-    </ul>
+<table class="blue_table"  style="font-size: 20px;width: 70%;">
+    <thead class="blue_head" style="font-size: 18px">
+    <tr>
+        <th class="cell">总激活</th>
+        <th class="cell">已录入职务总数</th>
+        <th class="cell">已审核职务总数</th>
+        <th class="cell">待认领职务总数</th>
+        <th class="cell">认领用户总数</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="blue_row">
+        <td class="cell">{{ workers_all }}</td>
+        <td class="cell">{{ workers_checked }}</td>
+        <td class="cell">{{ workers_unclaimed }}</td>
+        <td class="cell">{{ claimers_all }}</td>
+    </tr>
+    </tbody>
 
     <br>
-</div>
+</table>
 <h1 class="head1">内容数据</h1>
 <hr width="70%" align="left">
-<div class="blue_table "  style="font-size: 20px;width: 80%;" >
-    <div class="blue_head " >
-        <div class="cell">总圈子数</div>
-        <div class="cell">活跃圈子数</div>
-        <div class="cell">总文章数</div>
-        <div class="cell">总视频数</div>
-        <div class="cell">总发布者</div>
-        <div class="cell">总马克</div>
-        <div class="cell">总评论</div>
-        <div class="cell">总私信</div>
-    </div>
-    <div class="blue_row " >
-        <div class="cell">{{ circle_all[0] }}</div>
-        <div class="cell">{{ circle_all[1] }}</div>
-        <div class="cell">{{ circle_all[2] }}</div>
-        <div class="cell">{{ circle_all[3] }}</div>
-        <div class="cell">{{ circle_all[4] }}</div>
-        <div class="cell">{{ circle_all[5] }}</div>
-        <div class="cell">{{ circle_all[6] }}</div>
-        <div class="cell">{{ circle_all[7] }}</div>
-    </div>
-</div>
+<table class="blue_table "  style="font-size: 20px;width: 80%;" >
+    <thead class="blue_head " >
+    <tr>
+        <th class="cell">总圈子数</th>
+        <th class="cell">活跃圈子数</th>
+        <th class="cell">总文章数</th>
+        <th class="cell">总视频数</th>
+        <th class="cell">总发布者</th>
+        <th class="cell">总马克</th>
+        <th class="cell">总评论</th>
+        <th class="cell">总私信</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="blue_row " >
+        <td class="cell">{{ circle_all[0] }}</td>
+        <td class="cell">{{ circle_all[1] }}</td>
+        <td class="cell">{{ circle_all[2] }}</td>
+        <td class="cell">{{ circle_all[3] }}</td>
+        <td class="cell">{{ circle_all[4] }}</td>
+        <td class="cell">{{ circle_all[5] }}</td>
+        <td class="cell">{{ circle_all[6] }}</td>
+        <td class="cell">{{ circle_all[7] }}</td>
+    </tr>
+    </tbody>
+</table>
+
  <br>
 <h1 class="head1">用户数据</h1>
 <hr width="70%" align="left">

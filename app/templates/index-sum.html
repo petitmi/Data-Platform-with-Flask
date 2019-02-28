@@ -29,18 +29,22 @@
    <h1 class="head1">{{year_sql}}部门汇总</h1>
 <hr width="70%" align="left">
     <div style="overflow: hidden">
-        <div class="blue_table"  style="width:400px;height: 350px;font-size: 22px; padding: 10px;float: left">
-            <ul class="blue_head">
-                <li class="cell">部门</li>
-                <li class="cell">销售额</li >
-            </ul>
+        <table class="blue_table"  style="width:400px;height: 350px;font-size: 22px; padding: 10px;float: left">
+            <thead class="blue_head">
+            <tr>
+                <th class="cell">部门</th>
+                <th class="cell">销售额</th >
+            </tr>
+            </thead>
+            <tbody>
             {% for department in result_department %}
-                <ul class="blue_row" >
-                    <li class="cell">{{ department }}</li>
-                    <li class="cell">￥{{ result_department[department] |int}}</li>
-                </ul>
+            <tr class="blue_row" >
+                <td class="cell">{{ department }}</td>
+                <td class="cell">￥{{ result_department[department] |int}}</td>
+            </tr>
             {% endfor %}
-        </div>
+            </tbody>
+        </table>
 <div style="float: left">
 {{ pie_department|safe }}
 </div>
@@ -50,25 +54,28 @@
  <br><br>
 <h1 class="head1">{{year_sql}}项目汇总</h1>
 <hr width="70%" align="left">
-<div class="blue_table"  style="font-size: 17px;">
-    <ul class="blue_head">
-        <li class="cell">部门</li>
-        <li class="cell">项目</li >
-        <li class="cell">本月销售额</li >
-        <li class="cell">本年销售额</li >
-    </ul>
+<table class="blue_table"  style="font-size: 17px;">
+    <thead class="blue_head">
+    <tr>
+        <th class="cell">部门</th>
+        <th class="cell">项目</th >
+        <th class="cell">本月销售额</th >
+        <th class="cell">本年销售额</th >
+    </tr>
+    </thead>
+    <tbody>
     {% for department in result_project_thisyear %}
     {% for project in result_project_thisyear[department]%}
-    <ul class="blue_row" >
-        <li class="cell">{{ department}}</li>
-        <li class="cell">{{ project }}</li>
-        <li class="cell">￥{{ result_project_thismonth[department][project]|int }}</li>
-        <li class="cell">￥{{ result_project_thisyear[department][project]|int }}</li>
-    </ul>
+    <tr class="blue_row" >
+        <td class="cell">{{ department}}</td>
+        <td class="cell">{{ project }}</td>
+        <td class="cell">￥{{ result_project_thismonth[department][project]|int }}</td>
+        <td class="cell">￥{{ result_project_thisyear[department][project]|int }}</td>
+    </tr>
     {% endfor%}
     {% endfor %}
-
-</div>
+</tbody>
+</table>
 <br><br><br>
 <table class="green_table" style="width: 120%">
     <thead class="green_row_head">

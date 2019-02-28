@@ -6,124 +6,135 @@
 {% endblock %}
 
 {% block page_content %}
-    <div>
-<br><br>
-        <form action="/edu-dr" method=post >
+<form action="/edu-dr" method=post >
 选择日期：<input size="16" type="text" name="input" value="{{ thatdate }}" readonly class="form_datetime">
-            <input type="submit" class="startButton" value="查询">
-
-        </form>
+    <input type="submit" class="startButton" value="查询">
+</form>
 
 <script type="text/javascript">
     $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd',minView:2});
 </script>
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <div class=flashes>
-                <div><font color="red"> {{ message }}</font></div></div>
-        </div>
-    {% endfor %}
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <div class=flashes>
+        <div style="color:red"> {{ message }}</div></div>
+</div>
+{% endfor %}
 <br>
-    <h1 class="head1" style="clear: both" >日数据</h1>
-    <hr width="70%" align="left">
-    <div class="table1-left" style="float: left;width:400px;height: 250px">
-        <div class="blue_table"  >
-            <ul class="blue_head" style="font-size: 20px">
-                <li class="cell"></li>
-                <li class="cell">销量</li >
-                <li class="cell">销售额</li >
-                <li class="cell">毛利</li >
-
-            </ul>
-                <ul class="blue_row" style="font-size: 20px">
-                    <li class="cell"></li>
-                    <li class="cell">{{ edu_yesterday[0][0] }}</li>
-                    <li class="cell">￥{{ edu_yesterday[0][1]| int  }}</li>
-                    <li class="cell">￥{{ edu_yesterday[0][2]| int  }}</li>
-
-                </ul>
-        {% if  edu_1day[0][0]!=0 and edu_7day[0][0]!=0%}
-            <ul class="blue_row" >
-                <li class="cell">较前一日</li>
-               {% if  edu_yesterday[0][0]/edu_1day[0][0]-1>0%} <li class="cell" style="color: red">↑
-               {% else %}<li class="cell" style="color: green">↓{% endif %}
-                {{ (edu_yesterday[0][0]*100/edu_1day[0][0]-100 )| round(1, 'floor')  }}%</li>
-
-               {% if  edu_yesterday[0][1]/edu_1day[0][1]-1>0%} <li class="cell" style="color: red">↑
-               {% else %}<li class="cell" style="color: green">↓{% endif %}
-                {{ (edu_yesterday[0][1]*100/edu_1day[0][1]-100) | round(1, 'floor')  }}%</li>
-            </ul>
-            <ul class="blue_row" >
-                <li class="cell">较上周同期</li>
-               {% if  edu_yesterday[0][0]/edu_7day[0][0]-1>0%} <li class="cell" style="color: red">↑
-               {% else %}<li class="cell" style="color: green">↓{% endif %}
-                    {{ (edu_yesterday[0][0]*100/edu_7day[0][0]-100)| round(1, 'floor')  }}%</li>
-
-               {% if  edu_yesterday[0][1]/edu_7day[0][1]-1>0%} <li class="cell" style="color: red">↑
-               {% else %}<li class="cell" style="color: green">↓{% endif %}
-                {{ (edu_yesterday[0][1]*100/edu_7day[0][1]-100)| round(1, 'floor')  }}%</li>
-            </ul>
-        {% else %}
-            <ul class="blue_row" >
-                <li class="cell" >较前一日</li>
-                <li class="cell" style="color: green">0%</li>
-                <li class="cell" style="color: green">0%</li>
-            </ul>
-            <ul class="blue_row" >
-                <li class="cell">较上周同期</li>
-                <li class="cell" style="color: green">0%</li>
-                <li class="cell" style="color: green">0%</li>
-            </ul>
-        {% endif %}
-        </div>
-    </div>
-    <div class="table1-right" style="float: left;width: 45%;height: 300px">{{ overlap_day|safe }}</div>
-<br>
-        <table class="green_table" >
-            <thead class="green_row_head">
-            <tr>
-                <th class="green_cell">会员名称</th>
-                <th class="green_cell">销量</th>
-                <th class="green_cell">销售额</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for i in edu_800vip_day %}
-            <tr class="green_row">
-                <td class="green_cell">{{ i[0] }}</td>
-                <td class="green_cell">{{ i[1] }}</td>
-                <td class="green_cell">{{ i[2] }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-<br>
-    <table class="green_table" >
-        <thead class="green_row_head">
+<h1 class="head1" style="clear: both" >日数据</h1>
+<hr width="70%" align="left">
+<div class="table1-left" style="float: left;width:400px;height: 250px">
+    <table class="blue_table"  >
+        <thead class="blue_head" style="font-size: 20px">
         <tr>
-            <th class="green_cell">课程名称</th>
-            <th class="green_cell">教师</th>
-            <th class="green_cell">销量</th>
-            <th class="green_cell">均价</th>
-            <th class="green_cell">销售额</th>
-            <th class="green_cell">毛利</th>
+            <th class="cell"></th>
+            <th class="cell">销量</th >
+            <th class="cell">销售额</th >
+            <th class="cell">毛利</th >
         </tr>
         </thead>
         <tbody>
-        {% for i in edu_class_day %}
-        <tr class="green_row">
-            <td class="green_cell" >{{ i[0] }}</td>
-            <td class="green_cell">{{ i[1] }}</td>
-            <td class="green_cell">{{ i[2]}}</td>
-            <td class="green_cell">￥{{ i[3]|int}}</td>
-            <td class="green_cell">￥{{ i[4]|int}}</td>
-            <td class="green_cell">￥{{ i[5]|int}}</td>
+        <tr class="blue_row" style="font-size: 20px">
+            <td class="cell"></td>
+            <td class="cell">{{ edu_yesterday[0][0] }}</td>
+            <td class="cell">￥{{ edu_yesterday[0][1]| int  }}</td>
+            <td class="cell">￥{{ edu_yesterday[0][2]| int  }}</td>
         </tr>
-        {% endfor %}
+        {% if  edu_1day[0][0]!=0 and edu_7day[0][0]!=0%}
+        <tr class="blue_row" >
+            <td class="cell">较前一日</td>
+            {% if  edu_yesterday[0][0]/edu_1day[0][0]-1>0%}
+            <td class="cell" style="color: red">↑
+                {% else %}
+            <td class="cell" style="color: green">↓{% endif %}
+            {{ (edu_yesterday[0][0]*100/edu_1day[0][0]-100 )| round(1, 'floor')  }}%
+            </td>
+            {% if  edu_yesterday[0][1]/edu_1day[0][1]-1>0%}
+            <td class="cell" style="color: red">↑
+                {% else %}
+            <td class="cell" style="color: green">↓
+            {% endif %}
+            {{ (edu_yesterday[0][1]*100/edu_1day[0][1]-100) | round(1, 'floor')  }}%
+            </td>
+        </tr>
+        <tr class="blue_row" >
+            <td class="cell">较上周同期</td>
+            {% if  edu_yesterday[0][0]/edu_7day[0][0]-1>0%}
+            <td class="cell" style="color: red">↑
+                {% else %}
+            <td class="cell" style="color: green">↓
+            {% endif %}
+            {{ (edu_yesterday[0][0]*100/edu_7day[0][0]-100)| round(1, 'floor')  }}%
+            </td>
+            {% if  edu_yesterday[0][1]/edu_7day[0][1]-1>0%}
+            <td class="cell" style="color: red">↑
+                {% else %}
+            <td class="cell" style="color: green">↓
+            {% endif %}
+            {{ (edu_yesterday[0][1]*100/edu_7day[0][1]-100)| round(1, 'floor')  }}%
+            </td>
+        </tr>
+        {% else %}
+        <tr class="blue_row" >
+            <td class="cell" >较前一日</td>
+            <td class="cell" style="color: green">0%</td>
+            <td class="cell" style="color: green">0%</td>
+        </tr>
+        <tr class="blue_row" >
+            <td class="cell">较上周同期</td>
+            <td class="cell" style="color: green">0%</td>
+            <td class="cell" style="color: green">0%</td>
+        </tr>
+        {% endif %}
         </tbody>
-    </table>
+        </table>
+    </div>
+<div class="table1-right" style="float: left;width: 45%;height: 300px">{{ overlap_day|safe }}</div>
+<br>
+<table class="green_table" >
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell">会员名称</th>
+        <th class="green_cell">销量</th>
+        <th class="green_cell">销售额</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in edu_800vip_day %}
+    <tr class="green_row">
+        <td class="green_cell">{{ i[0] }}</td>
+        <td class="green_cell">{{ i[1] }}</td>
+        <td class="green_cell">{{ i[2] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<br>
+<table class="green_table" >
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell">课程名称</th>
+        <th class="green_cell">教师</th>
+        <th class="green_cell">销量</th>
+        <th class="green_cell">均价</th>
+        <th class="green_cell">销售额</th>
+        <th class="green_cell">毛利</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in edu_class_day %}
+    <tr class="green_row">
+        <td class="green_cell" >{{ i[0] }}</td>
+        <td class="green_cell">{{ i[1] }}</td>
+        <td class="green_cell">{{ i[2]}}</td>
+        <td class="green_cell">￥{{ i[3]|int}}</td>
+        <td class="green_cell">￥{{ i[4]|int}}</td>
+        <td class="green_cell">￥{{ i[5]|int}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}
-</div>
 <br><br>

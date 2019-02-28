@@ -14,55 +14,66 @@
 <h1 class="head1">总数据</h1>
 <hr width="70%" align="left">
 <div style="overflow: hidden">
-    <li class="blue_table"  style="float:left; font-size: 20px;width: 50%;">
-        <ul class="blue_head">
-            <li class="cell">年份</li>
-            <li class="cell">总销量</li >
-            <li class="cell">总销售额</li>
-            <li class="cell">总购课人数</li>
-            <li class="cell">毛利</li>
-            <li class="cell">毛利率</li>
-        </ul>
+    <table class="blue_table"  style="float:left; font-size: 20px;width: 60%;">
+        <thead class="blue_head">
+        <tr>
+            <th class="cell">年份</th>
+            <th class="cell">总销量</th >
+            <th class="cell">总销售额</th>
+            <th class="cell">总购课人数</th>
+            <th class="cell">毛利</th>
+            <th class="cell">毛利率</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for i in edu_year %}
-        <ul class="blue_row">
-            <li class="cell">{{ i[0] }}</li>
+        <tr class="blue_row">
+            <td class="cell">{{ i[0] }}</td>
             {% if i[0]==2018|string %}
-            <li class="cell">{{ i[1] +edu_xiaoe[0][0]}}</li>
-            <li class="cell">￥{{ i[2]+edu_xiaoe[0][1] }}</li>
-            <li class="cell">{{ i[3] +edu_xiaoe[0][2]}}</li>
-            <li class="cell">￥{{ i[4] +edu_xiaoe[0][3]}}</li>
-            <li class="cell">{{ ((i[4] +edu_xiaoe[0][3])*100/(i[2]+edu_xiaoe[0][1]))|int}}%</li>
+            <td class="cell">{{ i[1] +edu_xiaoe[0][0]}}</td>
+            <td class="cell">￥{{ i[2]+edu_xiaoe[0][1] }}</td>
+            <td class="cell">{{ i[3] +edu_xiaoe[0][2]}}</td>
+            <td class="cell">￥{{ i[4] +edu_xiaoe[0][3]}}</td>
+            <td class="cell">{{ ((i[4] +edu_xiaoe[0][3])*100/(i[2]+edu_xiaoe[0][1]))|int}}%</td>
             {% else %}
-            <li class="cell">{{ i[1] }}</li>
-            <li class="cell">￥{{ i[2] }}</li>
-            <li class="cell">{{ i[3] }}</li>
-            <li class="cell">￥{{ i[4] }}</li>
-            <li class="cell">{{ (i[4]*100/ i[2])|int}}%</li>
+            <td class="cell">{{ i[1] }}</td>
+            <td class="cell">￥{{ i[2] }}</td>
+            <td class="cell">{{ i[3] }}</td>
+            <td class="cell">￥{{ i[4] }}</td>
+            <td class="cell">{{ (i[4]*100/ i[2])|int}}%</td>
             {% endif %}
-        </ul>
+        </tr>
         {% endfor %}
-    </li>
+        </tbody>
+    </table>
     <div style="float: left;width: 20px">|     </div>
-    <p class="head2" style=" font-size: 18px;
-                color: gray;float: left">小鹅通&nbsp&nbsp&nbsp</p>
-    <div class="blue_table"  style="font-size: 20px;width: 20%;text-align: center;">
-        <ul class="blue_head">
-            <li class="cell">总销量</li >
-            <li class="cell">总流水</li>
-        </ul>
-        <ul class="blue_row">
-            <li class="cell">{{ edu_xiaoe[0][0]}}</li>
-            <li class="cell">￥{{ edu_xiaoe[0][1] }}</li>
-        </ul>
-        <ul class="blue_head">
-            <li class="cell">总购课人数</li>
-            <li class="cell">毛利</li>
-        </ul>
-        <ul class="blue_row">
-            <li class="cell">{{edu_xiaoe[0][2]}}</li>
-            <li class="cell">￥{{ edu_xiaoe[0][3] }}</li>
-        </ul>
-    </div>
+    <p class="head2" style=" font-size: 18px;color: gray;float: left">小鹅通&nbsp&nbsp&nbsp</p>
+    <table class="blue_table"  style="font-size: 20px;width: 20%;text-align: center;">
+        <thead class="blue_head">
+        <tr>
+            <th class="cell">总销量</th >
+            <th class="cell">总流水</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="blue_row">
+            <td class="cell">{{ edu_xiaoe[0][0]}}</td>
+            <td class="cell">￥{{ edu_xiaoe[0][1] }}</td>
+        </tr>
+        </tbody>
+        <thead class="blue_head">
+        <tr>
+            <th class="cell">总购课人数</th>
+            <th class="cell">毛利</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="blue_row">
+            <td class="cell">{{edu_xiaoe[0][2]}}</td>
+            <td class="cell">￥{{ edu_xiaoe[0][3] }}</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <br>
 <table class="green_table">
