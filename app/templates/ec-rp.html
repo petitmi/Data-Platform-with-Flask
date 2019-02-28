@@ -39,7 +39,7 @@
 
         <div class="green_table">
         <div class="green_row_head">
-            <div class="green_cell" id="first_group" width="30%">类别</div>
+            <div class="green_cell" >类别</div>
             <div class="green_cell">新增会员数</div>
             <div class="green_cell">下单会员数</div>
             <div class="green_cell">订单数</div>
@@ -48,7 +48,7 @@
             <div class="green_cell">人均订单金额</div>
         </div>
             <div class="green_row">
-                <div class="green_cell" id="first_group" width="30%">{{ ec_vip[0][0] }}</div>
+                <div class="green_cell" >{{ ec_vip[0][0] }}</div>
                 <div class="green_cell">{{ ec_vip_sale[0][0] }}</div>
                 <div class="green_cell">{{ ec_vip[0][1] }}</div>
                 <div class="green_cell">{{ ec_vip[0][2] }}</div>
@@ -67,14 +67,14 @@
                 color: gray;">重点产品自主下单</h2>
         <div class="green_table">
         <div class="green_row_head">
-            <div class="green_cell" id="first_group" width="30%">平台</div>
+            <div class="green_cell" >平台</div>
             <div class="green_cell">产品</div>
             <div class="green_cell">销量</div>
             <div class="green_cell">价格</div>
         </div>
         {% for i in ec_goods %}
             <div class="green_row">
-                <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
+                <div class="green_cell" >{{ i[0] }}</div>
                 <div class="green_cell">{{ i[1] }}</div>
                 <div class="green_cell" >{{ i[2] }}</div>
                 <div class="green_cell">￥{{ i[3]|int}}</div>

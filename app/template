@@ -43,7 +43,7 @@
  <p style="color:red">11月15日前uv不准确</p>
         <div class="green_table">
         <div class="green_row_head">
-            <div class="green_cell" id="first_group" width="30%">日期</div>
+            <div class="green_cell" >日期</div>
             <div class="green_cell">下载pv</div>
             <div class="green_cell">信息流uv</div>
             <div class="green_cell">信息流pv</div>
@@ -57,7 +57,7 @@
 	</div>
             {% for i in range(process_date|length) %}
             <div class="green_row">
-                <div class="green_cell" id="first_group" width="30%">{{ process_date[i] }}</div>
+                <div class="green_cell" >{{ process_date[i] }}</div>
                 <div class="green_cell"> 待录入</div>
                 <div class="green_cell">{{ active_7days_uv[i]|int }}</div>
                 <div class="green_cell">{{ active_7days_pv[i]|int }}</div>

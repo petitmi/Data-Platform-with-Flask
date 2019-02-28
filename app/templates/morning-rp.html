@@ -6,7 +6,13 @@
     <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 {% endblock %}
 {% block page_content %}
- <br>
+
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <ul class=flashes>
+        <li><font color="red"> {{ message }}</font></li></ul>
+</div>
+{% endfor %}
 <h1 class="head1">APP总数据(实时)</h1>
 <hr width="70%" align="left">
 <div class="blue_table"  style="font-size: 20px;width: auto;;">
@@ -74,37 +80,36 @@
  <br>
 <h1 class="head1">用户数据</h1>
 <hr width="70%" align="left">
- <div class="green_table">
-        <div class="green_row_head">
-            <div class="green_cell" id="first_group" width="30%">用户类别</div>
-            <div class="green_cell">人数</div>
-            <div class="green_cell">占比学员</div>
-            <div class="green_cell">占比电商</div>
-            <div class="green_cell">占比vip</div>
-            <div class="green_cell">占比激活</div>
-        </div>
-            {% for genre in members_genres %}
-            <div class="green_row">
-                <div class="green_cell" id="first_group" width="30%">{{genre }}</div>
-                <div class="green_cell">{{ members_genres[genre]}}</div>
-                {%for genre_key in ['学员','电商','vip','激活']%}
-                {% if genre_key in genre %}
-                <div class="green_cell">{{ (members_genres[genre]*100/members_genres[genre_key])|round(1)}}%</div>
-                {%else%}
-                <div class="green_cell">0</div>
-                {%endif%}
-                {%endfor%}
-            </div>
-            {% endfor %}
-        </div>
+<table class="green_table">
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell" >用户类别</th>
+        <th class="green_cell">人数</th>
+        <th class="green_cell">占比学员</th>
+        <th class="green_cell">占比电商</th>
+        <th class="green_cell">占比vip</th>
+        <th class="green_cell">占比激活</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for genre in members_genres %}
+    <tr class="green_row">
+        <td class="green_cell" >{{genre }}</td>
+        <td class="green_cell">{{ members_genres[genre]}}</td>
+        {%for genre_key in ['学员','电商','vip','激活']%}
+        {% if genre_key in genre %}
+        <td class="green_cell">{{ (members_genres[genre]*100/members_genres[genre_key])|round(1)}}%</td>
+        {%else%}
+        <td class="green_cell">0</td>
+        {%endif%}
+        {%endfor%}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 <br><br><br>
-    {% for message in get_flashed_messages() %}
-     <div class="alert alert-warning">
-        <ul class=flashes>
-            <li><font color="red"> {{ message }}</font></li></ul>
-     </div>
-    {% endfor %}
+
 
 {% endblock %}
 

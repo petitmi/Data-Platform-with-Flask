@@ -6,25 +6,23 @@
 {% endblock %}
 
 {% block page_content %}
-    <div>
 <br><br>
-        <form action="/edu-wr" method=post >
+<form action="/edu-wr" method=post >
 选择日期：<input size="16" type="text" name="input" value="{{ thatdate }}" readonly class="form_datetime">
             <input type="submit" class="startButton" value="查询">
-
-        </form>
+</form>
 
 <script type="text/javascript">
     $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd',minView:2});
 </script>
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <div class=flashes>
-                <div><font color="red"> {{ message }}</font></div></div>
-        </div>
-    {% endfor %}
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <div class=flashes>
+        <div><font color="red"> {{ message }}</font></div></div>
+</div>
+{% endfor %}
 <br>
-    <h1 class="head1">周数据</h1>
+<h1 class="head1">周数据</h1>
 <hr width="70%" align="left">
     <div class="blue_table"  style="font-size: 20px">
         <ul class="blue_head">
@@ -43,50 +41,53 @@
         </ul>
     </div>
     <br>
-            <div class="table3-top" style="width: 90%;height: 80%;  margin: 0 auto;">
-            {{ overlap_week|safe }}
-    </div>
-
-    <br>
-            <div class="green_table" >
-        <div class="green_row_head">
-            <div class="green_cell" id="first_group" width="40%">会员名称</div>
-            <div class="green_cell">销量</div>
-            <div class="green_cell">销售额</div>
-
-        </div>
-        {% for i in edu_800vip_week %}
-            <div class="green_row">
-                <div class="green_cell" id="first_group" width="40%">{{ i[0] }}</div>
-                <div class="green_cell">{{ i[1] }}</div>
-                <div class="green_cell">{{ i[2] }}</div>
-            </div>
-        {% endfor %}
-    </div>
-
-    <br>
-    <div class="green_table">
-        <div class="green_row_head">
-            <div class="green_cell" id="first_group" width="40%">课程名称</div>
-            <div class="green_cell">教师</div>
-            <div class="green_cell">销量</div>
-            <div class="green_cell">均价</div>
-            <div class="green_cell">销售额</div>
-            <div class="green_cell">毛利</div>
-
-        </div>
-        {% for i in edu_class_week %}
-            <div class="green_row">
-                <div class="green_cell" id="first_group" width="40%">{{ i[0] }}</div>
-                <div class="green_cell">{{ i[1] }}</div>
-                <div class="green_cell">{{ i[2]}}</div>
-                <div class="green_cell">￥{{ i[3]|int}}</div>
-                <div class="green_cell">￥{{ i[4]|int}}</div>
-                <div class="green_cell">￥{{ i[5]|int}}</div>
-
-            </div>
-        {% endfor %}
-    </div>
-{% endblock %}
+<div class="table3-top" style="width: 90%;height: 80%;  margin: 0 auto;">
+    {{ overlap_week|safe }}
 </div>
+<br>
+
+<table class="green_table" >
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell" >会员名称</th>
+        <th class="green_cell">销量</th>
+        <th class="green_cell">销售额</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in edu_800vip_week %}
+    <tr class="green_row">
+        <td class="green_cell" >{{ i[0] }}</td>
+        <td class="green_cell">{{ i[1] }}</td>
+        <td class="green_cell">{{ i[2] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+ <table class="green_table">
+     <thead class="green_row_head">
+     <tr>
+         <th class="green_cell" >课程名称</th>
+         <th class="green_cell">教师</th>
+         <th class="green_cell">销量</th>
+         <th class="green_cell">均价</th>
+         <th class="green_cell">销售额</th>
+         <th class="green_cell">毛利</th>
+     </tr>
+     </thead>
+     <tbody>
+        {% for i in edu_class_week %}
+        <tr class="green_row">
+            <td class="green_cell" >{{ i[0] }}</td>
+            <td class="green_cell">{{ i[1] }}</td>
+            <td class="green_cell">{{ i[2]}}</td>
+            <td class="green_cell">￥{{ i[3]|int}}</td>
+            <td class="green_cell">￥{{ i[4]|int}}</td>
+            <td class="green_cell">￥{{ i[5]|int}}</td>
+        </tr>
+        {% endfor %}
+     </tbody>
+    </table>
+{% endblock %}
 <br><br>

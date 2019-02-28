@@ -46,84 +46,92 @@
 
     <h2 class="head2" style=" font-size: 18px; color: gray;">平台分类数据</h2>
 
-    <div class="green_table">
-        <div class="green_row_head">
-            <div class="green_cell" id="first_group" width="30%">类别</div>
-            <div class="green_cell">销量</div>
-            <div class="green_cell">来自圈子数量</div>
-            <div class="green_cell">销售额</div>
-            <div class="green_cell">客单价</div>
-        </div>
+    <table class="green_table">
+        <thead class="green_row_head">
+        <tr>
+            <th class="green_cell">类别</th>
+            <th class="green_cell">销量</th>
+            <th class="green_cell">来自圈子数量</th>
+            <th class="green_cell">销售额</th>
+            <th class="green_cell">客单价</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for i in ec_type_month %}
-            <div class="green_row">
-                <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
-                <div class="green_cell">{{ i[1] }}</div>
-                <div class="green_cell">{{ i[2]}}</div>
-                <div class="green_cell">￥{{ i[3]}}</div>
-                <div class="green_cell">￥{{ i[4]}}</div>
-            </div>
+            <tr class="green_row">
+                <td class="green_cell">{{ i[0] }}</td>
+                <td class="green_cell">{{ i[1] }}</td>
+                <td class="green_cell">{{ i[2]}}</td>
+                <td class="green_cell">￥{{ i[3]}}</td>
+                <td class="green_cell">￥{{ i[4]}}</td>
+            </tr>
         {% endfor %}
-        <div class="green_row">
-            <div class="green_cell" id="first_group" width="30%">顾问销售</div>
-            <div class="green_cell" >{{ ec_chanjet_month[0][0] }}</div>
-            <div class="green_cell">0</div>
-            <div class="green_cell">￥{{ ec_chanjet_month[0][1]}}</div>
+        </tbody>
+        <tr class="green_row">
+            <td class="green_cell" >顾问销售</td>
+            <td class="green_cell" >{{ ec_chanjet_month[0][0] }}</td>
+            <td class="green_cell">0</td>
+            <td class="green_cell">￥{{ ec_chanjet_month[0][1]}}</td>
             {% if ec_chanjet_month[0][0]!=0 %}
-            <div class="green_cell">￥{{ (ec_chanjet_month[0][1]/ec_chanjet_month[0][0])|int}}</div>
+            <td class="green_cell">￥{{ (ec_chanjet_month[0][1]/ec_chanjet_month[0][0])|int}}</td>
             {% else %}
-            <div class="green_cell">未录入</div>
-{% endif %}
-        </div>
-    </div>
+            <td class="green_cell">未录入</td>
+            {% endif %}
+        </tr>
+    </table>
         <h2 class="head2" style=" font-size: 18px;
                 color: gray;">99元会员</h2>
 
-        <div class="green_table">
-        <div class="green_row_head">
-            <div class="green_cell" id="first_group" width="30%">类别</div>
-            <div class="green_cell">新增会员数</div>
-            <div class="green_cell">下单会员数</div>
-            <div class="green_cell">订单数</div>
-            <div class="green_cell">总订单金额</div>
-            <div class="green_cell">人均订单数</div>
-            <div class="green_cell">人均订单金额</div>
-        </div>
-            <div class="green_row">
-                <div class="green_cell" id="first_group" width="30%">{{ ec_vip_month[0][0] }}</div>
-                <div class="green_cell">{{ ec_vip_month_sale[0][0] }}</div>
-                <div class="green_cell">{{ ec_vip_month[0][1] }}</div>
-                <div class="green_cell">{{ ec_vip_month[0][2] }}</div>
-                <div class="green_cell">￥{{ ec_vip_month[0][3]|int }}</div>
-                {% if ec_vip_month[0][1] %}
-                    <div class="green_cell">{{ (ec_vip_month[0][2]/ec_vip_month[0][1])|int }}</div>
-                    <div class="green_cell">￥{{ (ec_vip_month[0][3]/ec_vip_month[0][1])|int }}</div>
-                {% else %}
-                    <div class="green_cell">0</div>
-                    <div class="green_cell">0</div>
-                {% endif %}
-                </div>
-        </div>
-        <h2 class="head2" style=" font-size: 18px;
-                color: gray;">重点产品自主下单</h2>
+<table class="green_table">
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell" >类别</th>
+        <th class="green_cell">新增会员数</th>
+        <th class="green_cell">下单会员数</th>
+        <th class="green_cell">订单数</th>
+        <th class="green_cell">总订单金额</th>
+        <th class="green_cell">人均订单数</th>
+        <th class="green_cell">人均订单金额</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="green_row">
+        <td class="green_cell" >{{ ec_vip_month[0][0] }}</td>
+        <td class="green_cell">{{ ec_vip_month_sale[0][0] }}</td>
+        <td class="green_cell">{{ ec_vip_month[0][1] }}</td>
+        <td class="green_cell">{{ ec_vip_month[0][2] }}</td>
+        <td class="green_cell">￥{{ ec_vip_month[0][3]|int }}</td>
+        {% if ec_vip_month[0][1] %}
+        <td class="green_cell">{{ (ec_vip_month[0][2]/ec_vip_month[0][1])|int }}</td>
+        <td class="green_cell">￥{{ (ec_vip_month[0][3]/ec_vip_month[0][1])|int }}</td>
+        {% else %}
+        <td class="green_cell">0</td>
+        <td class="green_cell">0</td>
+        {% endif %}
+    </tr>
+    </tbody>
+</table>
+        <!--<h2 class="head2" style=" font-size: 18px;-->
+                <!--color: gray;">重点产品自主下单</h2>-->
 
-            <div class="green_table">
-        <div class="green_row_head">
-            <div class="green_cell" id="first_group" width="30%">平台</div>
-            <div class="green_cell">产品</div>
-            <div class="green_cell">销量</div>
-            <div class="green_cell">价格</div>
-
-        </div>
-        {% for i in ec_goods_month %}
-            <div class="green_row">
-                <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
-                <div class="green_cell">{{ i[1] }}</div>
-                <div class="green_cell" >{{ i[2] }}</div>
-                <div class="green_cell">￥{{ i[3]|int}}</div>
-
-            </div>
-        {% endfor %}
-    </div>
+<!--<table class="green_table">-->
+    <!--<thead class="green_row_head">-->
+    <!--<th class="green_cell" >平台</th>-->
+    <!--<th class="green_cell">产品</th>-->
+    <!--<th class="green_cell">销量</th>-->
+    <!--<th class="green_cell">价格</th>-->
+    <!--</thead>-->
+    <!--<tbody>-->
+    <!--{% for i in ec_goods_month %}-->
+    <!--<tr class="green_row">-->
+        <!--<td class="green_cell" >{{ i[0] }}</td>-->
+        <!--<td class="green_cell">{{ i[1] }}</td>-->
+        <!--<td class="green_cell" >{{ i[2] }}</td>-->
+        <!--<td class="green_cell">￥{{ i[3]|int}}</td>     -->
+    <!--</tr>-->
+    <!--{% endfor %}-->
+    <!--</tbody>-->
+<!--</table>-->
 
 
 {% endblock %}

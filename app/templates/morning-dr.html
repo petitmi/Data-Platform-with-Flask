@@ -5,7 +5,12 @@
 <script src="https://cdn.bootcss.com/echarts/4.1.0-release/echarts-en.min.js"></script>
 <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 <style type="text/css" >
-    .table_container div:first-child{font-weight:bold;}
+            tr.green_row:first-child
+            {
+                font-weight: bold;
+                font-size: 16px;
+                color:mediumvioletred
+            }
 </style>
 {% endblock %}
 
@@ -30,74 +35,63 @@
 
 <h1 class="head1">日数据</h1>
 <hr width="70%" align="left">
-<br>
-<div class="green_table" style="width: 125%">
-    <div class="green_row_head">
-        <div class="green_cell" id="first_group" width="30%">日期</div>
-        <div class="green_cell">活跃uv</div>
-        <div class="green_cell">人均浏览次数</div>
-        <div class="green_cell" style="border-right:1px solid #D3D3D3;background-color: whitesmoke">运营动态发布数</div>
+<div>
+<table class="green_table" style="width: 125%">
+    <thead class="green_row_head">
+    <tr>
+        <th rowspan="2" class="head_reduce" >日期</th>
+        <th colspan="3" class="head_reduce" id="separate">综合指标</th>
+        <th colspan="5" class="head_reduce" id="separate">APP活跃</th>
+        <th colspan="7" class="head_reduce" id="separate">APP纳新</th>
+    </tr>
+    <tr>
+        <!--<th class="green_cell" id="first_group" >日期</th>-->
+        <th class="green_cell">活跃uv</th>
+        <th class="green_cell">人均浏览次数</th>
+        <th class="green_cell" style="border-right:1px solid #D3D3D3;background-color: whitesmoke">运营动态发布数</th>
 
-        <div class="green_cell">认领人数</div>
-        <div class="green_cell">用户动态发布人数</div>
-        <div class="green_cell">评论数</div>
-        <div class="green_cell">点赞收藏数</div>
-        <div class="green_cell" style="border-right:1px solid #D3D3D3;">私信数</div>
+        <th class="green_cell">认领人数</th>
+        <th class="green_cell">用户动态发布人数</th>
+        <th class="green_cell">评论数</th>
+        <th class="green_cell">点赞收藏数</th>
+        <th class="green_cell" style="border-right:1px solid #D3D3D3;">私信数</th>
 
-        <div class="green_cell">首登人数</div>
-        <div class="green_cell">激活人数</div>
-        <div class="green_cell">激活成功人数</div>
-        <div class="green_cell" style="background-color: whitesmoke">请求激活-成功</div>
-        <div class="green_cell">授权人数</div>
-        <div class="green_cell" style="background-color: whitesmoke">激活-授权</div>
+        <th class="green_cell">首登人数</th>
+        <th class="green_cell">激活人数</th>
+        <th class="green_cell">激活成功人数</th>
+        <th class="green_cell" style="background-color: whitesmoke">请求激活-成功</th>
+        <th class="green_cell">授权人数</th>
+        <th class="green_cell" style="background-color: whitesmoke">激活-授权</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in range(process_date|length) %}
+    <tr class="green_row" >
+        <td class="green_cell">{{ process_date[i] }}</td>
+        <td class="green_cell">{{ active_members_days[i]|int }}</td>
+        <td class="green_cell">{{ (active_times_days[i]/active_members_days[i])|round(1)}}</td>
+        <td class="green_cell" style="border-right:1px solid #D3D3D3;background-color: whitesmoke">{{ feed_count_editor_days[i]|int }}</td>
 
-    </div>
-    <div class="green_row" style="font-weight: bold;font-size: 16px;color:mediumvioletred">
-        <div class="green_cell" id="first_group" width="30%">{{ process_date[0] }}</div>
-        <div class="green_cell">{{ active_members_days[0]|int }}</div>
-        <div class="green_cell">{{ (active_times_days[0]/active_members_days[0])|round(1)}}</div>
-        <div class="green_cell" style="border-right:1px solid #D3D3D3;background-color: whitesmoke" >{{ feed_count_editor_days[0]|int }}</div>
+        <td class="green_cell">{{ claimers_days[i]|int }}</td>
+        <td class="green_cell">{{ feed_author_user_days[i]|int }}</td>
+        <td class="green_cell">{{ comments_days[i]|int }}</td>
+        <td class="green_cell">{{ marks_days[i]|int }}</td>
+        <td class="green_cell" style="border-right:1px solid #D3D3D3;">{{ messages_days[i]|int }}</td>
 
-        <div class="green_cell">{{ claimers_days[0]|int }}</div>
-        <div class="green_cell">{{ feed_author_user_days[0]|int }}</div>
-        <div class="green_cell">{{ comments_days[0]|int }}</div>
-        <div class="green_cell">{{ marks_days[0]|int }}</div>
-        <div class="green_cell" style="border-right:1px solid #D3D3D3;" >{{ messages_days[0]|int }}</div>
-
-        <div class="green_cell">{{ login_newly_members_days[0]|int }}</div>
-        <div class="green_cell">{{ activate_members_days[0]|int }}</div>
-        <div class="green_cell">{{ activate_members_fin_days[0]|int }}</div>
-        <div class="green_cell" style="background-color: whitesmoke">{{ (activate_members_fin_days[0]*100/activate_members_days[0])|int }}%</div>
-        <div class="green_cell">{{ authorized_members_days[0]|int }}</div>
-        <div class="green_cell" style="background-color: whitesmoke">{{ (authorized_members_days[0]*100/activate_members_days[0])|int }}%</div>
-
-
-    </div>
-    {% for i in range(1,process_date|length) %}
-    <div class="green_row" >
-        <div class="green_cell" id="first_group" width="30%">{{ process_date[i] }}</div>
-        <div class="green_cell">{{ active_members_days[i]|int }}</div>
-        <div class="green_cell">{{ (active_times_days[i]/active_members_days[i])|round(1)}}</div>
-        <div class="green_cell" style="border-right:1px solid #D3D3D3;background-color: whitesmoke">{{ feed_count_editor_days[i]|int }}</div>
-
-        <div class="green_cell">{{ claimers_days[i]|int }}</div>
-        <div class="green_cell">{{ feed_author_user_days[i]|int }}</div>
-        <div class="green_cell">{{ comments_days[i]|int }}</div>
-        <div class="green_cell">{{ marks_days[i]|int }}</div>
-        <div class="green_cell" style="border-right:1px solid #D3D3D3;">{{ messages_days[i]|int }}</div>
-
-        <div class="green_cell">{{ login_newly_members_days[i]|int }}</div>
-        <div class="green_cell">{{ activate_members_days[i]|int }}</div>
-        <div class="green_cell">{{ activate_members_fin_days[i]|int }}</div>
-        <div class="green_cell" style="background-color: whitesmoke">{{ (activate_members_fin_days[i]*100/activate_members_days[i])|int }}%</div>
-        <div class="green_cell">{{ authorized_members_days[i]|int }}</div>
-        <div class="green_cell" style="background-color: whitesmoke">{{ (authorized_members_days[i]*100/activate_members_days[i])|int }}%</div>
-
-    </div>
+        <td class="green_cell">{{ login_newly_members_days[i]|int }}</td>
+        <td class="green_cell">{{ activate_members_days[i]|int }}</td>
+        <td class="green_cell">{{ activate_members_fin_days[i]|int }}</td>
+        <td class="green_cell" style="background-color: whitesmoke">{{ (activate_members_fin_days[i]*100/activate_members_days[i])|int }}%</td>
+        <td class="green_cell">{{ authorized_members_days[i]|int }}</td>
+        <td class="green_cell" style="background-color: whitesmoke">{{ (authorized_members_days[i]*100/activate_members_days[i])|int }}%</td>
+    </tr>
     {% endfor %}
-    </div>
+    </tbody>
+</table>
+</div>
 <br>
-<div class="table1-left" style="width:50%;height: 250px">
+
+<div style="width:100%;height: 250px">
     {{ overlap_newly_day|safe }}
 </div>
 

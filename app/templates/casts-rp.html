@@ -44,24 +44,28 @@
             <div id="collapse{{columns_id[i]|string}}" class="panel-collapse collapse">
                 {% endif %}
                 <div class="panel-body">
-                    <div class="green_table">
-                        <div class="green_row_head">
-                        <div class="green_cell" id="first_group" width="30%">直播名称</div>
-                        <div class="green_cell">开播时间</div>
-                        <div class="green_cell">pv</div>
-                        <div class="green_cell">聊天数量</div>
-                        <div class="green_cell">回放数量</div>
-                    </div>
-                    {% for j in columncasts_data[columns_id[i]] %}
-                    <div class="green_row">
-                        <div class="green_cell" id="first_group">{{ j[2] }}</div>
-                        <div class="green_cell"> {{j[3]}}</div>
-                        <div class="green_cell"> {{j[4]|int}}</div>
-                        <div class="green_cell"> {{j[5]|int}}</div>
-                        <div class="green_cell"> {{j[6]|int}}</div>
-                    </div>
-                    {% endfor %}
-                </div>
+                    <table class="green_table">
+                        <thead class="green_row_head">
+                        <tr>
+                            <th class="green_cell" >直播名称</th>
+                            <th class="green_cell">开播时间</th>
+                            <th class="green_cell">pv</th>
+                            <th class="green_cell">聊天数量</th>
+                            <th class="green_cell">回放数量</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for j in columncasts_data[columns_id[i]] %}
+                        <tr class="green_row">
+                            <td class="green_cell">{{ j[2] }}</td>
+                            <td class="green_cell"> {{j[3]}}</td>
+                            <td class="green_cell"> {{j[4]|int}}</td>
+                            <td class="green_cell"> {{j[5]|int}}</td>
+                            <td class="green_cell"> {{j[6]|int}}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                </table>
             </div>
             </div>
              {% endfor %}

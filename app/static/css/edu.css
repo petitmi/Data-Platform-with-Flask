@@ -44,54 +44,74 @@
             }
 
 
-            .green_table
+            table.green_table
             {
-                display: table;
                 font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-                font-size: 12px;
+                font-size: 14px;
                 width:100%;
                 text-align: left;
                 border-collapse: collapse;
             }
-            .green_row_head
+            thead.green_row_head th.head_reduce
             {
-                display: table-row;
-                font-size: 14px;
+                font-weight: bold;
+                padding: 1px 2px;
+                color: #039;
+                text-align: center;
+                font-size: 120%;
+                white-space: nowrap;
+
+            }
+            thead.green_row_head tr
+            {
+                /*display: table-row;*/
                 font-weight: bold;
                 padding: 1px 2px;
                 color: #039;
             }
-            .green_row {
-                display: table-row;
-                font-size: 14px;
+            tr.green_row{
+                /*display: table-row;*/
                 padding: 1px 2px;
                 color: #039;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            .green_cell
+            td.green_cell
             {
-                witdh:40%;
+                /*witdh:auto;*/
                 display: table-cell;
                 padding: 3px 6px;
+                white-space: nowrap;
                 /*color: #669;*/
                 border-top: 1px solid #e8edff;
             }
+            #separate
+            {border-right:1px solid #E5E5E5;}
 
 
-            .green_row .green_cell:first-child
+            tr.green_row td.green_cell:first-child
             {
                 background: #c9fbc0;
+                width: auto;
                 border-right: 10px solid transparent;
                 border-left: 10px solid transparent;
             }
-            .green_row:hover .green_cell
+            thead.green_row_head th.head_reduce:first-child
+            {
+                background: #c9fbc0;
+                width: auto;
+                border-right: 10px solid transparent;
+                border-left: 10px solid transparent;
+            }
+
+            tr.green_row:hover td.green_cell
             {
                 color: #339;
                 background: #eff2ff;
             }
 
+            /*折叠*/
             .accordion_hd span{
                 display: inline-block;
                 width: 10%;

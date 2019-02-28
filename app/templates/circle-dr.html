@@ -3,7 +3,7 @@
 
 {% block head %}
 {{ super() }}
-    <script src="https://cdn.bootcss.com/echarts/4.1.0-release/echarts-en.min.js"></script>
+<script src="https://cdn.bootcss.com/echarts/4.1.0-release/echarts-en.min.js" xmlns="http://www.w3.org/1999/html"></script>
     <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>{% endblock %}
 {% block page_content %}
 
@@ -54,67 +54,76 @@
 <h2 class="head2" style=" font-size: 18px;
                 color: darkgreen;">帖子详情</h2>
 <hr width="70%" align="left">
-<div class="green_table">
-    <div class="green_row_head">
-        <div class="green_cell" id="first_group" width="30%">帖子标题</div>
-        <div class="green_cell">圈子</div>
-        <div class="green_cell">登录uv</div>
-        <div class="green_cell">新增登录uv</div>
-        <div class="green_cell">pv</div>
-        <div class="green_cell">匿名pv占比</div>
-        <div class="green_cell">总评论数</div>
-        <div class="green_cell">当日评论</div>
-        <div class="green_cell">总马克数</div>
-        <div class="green_cell">当日马克</div>
-    </div>
+<table class="green_table">
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell">帖子标题</th>
+        <th class="green_cell">圈子</th>
+        <th class="green_cell">登录uv</th>
+        <th class="green_cell">新增登录uv</th>
+        <th class="green_cell">pv</th>
+        <th class="green_cell">匿名pv占比</th>
+        <th class="green_cell">总评论数</th>
+        <th class="green_cell">当日评论</th>
+        <th class="green_cell">总马克数</th>
+        <th class="green_cell">当日马克</th>
+    </tr>
+    </thead>
+    <tbody>
     {% for i in posts_daily %}
-    <div class="green_row">
-        <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
-        <div class="green_cell">{{ i[1] }}</div>
-        <div class="green_cell">{{ i[3]}}</div>
-        <div class="green_cell">{{ i[4] }}</div>
-        <div class="green_cell">{{ i[5] }}</div>
-        <div class="green_cell">{{ i[6] }}%</div>
-        <div class="green_cell">{{ i[7] }}</div>
-        <div class="green_cell">{{ i[8] }}</div>
-        <div class="green_cell">{{ i[9] }}</div>
-        <div class="green_cell">{{ i[10] }}</div>
-    </div>
+    <tr class="green_row">
+        <td class="green_cell">{{ i[0] }}</td>
+        <td class="green_cell">{{ i[1] }}</td>
+        <td class="green_cell">{{ i[3]}}</td>
+        <td class="green_cell">{{ i[4] }}</td>
+        <td class="green_cell">{{ i[5] }}</td>
+        <td class="green_cell">{{ i[6] }}%</td>
+        <td class="green_cell">{{ i[7] }}</td>
+        <td class="green_cell">{{ i[8] }}</td>
+        <td class="green_cell">{{ i[9] }}</td>
+        <td class="green_cell">{{ i[10] }}</td>
+    </tr>
     {% endfor %}
-</div>
+    </tbody>
+</table>
  <h2 class="head2" style=" font-size: 18px;
                 color: darkgreen;">圈子详情</h2>
 <hr width="70%" align="left">
-<div class="green_table">
-    <div class="green_row_head">
-        <div class="green_cell" id="first_group" width="30%">圈子</div>
-        <div class="green_cell">登录uv</div>
-        <div class="green_cell">新增登录uv</div>
-        <div class="green_cell">pv</div>
-        <div class="green_cell">匿名pv占比</div>
-        <div class="green_cell">总评论数</div>
-        <div class="green_cell">当日评论</div>
-        <div class="green_cell">总马克数</div>
-        <div class="green_cell">当日马克</div>
-        <div class="green_cell">总关注数</div>
-        <div class="green_cell">当日关注</div>
-    </div>
+<table class="green_table">
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell">圈子</th>
+        <th class="green_cell">登录uv</th>
+        <th class="green_cell">新增登录uv</th>
+        <th class="green_cell">pv</th>
+        <th class="green_cell">匿名pv占比</th>
+        <th class="green_cell">总评论数</th>
+        <th class="green_cell">当日评论</th>
+        <th class="green_cell">总马克数</th>
+        <th class="green_cell">当日马克</th>
+        <th class="green_cell">总关注数</th>
+        <th class="green_cell">当日关注</th>
+    </tr>
+    </thead>
+
+    <tbody>
     {% for i in boards_daily %}
-    <div class="green_row">
-        <div class="green_cell" id="first_group" width="30%">{{ i[0] }}</div>
-        <div class="green_cell">{{ i[1] }}</div>
-        <div class="green_cell">{{ i[2]}}</div>
-        <div class="green_cell">{{ i[3] }}</div>
-        <div class="green_cell">{{ i[4] }}%</div>
-        <div class="green_cell">{{ i[5] }}</div>
-        <div class="green_cell">{{ i[6] }}</div>
-        <div class="green_cell">{{ i[7] }}</div>
-        <div class="green_cell">{{ i[8] }}</div>
-        <div class="green_cell">{{ i[9] }}</div>
-        <div class="green_cell">{{ i[10] }}</div>
-    </div>
+    <tr class="green_row">
+        <td class="green_cell">{{ i[0] }}</td>
+        <td class="green_cell">{{ i[1] }}</td>
+        <td class="green_cell">{{ i[2]}}</td>
+        <td class="green_cell">{{ i[3] }}</td>
+        <td class="green_cell">{{ i[4] }}%</td>
+        <td class="green_cell">{{ i[5] }}</td>
+        <td class="green_cell">{{ i[6] }}</td>
+        <td class="green_cell">{{ i[7] }}</td>
+        <td class="green_cell">{{ i[8] }}</td>
+        <td class="green_cell">{{ i[9] }}</td>
+        <td class="green_cell">{{ i[10] }}</td>
+    </tr>
     {% endfor %}
-</div>
+    </tbody>
+</table>
 <br><br>
 {% endblock %}
 

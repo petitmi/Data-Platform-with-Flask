@@ -70,34 +70,37 @@
 
 </div>
 <br><br><br>
-<div class="green_table">
-    <div class="green_row_head">
-        <div class="green_cell">部门</div>
+<table class="green_table" style="width: 120%">
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell">部门</th>
         {%for department in result_month[1]%}
         {%for project in result_month[1][department]%}
-        <div class="green_cell">{{department}}</div>
+        <th class="green_cell">{{department}}</th>
         {%endfor%}
         {%endfor%}
-    </div>
-    <div class="green_row_head">
-        <div class="green_cell" >月份</div>
+    </tr>
+    <tr class="green_row_head">
+        <th class="green_cell" >月份</th>
         {%for department in result_month[1]%}
         {%for project in result_month[1][department]%}
-        <div class="green_cell">{{project}}</div>
+        <th class="green_cell">{{project}}</th>
         {%endfor%}
         {%endfor%}
-    </div>
+    </tr>
+    </thead>
+    <tbody>
     {% for month in result_month %}
-    <div class="green_row">
-        <div class="green_cell">{{ month}}</div>
+    <tr class="green_row">
+        <td class="green_cell">{{ month}}</td>
         {%for department in result_month[month]%}
         {%for project in result_month[month][department]%}
-        <div class="green_cell">￥{{ result_month[month][department][project]|int}}</div>
+        <td class="green_cell">￥{{ result_month[month][department][project]|int}}</td>
         {% endfor %}
         {% endfor %}
-    </div>
+    </tr>
     {% endfor %}
-    </div>
-
+    </tbody>
+</table>
 
 {% endblock %}

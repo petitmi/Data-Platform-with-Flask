@@ -19,11 +19,6 @@ def get_rp_values():
 @circle.route('/circle-rp',methods=["POST","GET"])
 @login_required
 @permission_required(Permission.CIRCLE)
-def circle_rp():
-    result_rp=get_rp_values()
-    print('UA:',request.user_agent.string)
-    print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
-    return render_template('circle-rp.html',data_totality=result_rp['data_totality'])
 
 def get_dr_values(thatdate_sql):
     result={'data_daily': db.session.execute(sql_data_daily % (thatdate_sql, thatdate_sql)).fetchall()}
@@ -81,26 +76,7 @@ def circle_mr():
                            thatdate=thatdate_sql,
                            overlap_month=result_mr['overlap_month'],
                            data_monthly=result_mr['data_monthly'])
-#
-# @circle.route('/circle-rp',methods=["POST","GET"])
-# @login_required
-# @permission_required(Permission.CIRCLE)
-# def circle_rp():
-#     yesterday_sql = (datetime.datetime.now() - datetime.timedelta(1)).strftime('%Y-%m-%d')
-#     if request.method == 'POST' :
-#         thatdate_sql = request.form.get('input')
-#         if thatdate_sql>yesterday_sql :
-#             flash('选择的日期未经历')
-#     if request.method=='GET'or request.form.get('input') =='':
-#         thatdate_sql = yesterday_sql
-#
-#
-#     print('UA:',request.user_agent.string)
-#     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+'-'+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
-#     return render_template('circle-rp.html',thatdate=thatdate_sql,
-#
-#
-#                            )
+
 def olp_bar_line(sql):
     result_circle_day = pd.read_sql(sql, db.engine).fillna(0)
     attr=result_circle_day['data_date'].sort_index(ascending=False).values.tolist()
