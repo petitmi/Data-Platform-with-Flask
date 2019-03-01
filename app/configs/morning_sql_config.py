@@ -60,8 +60,8 @@ where actived_sites like '%unsung_hero%'  and hero_actived_at between '{0}' and 
 group by date(hero_actived_at) order by date(hero_actived_at) desc"""
 ##授权通讯录
 ###即便跳过授权也会返回一个空的通讯录
-sql_authorized_days="""select date(created_at) date,count(distinct member_id) authorized_days from `address_books` 
-where created_at between '{0}' and '{1}' group by date(created_at) order by date(created_at) desc"""
+# sql_authorized_days="""select date(created_at) date,count(distinct member_id) authorized_days from `address_books`
+# where created_at between '{0}' and '{1}' group by date(created_at) order by date(created_at) desc"""
 ##作品
 sql_works_days="""select date(created_at) date,count(1) works_days from films 
 where `category`=1  and created_at between '{0}' and '{1}'
@@ -87,7 +87,7 @@ sql_circle_days="""select data_date date,comments comments_days,marks marks_days
 
 
 ##es活跃登录激活授权
-sql_app_daily_days="""select date,activate_members,active_members,active_times from app_daily 
+sql_app_daily_days="""select date,activate_members,active_members,active_times,authorize_members from app_daily 
 where date between '{0}' and '{1}' order by date desc """
 
 

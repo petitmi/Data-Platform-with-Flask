@@ -82,8 +82,8 @@
         <td class="green_cell">{{ activate_members_days[i]|int }}</td>
         <td class="green_cell">{{ activate_members_fin_days[i]|int }}</td>
         <td class="green_cell" style="background-color: whitesmoke">{{ (activate_members_fin_days[i]*100/activate_members_days[i])|int }}%</td>
-        <td class="green_cell">{{ authorized_members_days[i]|int }}</td>
-        <td class="green_cell" style="background-color: whitesmoke">{{ (authorized_members_days[i]*100/activate_members_days[i])|int }}%</td>
+        <td class="green_cell">{{ authorize_members_days[i]|int }}</td>
+        <td class="green_cell" style="background-color: whitesmoke">{{ (authorize_members_days[i]*100/activate_members_days[i])|int }}%</td>
     </tr>
     {% endfor %}
     </tbody>

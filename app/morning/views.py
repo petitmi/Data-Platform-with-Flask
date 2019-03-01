@@ -77,12 +77,12 @@ def get_dr_values(thatdate_sql):
     ctime['result_works'] = h-g
     claimers_days = pd.read_sql_query(sql_claimers_days.format(sql_time_days_start, sql_time_days_end),
                                       con=db_circlecenter)
-    i=gt()
-    ctime['result_claimers'] = i-h
-    authorized_members_days = pd.read_sql_query(sql_authorized_days.format(sql_time_days_start, sql_time_days_end),
-                                                con=db_circlecenter)
+    # i=gt()
+    # ctime['result_claimers'] = i-h
+    # authorized_members_days = pd.read_sql_query(sql_authorized_days.format(sql_time_days_start, sql_time_days_end),
+    #                                             con=db_circlecenter)
     j=gt()
-    ctime['result_authorized'] = j-i
+    ctime['result_authorized'] = j-h
     app_daily_days = pd.read_sql(sql_app_daily_days.format(sql_time_days_start, sql_time_days_end), con=db.engine)
     k=gt()
     ctime['result_appdaily'] = k-j
@@ -94,7 +94,6 @@ def get_dr_values(thatdate_sql):
         merge(feed_author_user_days, how='left', on=['date', 'date']). \
         merge(works_days, how='left', on=['date', 'date']). \
         merge(claimers_days, how='left', on=['date', 'date']). \
-        merge(authorized_members_days, how='left', on=['date', 'date']). \
         merge(app_daily_days, how='left', on=['date', 'date']). \
         merge(app_circle_days, how='left', on=['date', 'date']). \
         fillna(0)
@@ -107,7 +106,7 @@ def get_dr_values(thatdate_sql):
     results['login_newly_members_days_table'] = merged_data['login_newly_days'].values.tolist()
     results['activate_members_days_table'] = merged_data['activate_members'].values.tolist()
     results['activate_members_fin_days_table'] = merged_data['activate_members_fin_days'].values.tolist()
-    results['authorized_members_days_table'] = merged_data['authorized_days'].values.tolist()
+    results['authorize_members_days_table'] = merged_data['authorize_members'].values.tolist()
     results['claimers_days_table'] = merged_data['claimers_days'].values.tolist()
     results['feed_count_editor_days_table'] = merged_data['feed_count_editor_days'].values.tolist()
     results['feed_author_user_days_table'] = merged_data['feed_author_user_days'].values.tolist()
@@ -288,7 +287,7 @@ def morning_dr():
                            active_times_days=results_dr['active_times_days_table'],
                            activate_members_days=results_dr['activate_members_days_table'],
                            activate_members_fin_days=results_dr['activate_members_fin_days_table'],
-                           authorized_members_days=results_dr['authorized_members_days_table'],
+                           authorize_members_days=results_dr['authorize_members_days_table'],
                            claimers_days=results_dr['claimers_days_table'],
                            feed_count_editor_days=results_dr['feed_count_editor_days_table'],
                            feed_author_user_days=results_dr['feed_author_user_days_table'],
