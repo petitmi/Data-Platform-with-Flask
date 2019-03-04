@@ -4,7 +4,8 @@ from . import morning
 from ..decorators import permission_required
 from ..models import Permission
 from pyecharts_javascripthon.api import TRANSLATOR
-from pyecharts import Bar, Line, Overlap, Page
+from pyecharts import Bar, Line, Overlap
+
 from ..configs.morning_sql_config import *
 from ..configs.time_config import *
 import pandas as pd
@@ -16,26 +17,6 @@ from app import db
 import itertools
 import pprint
 
-
-def olp(attr, bar1, bar2, bar3, line1, line2, line3, bar1_title, bar2_title, bar3_title, line1_title, line2_title,
-        line3_title, title, width, height):
-    bar = Bar(title=title)
-    bar.add(bar1_title, attr, bar1)
-    if bar2 != 0:
-        bar.add(bar2_title, attr, bar2, yaxis_interval=5)
-    if bar3 != 0:
-        bar.add(bar3_title, attr, bar3, yaxis_interval=5)
-    line = Line()
-    line.add(line1_title, attr, line1, yaxis_formatter=" ￥", yaxis_interval=5)
-    if line2 != 0:
-        line.add(line2_title, attr, line2, yaxis_formatter=" ￥", yaxis_interval=5)
-    if line3 != 0:
-        line.add(line3_title, attr, line3, yaxis_formatter=" ￥", yaxis_interval=5)
-
-    overlap = Overlap(width=width, height=height)
-    overlap.add(bar)
-    overlap.add(line, yaxis_index=1, is_add_yaxis=True)
-    return overlap
 
 def gt():
     nt=datetime.datetime.now()
@@ -118,13 +99,13 @@ def get_dr_values(thatdate_sql):
     ctime['tolist'] = n-m
     # 组合图
     results['activate_members_days_chart'] = results['activate_members_days_table'][:]
-    results['login_newly_members_days_chart'] = results['login_newly_members_days_table'][:]
+    results['active_members_days_chart'] = results['active_members_days_table'][:]
     results['feed_count_editor_days_chart'] = results['feed_count_editor_days_table'][:]
     results['feed_author_user_days_chart'] = results['feed_author_user_days_table'][:]
     results['works_days_chart'] = results['works_days_table'][:]
     results['claimers_days_chart'] = results['claimers_days_table'][:]
     results['activate_members_days_chart'].reverse()
-    results['login_newly_members_days_chart'].reverse()
+    results['active_members_days_chart'].reverse()
     results['feed_count_editor_days_chart'].reverse()
     results['feed_author_user_days_chart'].reverse()
     results['works_days_chart'].reverse()
@@ -264,16 +245,27 @@ def morning_dr():
 
     results_dr = get_dr_values(thatdate_sql)
     p=gt()
-    overlap_newly_day = olp(attr=results_dr['days_list'],
-                            bar1=results_dr['activate_members_days_chart'],bar2=results_dr['feed_count_editor_days_chart'],
-                            bar3=results_dr['works_days_chart'],line1=results_dr['login_newly_members_days_chart'],
-                            line2=results_dr['feed_author_user_days_chart'],line3=results_dr['claimers_days_chart'],
-                            bar1_title='新激活用户',bar2_title='编辑动态条数',bar3_title='作品数量',
-                            line1_title='新登录用户',line2_title='用户动态发布者',line3_title='认领人数',
-                            title='',width=1200,height=350)
+    #作图
+    attr = results_dr['days_list']
+    bar = Bar(title='')
+    bar.add('编辑动态条数', attr, results_dr['feed_count_editor_days_chart'],is_legned_show=False)
+    bar.add('作品数量', attr, results_dr['works_days_chart'], yaxis_interval=5)
+    bar.add('认领人数', attr, results_dr['claimers_days_chart'], yaxis_interval=5)
+
+    line = Line()
+    line.add('uv', attr, results_dr['active_members_days_chart'], yaxis_formatter=" ￥", yaxis_interval=5)
+    line.add('新激活用户', attr, results_dr['activate_members_days_chart'], yaxis_formatter=" ￥", yaxis_interval=5)
+    line.add('用户动态发布者', attr, results_dr['feed_author_user_days_chart'], yaxis_formatter=" ￥", yaxis_interval=5)
+
+    overlap = Overlap(width=1200, height=350)
+    overlap.add(bar)
+    overlap.add(line, yaxis_index=1, is_add_yaxis=True)
+    overlap._option['legend'][0]['selected']={'认领人数':False,'作品数量':False,'新激活用户':False,'用户动态发布者':False}
+    overlap_dr=overlap
+
     q=gt()
     time_chart=q-p
-    print('time_chart',time_chart)
+
     print('UA:', request.user_agent.string)
     print('\033[1;35m' + session[
         'user_id'] + ' - ' + request.remote_addr + ' - ' + request.method + ' - ' + datetime.datetime.now().strftime(
@@ -295,5 +287,5 @@ def morning_dr():
                            comments_days=results_dr['comments_days_table'],
                            marks_days=results_dr['marks_days_table'],
                            messages_days=results_dr['messages_days_table'],
-                           overlap_newly_day=overlap_newly_day.render_embed()
+                           overlap_dr=overlap_dr.render_embed()
                            )
