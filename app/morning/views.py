@@ -248,7 +248,7 @@ def morning_dr():
     #作图
     attr = results_dr['days_list']
     bar = Bar(title='')
-    bar.add('编辑动态条数', attr, results_dr['feed_count_editor_days_chart'],is_legned_show=False)
+    bar.add('运营动态条数', attr, results_dr['feed_count_editor_days_chart'],is_legned_show=False)
     bar.add('作品数量', attr, results_dr['works_days_chart'], yaxis_interval=5)
     bar.add('认领人数', attr, results_dr['claimers_days_chart'], yaxis_interval=5)
 
