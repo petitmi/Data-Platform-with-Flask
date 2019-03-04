@@ -23,53 +23,58 @@ def gt():
     return nt
 
 def get_dr_values(thatdate_sql):
-    a=gt()
+    # a=gt()
     db_circlecenter = pymysql.connect(host=DB_HOST, port=DB_PORT, user=DB_USER, password=DB_PASSWORD, db=DB_DB,
                                       charset='utf8')
-    b=gt()
-    ctime={}
-    ctime['connct_circlecenter']=b-a
+    # b=gt()
+    # ctime={}
+    # ctime['connct_circlecenter']=b-a
     results = {}
     results['days_list'] = get_days_list(days=15, thatdate=thatdate_sql).sql_list()
     sql_time_days_start = results['days_list'][0] + ' 00:00:00'
     sql_time_days_end = results['days_list'][14] + ' 23:59:59'
-    c=gt()
-    ctime['']=c-b
+    sql_yest_start=results['days_list'][14] + ' 00:00:00'
+    sql_yest_end=results['days_list'][14] + ' 23:59:59'
+    sql_tdb_yest_start=results['days_list'][13] + ' 00:00:00'
+    sql_tdb_yest_end=results['days_list'][13] + ' 23:59:59'
+
+    # c=gt()
+    # ctime['']=c-b
 
     # 组合图
     activate_members_fin_days = pd.read_sql_query(
         sql_activate_members_fin_days.format(sql_time_days_start, sql_time_days_end), con=db_circlecenter)
-    d=gt()
-    ctime['result_activate_fine']=d-c
+    # d=gt()
+    # ctime['result_activate_fine']=d-c
     login_newly_days = pd.read_sql(sql_login_newly_days.format(sql_time_days_start, sql_time_days_end),
                                    con=db_circlecenter)
-    e=gt()
-    ctime['result_login_newly']=e-d
+    # e=gt()
+    # ctime['result_login_newly']=e-d
     feed_count_editor_days= pd.read_sql_query(sql_feed_count_editor_days.format(sql_time_days_start, sql_time_days_end),
                                         con=db_circlecenter)
-    f=gt()
-    ctime['result_feed_count']=f-e
+    # f=gt()
+    # ctime['result_feed_count']=f-e
     feed_author_user_days = pd.read_sql_query(sql_feed_author_user_days.format(sql_time_days_start, sql_time_days_end),
                                          con=db_circlecenter)
-    g=gt()
-    ctime['result_feed_author'] = g-f
+    # g=gt()
+    # ctime['result_feed_author'] = g-f
     works_days = pd.read_sql_query(sql_works_days.format(sql_time_days_start, sql_time_days_end), con=db_circlecenter)
-    h=gt()
-    ctime['result_works'] = h-g
+    # h=gt()
+    # ctime['result_works'] = h-g
     claimers_days = pd.read_sql_query(sql_claimers_days.format(sql_time_days_start, sql_time_days_end),
                                       con=db_circlecenter)
     # i=gt()
     # ctime['result_claimers'] = i-h
     # authorized_members_days = pd.read_sql_query(sql_authorized_days.format(sql_time_days_start, sql_time_days_end),
     #                                             con=db_circlecenter)
-    j=gt()
-    ctime['result_authorized'] = j-h
+    # j=gt()
+    # ctime['result_authorized'] = j-h
     app_daily_days = pd.read_sql(sql_app_daily_days.format(sql_time_days_start, sql_time_days_end), con=db.engine)
-    k=gt()
-    ctime['result_appdaily'] = k-j
+    # k=gt()
+    # ctime['result_appdaily'] = k-j
     app_circle_days = pd.read_sql(sql_circle_days.format(sql_time_days_start, sql_time_days_end), con=db.engine)
-    l=gt()
-    ctime['result_appcircle'] = l-k
+    # l=gt()
+    # ctime['result_appcircle'] = l-k
     merged_data = activate_members_fin_days.merge(login_newly_days, how='left', on=['date', 'date']). \
         merge(feed_count_editor_days, how='left', on=['date', 'date']). \
         merge(feed_author_user_days, how='left', on=['date', 'date']). \
@@ -78,8 +83,8 @@ def get_dr_values(thatdate_sql):
         merge(app_daily_days, how='left', on=['date', 'date']). \
         merge(app_circle_days, how='left', on=['date', 'date']). \
         fillna(0)
-    m=gt()
-    ctime['merge'] = m-l
+    # m=gt()
+    # ctime['merge'] = m-l
     # 绿表
     results['process_date_table'] = merged_data['date'].values.tolist()
     results['active_members_days_table'] = merged_data['active_members'].values.tolist()
@@ -95,8 +100,8 @@ def get_dr_values(thatdate_sql):
     results['comments_days_table'] = merged_data['comments_days'].values.tolist()
     results['marks_days_table'] = merged_data['marks_days'].values.tolist()
     results['messages_days_table'] = merged_data['messages_days'].values.tolist()
-    n=gt()
-    ctime['tolist'] = n-m
+    # n=gt()
+    # ctime['tolist'] = n-m
     # 组合图
     results['activate_members_days_chart'] = results['activate_members_days_table'][:]
     results['active_members_days_chart'] = results['active_members_days_table'][:]
@@ -110,8 +115,12 @@ def get_dr_values(thatdate_sql):
     results['feed_author_user_days_chart'].reverse()
     results['works_days_chart'].reverse()
     results['claimers_days_chart'].reverse()
-    o=gt()
-    ctime['reverse'] = o-n
+    businesses  = pd.read_sql(sql_business.format(sql_yest_start, sql_yest_end,sql_tdb_yest_start,sql_tdb_yest_end), con=db.engine)
+    results['businesses']={'business_name':businesses['business_name'].values.tolist(),
+                           'business_yest':businesses['business_yest'].values.tolist(),
+                           'business_tdb_yest':businesses['business_tdb_yest'].values.tolist()}
+    # o=gt()
+    # ctime['reverse'] = o-n
     # pprint.pprint(ctime)
     return results
 
@@ -227,7 +236,7 @@ def morning_rp():
                            circle_all=results_morning_rp['circle_all'],
                            members_genres=results_morning_rp['members_genres'],
                            workers_checked=results_morning_rp['workers_checked'],
-                           workers_unclaimed=results_morning_rp['workers_unclaimed']
+                           workers_unclaimed=results_morning_rp['workers_unclaimed'],
                            )
 
 
@@ -287,5 +296,6 @@ def morning_dr():
                            comments_days=results_dr['comments_days_table'],
                            marks_days=results_dr['marks_days_table'],
                            messages_days=results_dr['messages_days_table'],
+                           businesses=results_dr['businesses'],
                            overlap_dr=overlap_dr.render_embed()
                            )
