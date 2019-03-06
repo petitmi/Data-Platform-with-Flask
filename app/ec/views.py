@@ -8,6 +8,7 @@ from pyecharts_javascripthon.api import TRANSLATOR
 from pyecharts import Bar,Line,Overlap
 from app.configs.ec_sql_config import *
 from app.configs.time_config import *
+from ..configs.time_config import *
 import numpy as np
 import pandas as pd
 from functools import reduce
@@ -57,29 +58,41 @@ def get_sql_time(thatdate_sql,day):
     return sql_time
 
 def get_dr_values(thatdate_sql):
-    sql_yest = get_sql_time(thatdate_sql,0)
-    sql_1day=get_sql_time(thatdate_sql,1)
-    sql_7day=get_sql_time(thatdate_sql,7)
+    results = {}
+    results['days_list'] = get_days_list(days=7, thatdate=thatdate_sql).sql_list()
+    sql_time_days_start = results['days_list'][0] + ' 00:00:00'
+    sql_time_days_end = results['days_list'][6] + ' 23:59:59'
+    sql_yest_start=results['days_list'][6] + ' 00:00:00'
+    sql_yest_end=results['days_list'][6] + ' 23:59:59'
+    sql_1day_start=results['days_list'][5] + ' 00:00:00'
+    sql_1day_end=results['days_list'][5] + ' 23:59:59'
+    sql_7day_start=results['days_list'][0] + ' 00:00:00'
+    sql_7day_end=results['days_list'][0] + ' 23:59:59'
 
-    result_ec = pd.read_sql_query(sql_ec_7days.format(sql_7day['time_start'],sql_yest['time_end']), db.engine).fillna(0)
-    attr_day = result_ec['date'].sort_index(ascending=False).values.tolist()
-    bar1_day = result_ec['sales_count'].sort_index(ascending=False).values.tolist()
-    line1_day = result_ec['sales_amount'].sort_index(ascending=False).values.tolist()
+
+    results['ec_7days'] = pd.read_sql_query(sql_ec_7days.format(sql_time_days_start,sql_time_days_end), db.engine).fillna(0)
+    attr_day = results['ec_7days']['date'].sort_index(ascending=False).values.tolist()
+    bar1_day = results['ec_7days']['sales_count'].sort_index(ascending=False).values.tolist()
+    line1_day = results['ec_7days']['sales_amount'].sort_index(ascending=False).values.tolist()
     overlap_day = olp(attr=attr_day, bar1=bar1_day, bar2=0, bar3=0, line1=line1_day, line2=0, line3=0, bar1_title='日销量',
                       bar2_title=0, bar3_title=0, line1_title='日流水', line2_title=0, line3_title=0,
                       title='自主下单日数据', width=600, height=260)
-    result={}
 
-    result['ec_vip_day' ]= db.session.execute(sql_ec_99vip.format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
-    result['ec_vip_day_sale' ]= db.session.execute(sql_ec_99vip_sale.format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
-    result['ec_yesterday'] = db.session.execute(sql_ec_yesterday.format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
-    result['ec_1day'] = db.session.execute(sql_ec_1day.format(sql_1day['time_start'], sql_1day['time_end'])).fetchall()
-    result['ec_7day'] = db.session.execute(sql_ec_7day.format(sql_7day['time_start'], sql_7day['time_end'])).fetchall()
-    result['ec_type_day'] = db.session.execute(sql_ec_type .format(sql_yest['time_start'], sql_yest['time_end'])).fetchall()
-    result['script_list'] = overlap_day.get_js_dependencies()
-    result['overlap_day'] = overlap_day.render_embed()
-
-    return result
+    results['ec_vip_day' ]= db.session.execute(sql_ec_99vip.format(sql_yest_start,sql_yest_end)).fetchall()
+    results['ec_vip_day_sale' ]= db.session.execute(sql_ec_99vip_sale.format(sql_yest_start,sql_yest_end)).fetchall()
+    results['ec_yesterday'] = db.session.execute(sql_ec_yesterday.format(sql_yest_start,sql_yest_end)).fetchall()
+    results['ec_1day'] = db.session.execute(sql_ec_1day.format(sql_1day_start,sql_1day_end)).fetchall()
+    results['ec_7day'] = db.session.execute(sql_ec_7day.format(sql_7day_start,sql_7day_end)).fetchall()
+    results['ec_type_day'] = db.session.execute(sql_ec_type .format(sql_yest_start,sql_yest_end)).fetchall()
+    results['script_list'] = overlap_day.get_js_dependencies()
+    results['overlap_day'] = overlap_day.render_embed()
+    businesses  = pd.read_sql(sql_business.format(sql_yest_start, sql_yest_end), con=db.engine)
+    results['businesses']={'business_name':businesses['business_name'].values.tolist(),
+                           'business_yest':businesses['business_yest'].values.tolist()}
+    cities  = pd.read_sql(sql_city.format(sql_yest_start, sql_yest_end), con=db.engine)
+    results['cities']={'city_name':cities['city_name'].values.tolist(),
+                           'city_members':cities['city_members'].values.tolist()}
+    return results
 
 @ec.route('/ec-dr',methods=["POST","GET"])
 @login_required
@@ -105,7 +118,10 @@ def ec_dr():
                            ec_type_day=result_dr['ec_type_day'],
                            script_list=result_dr['script_list'],
                            overlap_day=result_dr['overlap_day'],
-                           thatdate=thatdate_sql)
+                           thatdate=thatdate_sql,
+                           businesses=result_dr['businesses'],
+                           cities=result_dr['cities']
+                           )
 
 
 def get_wr_values(thatdate_sql):

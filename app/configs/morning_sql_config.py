@@ -133,6 +133,8 @@ from cast_clip a left join casts b on a.cast_id=b.id
 where  b.id is not null group by b.id"""
 
 ###################################################################################################
-sql_business="""select `business_name`'business_name',count(case when created_at between '{0}' and '{1}' then 1 else null end)'business_yest',
-count(case when created_at between '{2}' and '{3}'then 1 else null end) 'business_tdb_yest' from members 
-where created_at between '{2}' and '{1}' and business_name is not null group by business_name order by count(*) desc limit 10;"""
+sql_business="""select case when `business_name` is null then '未知' else `business_name` end 'business_name',
+count(*)'business_yest'
+from members 
+where activate_time between '{0}' and '{1}' and is_activate=1 group by business_name order by count(*) desc limit 10;"""
+

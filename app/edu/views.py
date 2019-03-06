@@ -88,21 +88,36 @@ def edu_rp():
 
 
 def get_dr_values(thatdate_sql):
-    days_tuple=str(tuple(get_days_list(thatdate=thatdate_sql,days=7).sql_list()))
-    result_ec = pd.read_sql_query(sql_edu_7days%days_tuple, db.engine).fillna(0)
-    attr_day = result_ec['date'].sort_index(ascending=False).values.tolist()
-    bar1_day = result_ec['sales_count'].sort_index(ascending=False).values.tolist()
-    line1_day = result_ec['sales_amount'].sort_index(ascending=False).values.tolist()
+    results = {}
+    results['days_list'] = get_days_list(days=7, thatdate=thatdate_sql).sql_list()
+    sql_time_days_start = results['days_list'][0] + ' 00:00:00'
+    sql_time_days_end = results['days_list'][6] + ' 23:59:59'
+    sql_yest_start=results['days_list'][6] + ' 00:00:00'
+    sql_yest_end=results['days_list'][6] + ' 23:59:59'
+    sql_1day_start=results['days_list'][5] + ' 00:00:00'
+    sql_1day_end=results['days_list'][5] + ' 23:59:59'
+    sql_7day_start=results['days_list'][0] + ' 00:00:00'
+    sql_7day_end=results['days_list'][0] + ' 23:59:59'
+    results['edu_7days'] = pd.read_sql_query(sql_edu_7days.format(sql_time_days_start,sql_time_days_end), db.engine).fillna(0)
+    attr_day = results['edu_7days']['date'].sort_index(ascending=False).values.tolist()
+    bar1_day = results['edu_7days']['sales_count'].sort_index(ascending=False).values.tolist()
+    line1_day = results['edu_7days']['sales_amount'].sort_index(ascending=False).values.tolist()
     overlap_day = olp(attr=attr_day, bar1=bar1_day, bar2=0, bar3=0, line1=line1_day, line2=0, line3=0, bar1_title="日销量",
                       bar2_title=0, bar3_title=0,
                       line1_title="日流水", line2_title=0, line3_title=0, title="日数据", width=600, height=260)
-    result={'edu_800vip_day': db.session.execute(sql_edu_800vip.format(thatdate_sql, thatdate_sql)).fetchall()}
-    result['edu_yesterday'] = db.session.execute(sql_edu_yesterday.format(thatdate_sql)).fetchall()
-    result['edu_1day'] = db.session.execute(sql_edu_1day.format(thatdate_sql)).fetchall()
-    result['edu_7day'] = db.session.execute(sql_edu_7day.format(thatdate_sql)).fetchall()
-    result['edu_class_day'] = db.session.execute(sql_edu_class % (thatdate_sql, thatdate_sql)).fetchall()
-    result['overlap_day'] = overlap_day.render_embed()
-    return result
+    results['edu_800vip_day']= db.session.execute(sql_edu_800vip.format(sql_yest_start, sql_yest_end)).fetchall()
+    results['edu_yesterday'] = db.session.execute(sql_edu_yesterday.format(sql_yest_start,sql_yest_end)).fetchall()
+    results['edu_1day'] = db.session.execute(sql_edu_1day.format(sql_1day_start,sql_1day_end)).fetchall()
+    results['edu_7day'] = db.session.execute(sql_edu_7day.format(sql_7day_start,sql_7day_end)).fetchall()
+    results['edu_class_day'] = db.session.execute(sql_edu_class .format (sql_yest_start, sql_yest_end)).fetchall()
+    results['overlap_day'] = overlap_day.render_embed()
+    businesses  = pd.read_sql(sql_business.format(sql_yest_start, sql_yest_end), con=db.engine)
+    results['businesses']={'business_name':businesses['business_name'].values.tolist(),
+                           'business_yest':businesses['business_yest'].values.tolist()}
+    cities  = pd.read_sql(sql_city.format(sql_yest_start, sql_yest_end), con=db.engine)
+    results['cities']={'city_name':cities['city_name'].values.tolist(),
+                           'city_members':cities['city_members'].values.tolist()}
+    return results
 
 @edu.route('/edu-dr',methods=["POST","GET"])
 @login_required
@@ -125,7 +140,9 @@ def edu_dr():
                            edu_1day=result_dr['edu_1day'],
                            edu_7day=result_dr['edu_7day'],
                            edu_class_day=result_dr['edu_class_day'],
-                           overlap_day=result_dr['overlap_day']
+                           overlap_day=result_dr['overlap_day'],
+                           businesses=result_dr['businesses'],
+                           cities=result_dr['cities']
                            )
 
 

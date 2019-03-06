@@ -133,3 +133,14 @@ ifnull(sum(case when ec_type='yyd' then price_tax_sell*goods_num else null end),
 ifnull(sum(case when ec_type='yyd' then amount_tax-amount_tax_purchase else null end),0)  profit_web
  from ec_orders_chanjet  where quantity_sales>0
 group by month(order_date) order by month(order_date) desc ;"""
+
+
+sql_business="""select case when `business_name` is null then '未知' else `business_name` end 'business_name',
+count(*)'business_yest'
+from members 
+where ec_time between '{0}' and '{1}' and is_ec=1 group by business_name order by count(*) desc limit 10;"""
+
+sql_city="""select   left(address_ec,7) city_name,
+count(*)'city_members'
+from members 
+where ec_time between '{0}' and '{1}' and is_ec=1  group by left(address_ec,7) order by count(*) desc limit 10;"""

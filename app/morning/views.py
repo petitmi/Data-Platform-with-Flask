@@ -35,8 +35,8 @@ def get_dr_values(thatdate_sql):
     sql_time_days_end = results['days_list'][14] + ' 23:59:59'
     sql_yest_start=results['days_list'][14] + ' 00:00:00'
     sql_yest_end=results['days_list'][14] + ' 23:59:59'
-    sql_tdb_yest_start=results['days_list'][13] + ' 00:00:00'
-    sql_tdb_yest_end=results['days_list'][13] + ' 23:59:59'
+    # sql_tdb_yest_start=results['days_list'][13] + ' 00:00:00'
+    # sql_tdb_yest_end=results['days_list'][13] + ' 23:59:59'
 
     # c=gt()
     # ctime['']=c-b
@@ -115,10 +115,10 @@ def get_dr_values(thatdate_sql):
     results['feed_author_user_days_chart'].reverse()
     results['works_days_chart'].reverse()
     results['claimers_days_chart'].reverse()
-    businesses  = pd.read_sql(sql_business.format(sql_yest_start, sql_yest_end,sql_tdb_yest_start,sql_tdb_yest_end), con=db.engine)
+    businesses  = pd.read_sql(sql_business.format(sql_yest_start, sql_yest_end), con=db.engine)
     results['businesses']={'business_name':businesses['business_name'].values.tolist(),
-                           'business_yest':businesses['business_yest'].values.tolist(),
-                           'business_tdb_yest':businesses['business_tdb_yest'].values.tolist()}
+                           'business_yest':businesses['business_yest'].values.tolist()}
+
     # o=gt()
     # ctime['reverse'] = o-n
     # pprint.pprint(ctime)
