@@ -107,7 +107,6 @@ def ec_dr():
     if request.method=='GET'or request.form.get('input') =='':
         thatdate_sql = yesterday_sql
     result_dr=get_dr_values(thatdate_sql)
-    print(result_dr)
     print('UA:',request.user_agent.string)
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('ec-dr.html',ec_vip_day=result_dr['ec_vip_day'],

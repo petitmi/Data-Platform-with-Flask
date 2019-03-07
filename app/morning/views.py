@@ -115,9 +115,9 @@ def get_dr_values(thatdate_sql):
     results['feed_author_user_days_chart'].reverse()
     results['works_days_chart'].reverse()
     results['claimers_days_chart'].reverse()
-    businesses  = pd.read_sql(sql_business.format(sql_yest_start, sql_yest_end), con=db.engine)
-    results['businesses']={'business_name':businesses['business_name'].values.tolist(),
-                           'business_yest':businesses['business_yest'].values.tolist()}
+    businesses_activate  = pd.read_sql(sql_business_activate.format(sql_yest_start, sql_yest_end), con=db.engine)
+    results['businesses_activate']={'business_name':businesses_activate['business_name'].values.tolist(),
+                           'business_yest':businesses_activate['business_yest'].values.tolist()}
 
     # o=gt()
     # ctime['reverse'] = o-n
@@ -196,6 +196,13 @@ def get_morning_rp_values():
                     key += '_%s' % genre
             key = key.replace('edu', '学员').replace('ec', '电商').replace('activate', '激活')
             results['members_genres'][key] = db.session.execute(sql_genres % sql_condition).fetchall()[0][0]
+
+    businesses= pd.read_sql(sql_business, con=db.engine)
+    results['businesses']={'business_name':businesses['business_name'].values.tolist(),
+                           'business_all':businesses['business_all'].values.tolist(),
+                           'business_edu': businesses['business_edu'].values.tolist(),
+                           'business_ec': businesses['business_ec'].values.tolist(),
+                           'business_activate': businesses['business_activate'].values.tolist()}
     return results
 
 
@@ -237,6 +244,7 @@ def morning_rp():
                            members_genres=results_morning_rp['members_genres'],
                            workers_checked=results_morning_rp['workers_checked'],
                            workers_unclaimed=results_morning_rp['workers_unclaimed'],
+                           businesses=results_morning_rp['businesses']
                            )
 
 
@@ -296,6 +304,6 @@ def morning_dr():
                            comments_days=results_dr['comments_days_table'],
                            marks_days=results_dr['marks_days_table'],
                            messages_days=results_dr['messages_days_table'],
-                           businesses=results_dr['businesses'],
+                           businesses_activate=results_dr['businesses_activate'],
                            overlap_dr=overlap_dr.render_embed()
                            )

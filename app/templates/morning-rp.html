@@ -88,7 +88,34 @@
  <br>
 <h1 class="head1">用户数据</h1>
 <hr width="70%" align="left">
-<table class="green_table">
+<div style="width: 120%">
+    <div style="float: left;width: 40%">
+        <table class="blue_table"  style="font-size: 15px;">
+    <thead class="blue_head" style="font-size: 15px">
+    <tr>
+        <th class="cell">职业</th>
+        <th class="cell">总人数</th>
+        <th class="cell">学习人数</th>
+        <th class="cell">电商人数</th>
+        <th class="cell">激活人数</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {%for i in range(businesses['business_name']|length)%}
+    <tr class="blue_row">
+        <td class="cell">{{ businesses['business_name'][i] }}</td>
+        <td class="cell">{{ businesses['business_all'][i] }}</td>
+        <td class="cell">{{ businesses['business_edu'][i] }}</td>
+        <td class="cell">{{ businesses['business_ec'][i] }}</td>
+        <td class="cell">{{ businesses['business_activate'][i] }}</td>
+    </tr>
+        {%endfor%}
+    </tbody>
+</table>
+    </div>
+    <div style="float: right;width: 55%">
+        <table class="green_table">
     <thead class="green_row_head">
     <tr>
         <th class="green_cell" >用户类别</th>
@@ -115,6 +142,11 @@
     {% endfor %}
     </tbody>
 </table>
+    </div>
+</div>
+
+<br><br>
+
 
 <br><br><br>
 
