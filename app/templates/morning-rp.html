@@ -94,10 +94,10 @@
     <thead class="blue_head" style="font-size: 15px">
     <tr>
         <th class="cell">职业</th>
-        <th class="cell">总人数</th>
-        <th class="cell">学习人数</th>
-        <th class="cell">电商人数</th>
         <th class="cell">激活人数</th>
+        <th class="cell">激活学习人数</th>
+        <th class="cell">激活电商人数</th>
+        <th class="cell">总人数</th>
 
     </tr>
     </thead>
@@ -105,10 +105,11 @@
     {%for i in range(businesses['business_name']|length)%}
     <tr class="blue_row">
         <td class="cell">{{ businesses['business_name'][i] }}</td>
-        <td class="cell">{{ businesses['business_all'][i] }}</td>
+        <td class="cell">{{ businesses['business_activate'][i] }}</td>
         <td class="cell">{{ businesses['business_edu'][i] }}</td>
         <td class="cell">{{ businesses['business_ec'][i] }}</td>
-        <td class="cell">{{ businesses['business_activate'][i] }}</td>
+        <td class="cell">{{ businesses['business_all'][i] }}</td>
+
     </tr>
         {%endfor%}
     </tbody>
