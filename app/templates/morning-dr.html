@@ -103,6 +103,9 @@
     <tr>
         <th class="cell">职业</th>
         <th class="cell">新激活人数</th>
+                <th class="cell">其中学员人数</th>
+        <th class="cell">其中电商用户</th>
+
     </tr>
     </thead>
     <tbody>
@@ -110,6 +113,9 @@
     <tr class="blue_row">
         <td class="cell">{{ businesses_activate['business_name'][i] }}</td>
         <td class="cell">{{ businesses_activate['business_yest'][i] }}</td>
+        <td class="cell">{{ businesses_activate['business_activate_edu'][i] }}</td>
+        <td class="cell">{{ businesses_activate['business_activate_ec'][i] }}</td>
+
     </tr>
         {%endfor%}
     </tbody>

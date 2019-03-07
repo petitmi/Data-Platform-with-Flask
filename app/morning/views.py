@@ -117,7 +117,10 @@ def get_dr_values(thatdate_sql):
     results['claimers_days_chart'].reverse()
     businesses_activate  = pd.read_sql(sql_business_activate.format(sql_yest_start, sql_yest_end), con=db.engine)
     results['businesses_activate']={'business_name':businesses_activate['business_name'].values.tolist(),
-                           'business_yest':businesses_activate['business_yest'].values.tolist()}
+                                    'business_yest':businesses_activate['business_yest'].values.tolist(),
+                                    'business_activate_edu': businesses_activate['business_activate_edu'].values.tolist(),
+                                    'business_activate_ec': businesses_activate['business_activate_ec'].values.tolist()
+                                    }
 
     # o=gt()
     # ctime['reverse'] = o-n

@@ -88,7 +88,10 @@ def get_dr_values(thatdate_sql):
     results['overlap_day'] = overlap_day.render_embed()
     businesses  = pd.read_sql(sql_business.format(sql_yest_start, sql_yest_end), con=db.engine)
     results['businesses']={'business_name':businesses['business_name'].values.tolist(),
-                           'business_yest':businesses['business_yest'].values.tolist()}
+                           'business_yest':businesses['business_yest'].values.tolist(),
+                           'business_ec_activate': businesses['business_ec_activate'].values.tolist(),
+                           'business_ec_edu': businesses['business_ec_edu'].values.tolist()
+                           }
     cities  = pd.read_sql(sql_city.format(sql_yest_start, sql_yest_end), con=db.engine)
     results['cities']={'city_name':cities['city_name'].values.tolist(),
                            'city_members':cities['city_members'].values.tolist()}

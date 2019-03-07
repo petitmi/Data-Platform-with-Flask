@@ -177,13 +177,16 @@
 <br><br>
 <h1 class="head1">用户数据</h1>
 <hr width="70%" align="left">
-<div style="width: 70%">
-    <div style="float: left;width: 40%">
+<div style="width: 100%">
+    <div style="float: left;width: 60%">
     <table class="blue_table"  style="font-size: 20px;width: 70%;">
     <thead class="blue_head" style="font-size: 18px">
     <tr>
         <th class="cell">职业</th>
-        <th class="cell">买家人数</th>
+        <th class="cell">新买家人数</th>
+        <th class="cell">其中激活人数</th>
+        <th class="cell">其中学员人数</th>
+
     </tr>
     </thead>
     <tbody>
@@ -191,17 +194,20 @@
     <tr class="blue_row">
         <td class="cell">{{ businesses['business_name'][i] }}</td>
         <td class="cell">{{ businesses['business_yest'][i] }}</td>
+        <td class="cell">{{ businesses['business_ec_activate'][i] }}</td>
+        <td class="cell">{{ businesses['business_ec_edu'][i] }}</td>
+
     </tr>
         {%endfor%}
     </tbody>
 </table>
 </div>
-    <div style="float: right;width: 50%">
+    <div style="float: right;width: 40%">
         <table class="blue_table"  style="font-size: 20px;">
     <thead class="blue_head" style="font-size: 18px">
     <tr>
         <th class="cell">城市</th>
-        <th class="cell">买家人数</th>
+        <th class="cell">新买家人数</th>
     </tr>
     </thead>
     <tbody>

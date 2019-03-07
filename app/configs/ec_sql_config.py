@@ -136,7 +136,9 @@ group by month(order_date) order by month(order_date) desc ;"""
 
 
 sql_business="""select case when `business_name` is null then '未知' else `business_name` end 'business_name',
-count(*)'business_yest'
+count(*)'business_yest',
+count(case when is_activate=1 then 1 else null end) business_ec_activate,
+count(case when is_edu=1 then 1 else null end) business_ec_edu
 from members 
 where ec_time between '{0}' and '{1}' and is_ec=1 group by business_name order by count(*) desc limit 10;"""
 

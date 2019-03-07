@@ -134,7 +134,9 @@ where  b.id is not null group by b.id"""
 
 ###################################################################################################
 sql_business_activate="""select case when `business_name` is null then '未知' else `business_name` end 'business_name',
-count(*)'business_yest'
+count(*)'business_yest',
+count(case when is_edu=1 then 1 else null end) business_activate_edu,
+count(case when is_ec=1 then 1 else null end) business_activate_ec
 from members 
 where activate_time between '{0}' and '{1}' and is_activate=1 group by business_name order by count(*) desc limit 10;"""
 

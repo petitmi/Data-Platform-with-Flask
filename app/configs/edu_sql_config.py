@@ -113,10 +113,13 @@ left join littleclass_orders b on a.post_id=b.post_id
  left join  littleclass_homework c on a.post_id=c.post_id 
 where posts_date='{0}' and ( b.post_id is not null or c.post_id is not null) group by a.post_id order by login_uv desc;"""
 
-sql_business="""select case when `business_name` is null then '未知' else `business_name` end 'business_name',
-count(*)'business_yest'
+sql_business="""select case when `business_name` is null then '未知' else `business_name` end business_name,
+count(*) business_yest,
+count(case when is_activate=1 then 1 else null end) business_edu_activate,
+count(case when is_ec=1 then 1 else null end) business_edu_ec
 from members 
 where edu_time between '{0}' and '{1}' and is_edu=1 group by business_name order by count(*) desc limit 10;"""
+
 sql_city="""select case when `city_edu` is null then '未知'else `city_edu` end 'city_name',
 count(*)'city_members'
 from members 
