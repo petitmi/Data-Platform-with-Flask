@@ -152,15 +152,15 @@ def edu_dr():
 
 def get_wr_values(thatdate_sql):
     thatdate_monday_sql = get_monday(thatdate_sql)
-    result_ec_week = pd.read_sql_query(sql_edu_week_compared % thatdate_sql, db.engine).fillna(0)
+    result_ec_week = pd.read_sql_query(sql_edu_week_compared .format(thatdate_sql) , db.engine).fillna(0)
     attr_week=result_ec_week['周'].sort_index(ascending=False).values.tolist()
     bar1_week=result_ec_week['周销量'].sort_index(ascending=False).values.tolist()
     line1_week=result_ec_week['周流水'].sort_index(ascending=False).values.tolist()
     overlap_week=olp(attr=attr_week,bar1=bar1_week,bar2=0,bar3=0,line1=line1_week,line2=0,line3=0,bar1_title="周销量",bar2_title=0,bar3_title=0,
                     line1_title="周流水",line2_title=0,line3_title=0,title="周数据",width=1000,height=300)
     result={'edu_800vip_week' : db.session.execute(sql_edu_800vip.format(thatdate_monday_sql, thatdate_sql)).fetchall()}
-    result['edu_week'] = db.session.execute(sql_edu_week % (thatdate_monday_sql, thatdate_sql)).fetchall()
-    result['edu_class_week'] = db.session.execute(sql_edu_class % (thatdate_monday_sql, thatdate_sql)).fetchall()
+    result['edu_week'] = db.session.execute(sql_edu_week .format (thatdate_monday_sql, thatdate_sql)).fetchall()
+    result['edu_class_week'] = db.session.execute(sql_edu_class .format (thatdate_monday_sql, thatdate_sql)).fetchall()
     result['overlap_week'] = overlap_week.render_embed()
     return result
 
@@ -187,31 +187,32 @@ def edu_wr():
 
 def get_mr_values(thatdate_sql):
     thatdate_month_1st_sql = get_month_1st(thatdate_sql)
+    thatdate_sql_end=thatdate_sql+" 23:59:59"
     result_ec_month = pd.read_sql_query(sql_edu_month_compared, db.engine).fillna(0)
     result_edu_xiaoe = pd.read_sql_query(sql_edu_xiaoe, db.engine).fillna(0)
     attr_month = result_ec_month['月份'].values.tolist()
-    bar1_month = result_ec_month['2016月销量'].values.tolist()
-    bar2_month = result_ec_month['2017月销量'].values.tolist()
+    bar1_month = result_ec_month['2017月销量'].values.tolist()
+    bar2_month = result_ec_month['2018月销量'].values.tolist()
     result_ec_month.loc[7, ['2018月销量']] = result_ec_month[(result_ec_month['月份'] == 8)]['2018月销量'].values[0] + \
                                           result_edu_xiaoe.sales_count.values[0]
     result_ec_month.loc[7, ['2018月流水']] = result_ec_month[(result_ec_month['月份'] == 8)]['2018月流水'].values[0] + \
                                           result_edu_xiaoe.sales_amount.values[0]
-    bar3_month = result_ec_month['2018月销量'].values.tolist()
-    line1_month = result_ec_month['2016月流水'].values.tolist()
-    line2_month = result_ec_month['2017月流水'].values.tolist()
-    line3_month = result_ec_month['2018月流水'].values.tolist()
+    bar3_month = result_ec_month['2019月销量'].values.tolist()
+    line1_month = result_ec_month['2017月流水'].values.tolist()
+    line2_month = result_ec_month['2018月流水'].values.tolist()
+    line3_month = result_ec_month['2019月流水'].values.tolist()
     attr_month = [(str(int(x)) + '月') for x in attr_month]
 
     overlap_month = olp(attr=attr_month, bar1=bar1_month, bar2=bar2_month, bar3=bar3_month, line1=line1_month,
                         line2=line2_month, line3=line3_month,
-                        bar1_title="2016月销量", bar2_title="2017月销量", bar3_title="2018月销量",
-                        line1_title="2016月流水", line2_title="2017月流水", line3_title="2018月流水", title="月数据", width=1000,
+                        bar1_title="2017月销量", bar2_title="2018月销量", bar3_title="2019月销量",
+                        line1_title="2017月流水", line2_title="2018月流水", line3_title="2019月流水", title="月数据", width=1000,
                         height=300)
 
-    result={'edu_month': db.session.execute(sql_edu_month % (thatdate_month_1st_sql, thatdate_sql)).fetchall()}
-    result['edu_class_month'] = db.session.execute(sql_edu_class % (thatdate_month_1st_sql, thatdate_sql)).fetchall()
+    result={'edu_month': db.session.execute(sql_edu_month .format (thatdate_month_1st_sql, thatdate_sql_end)).fetchall()}
+    result['edu_class_month'] = db.session.execute(sql_edu_class .format (thatdate_month_1st_sql, thatdate_sql_end)).fetchall()
     result['edu_800vip_month'] = db.session.execute(
-        sql_edu_800vip.format(thatdate_month_1st_sql, thatdate_sql)).fetchall()
+        sql_edu_800vip.format(thatdate_month_1st_sql, thatdate_sql_end)).fetchall()
     result['overlap_month'] = overlap_month.render_embed()
 
     return result

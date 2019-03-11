@@ -53,7 +53,7 @@ group by class_title order by class_sale_count desc,teacher_name desc"""
 
 sql_edu_week_compared="""select concat(year(pay_time),'-',week(pay_time,1)) '周',count(1) '周销量',
 round(sum(orderamount)+sum(wallet_pay),0) '周流水'
-from edu_orders where order_status='success' and pay_time between '{0}' and '{1}'
+from edu_orders where order_status='success' and pay_time< '{0}'
 group by year(pay_time),week(pay_time,1) order by year(pay_time) desc,week(pay_time,1) desc limit 12"""
 
 sql_edu_month_compared = """select month(pay_time) '月份'
