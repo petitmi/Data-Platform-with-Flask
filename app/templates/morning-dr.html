@@ -54,7 +54,8 @@
         <th class="green_cell">用户动态发布人数</th>
         <th class="green_cell">评论数</th>
         <th class="green_cell">点赞收藏数</th>
-        <th class="green_cell" style="border-right:1px solid #D3D3D3;">私信数</th>
+        <th class="green_cell" style="border-right:1px solid #D3D3D3;">私信人数</th>
+        <th class="green_cell" style="border-right:1px solid #D3D3D3;">人均私信</th>
 
         <th class="green_cell">首登人数</th>
         <th class="green_cell">激活人数</th>
@@ -76,8 +77,12 @@
         <td class="green_cell">{{ feed_author_user_days[i]|int }}</td>
         <td class="green_cell">{{ comments_days[i]|int }}</td>
         <td class="green_cell">{{ marks_days[i]|int }}</td>
-        <td class="green_cell" style="border-right:1px solid #D3D3D3;">{{ messages_days[i]|int }}</td>
-
+        <td class="green_cell">{{ senders_days[i]|int }}</td>
+        {%if senders_days[i]>0%}
+        <td class="green_cell" style="border-right:1px solid #D3D3D3;">{{ (messages_days[i]/senders_days[i])|round(1) }}</td>
+        {%else%}
+        <td class="green_cell" style="border-right:1px solid #D3D3D3;">数据不足</td>
+        {%endif%}
         <td class="green_cell">{{ login_newly_members_days[i]|int }}</td>
         <td class="green_cell">{{ activate_members_days[i]|int }}</td>
         <td class="green_cell">{{ activate_members_fin_days[i]|int }}</td>

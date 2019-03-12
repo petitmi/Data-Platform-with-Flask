@@ -45,7 +45,6 @@ where created_at between '{0}' and '{1}';"""
 sql_relation_contact_day="""select count(1) from address_books 
 where created_at between '{0}' and '{1}'"""
 ##私信人数
-sql_messages_day="""select count(distinct `sender_id`) from messages where kind=0 and created_at between '{0}' and '{1}'"""
 
 
 #多日
@@ -82,9 +81,8 @@ and created_at between '{0}' and '{1}' and owner_id in (46562,777367,770325,2801
  group by date(created_at) order by date(created_at) desc;"""
 
 ##评论点赞私信
-sql_circle_days="""select data_date date,comments comments_days,marks marks_days,messages messages_days
+sql_circle_days="""select data_date date,comments comments_days,marks marks_days,messages messages_days,senders senders_days
     from data_daily where data_date between '{0}' and '{1}' order by data_date desc"""
-
 
 ##es活跃登录激活授权
 sql_app_daily_days="""select date,activate_members,active_members,active_times,authorize_members from app_daily 

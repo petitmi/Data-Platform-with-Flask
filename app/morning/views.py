@@ -100,6 +100,8 @@ def get_dr_values(thatdate_sql):
     results['comments_days_table'] = merged_data['comments_days'].values.tolist()
     results['marks_days_table'] = merged_data['marks_days'].values.tolist()
     results['messages_days_table'] = merged_data['messages_days'].values.tolist()
+    results['senders_days_table'] = merged_data['senders_days'].values.tolist()
+
     # n=gt()
     # ctime['tolist'] = n-m
     # 组合图
@@ -264,6 +266,9 @@ def morning_dr():
         thatdate_sql = yesterday_sql
 
     results_dr = get_dr_values(thatdate_sql)
+
+    print(results_dr['senders_days_table'])
+
     p=gt()
     #作图
     attr = results_dr['days_list']
@@ -307,6 +312,7 @@ def morning_dr():
                            comments_days=results_dr['comments_days_table'],
                            marks_days=results_dr['marks_days_table'],
                            messages_days=results_dr['messages_days_table'],
+                           senders_days=results_dr['senders_days_table'],
                            businesses_activate=results_dr['businesses_activate'],
                            overlap_dr=overlap_dr.render_embed()
                            )
