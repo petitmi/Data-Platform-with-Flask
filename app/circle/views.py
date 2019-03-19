@@ -104,7 +104,7 @@ def get_articles_values(date_end,days_form):
                 result_urls_items_value[item_no][field_no - 1]
     result={}
     result['dct_urls']=dct_urls
-    result['date_start']=date_start
+    result['date_start']=date_start.strftime('%Y-%m-%d')
     result['date_end']=date_end
 
     return result

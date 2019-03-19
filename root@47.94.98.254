@@ -1,0 +1,33 @@
+class Config(object):
+    CSRF_ENABLED = True
+    SECRET_KEY = 'you-will-never-guess'
+    UPLOAD_FOLDER = "/path/to/the/uploads"
+    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://zhangyuchen:Soho3578*@rm-2ze6mn69disdhl473ro.mysql.rds.aliyuncs.com/data_analysis"
+    SQLALCHEMY_COMMIT_TEARDOWN = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+    TEMPLATES_AUTO_RELOAD = True
+    DEBUG = True
+
+    @staticmethod
+    def init_app(app):
+        pass
+
+port=5001
+host="127.0.0.1"
+# host='172.17.226.131'
+DB_HOST = "rm-2ze6mn69disdhl473ro.mysql.rds.aliyuncs.com"
+DB_USER = "zhangyuchen"
+DB_DB = "circlecenter"
+DB_PASSWORD = "Soho3578*"
+DB_PORT = 3306
+ES_host="47.94.94.203"
+ES_http_auth=("107cine", "107Cine@neo")
+ES_scheme='http'
+ES_port=9200
+path_avator='/Users/petitmi/Downloads/pythonCode/xmmz/morning-data/app/static/images/avator.jpg'
+bdtj_username='unliu'
+bdtj_password='cine1205*'
+bdjt_token='e6d67bcd2770b660982ae2165a4788ae'
+bdtj_site_id=12765015
+bdtj_domain='web.cinehello.com'
