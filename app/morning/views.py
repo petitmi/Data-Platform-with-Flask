@@ -267,8 +267,6 @@ def morning_dr():
 
     results_dr = get_dr_values(thatdate_sql)
 
-    print(results_dr['senders_days_table'])
-
     p=gt()
     #作图
     attr = results_dr['days_list']

@@ -1,4 +1,5 @@
 from flask_login import UserMixin, AnonymousUserMixin,current_user
+from flask_login import UserMixin, AnonymousUserMixin,current_user
 from . import db, login_manager
 
 

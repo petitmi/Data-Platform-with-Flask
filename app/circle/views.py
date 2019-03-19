@@ -1,13 +1,13 @@
 from flask import render_template,request,flash,session
 from flask_login import login_required
-from app import db,REMOTE_HOST
+from .. import db,REMOTE_HOST
 from . import circle
 from ..decorators import  permission_required
 from ..models import Permission
-from pyecharts_javascripthon.api import TRANSLATOR
 from pyecharts import Bar,Line,Overlap
-from app.configs.circle_sql_config import *
-from app.configs.time_config import *
+from ..configs.circle_sql_config import *
+from ..configs.time_config import *
+from ..configs.config import *
 import pandas as pd
 
 
@@ -58,6 +58,58 @@ def get_mr_values(thatdate_sql):
 
     return result
 
+
+
+def get_articles_values(date_end,days_form):
+    import requests
+    import json
+    end_date=date_end.strftime('%Y%m%d')
+    date_start=date_end-datetime.timedelta(days=days_form)
+    start_date=date_start.strftime('%Y%m%d')
+    siteListUrl = "https://api.baidu.com/json/tongji/v1/ReportService/getData"
+    data = {
+        "header": {
+            'username': bdtj_username,
+            'password': bdtj_password,
+            'token': bdjt_token,
+            'Content-type': 'application/json'
+        },
+        "body": {
+            'site_id': bdtj_site_id,
+            "domain": bdtj_domain,
+            'status': 0,
+            'method': 'visit/toppage/a',
+            # 开始统计时间
+            'start_date': start_date,
+            # 结束统计时间
+            'end_date': end_date,
+            # 获得pv和uv数据
+            'metrics': 'pv_count,visitor_count,visit1_count,outward_count,exit_count,average_stay_time,exit_ratio',
+            'order': 'visitor_count,desc'
+        }
+    }
+
+
+    data = json.dumps(data)
+    r = requests.post(siteListUrl, data=data).content
+    result_urls_fields = json.loads(r)['body']['data'][0]['result']['fields']
+    result_urls_items_title = json.loads(r)['body']['data'][0]['result']['items'][0]
+    result_urls_items_value = json.loads(r)['body']['data'][0]['result']['items'][1]
+    dct_urls = {}
+    for item_no in range(len(result_urls_items_title)):
+        if 'stream' in result_urls_items_title[item_no][0]['name'] and result_urls_items_value[item_no][1]>19:
+            dct_urls[result_urls_items_title[item_no][0]['name']] = {}
+            for field_no in range(1, len(result_urls_fields)):
+                dct_urls[result_urls_items_title[item_no][0]['name']][result_urls_fields[field_no]] = \
+                result_urls_items_value[item_no][field_no - 1]
+    result={}
+    result['dct_urls']=dct_urls
+    result['date_start']=date_start
+    result['date_end']=date_end
+
+    return result
+
+
 @circle.route('/circle-mr',methods=["POST","GET"])
 @login_required
 @permission_required(Permission.CIRCLE)
@@ -76,6 +128,33 @@ def circle_mr():
                            thatdate=thatdate_sql,
                            overlap_month=result_mr['overlap_month'],
                            data_monthly=result_mr['data_monthly'])
+
+
+@circle.route('/articles-rp',methods=["POST","GET"])
+@login_required
+def articles_rp():
+    date_end_default=datetime.datetime.today()
+    days_form=0
+    if request.method == 'POST' :
+        days_form =int(request.form.get('days_form'))
+        date_end_form=datetime.datetime.strptime(request.form.get('date_end'),'%Y-%m-%d')
+        if date_end_form<date_end_default :
+            date_end=date_end_form
+        else:
+            date_end=date_end_default
+            flash('时间格式有误')
+    elif request.method=='GET':
+        date_end = date_end_default
+    else:
+        flash('时间格式有误')
+    results_articles=get_articles_values(date_end=date_end,days_form=days_form)
+    print('UA:',request.user_agent.string)
+    print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
+    return render_template('articles-rp.html',
+                           date_end=date_end.strftime('%Y-%m-%d'),
+                           date_start=results_articles['date_start'],
+                           dct_urls=results_articles['dct_urls'],
+                           days_form=days_form)
 
 def olp_bar_line(sql):
     result_circle_day = pd.read_sql(sql, db.engine).fillna(0)
