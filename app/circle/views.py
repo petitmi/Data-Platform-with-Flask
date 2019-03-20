@@ -97,7 +97,7 @@ def get_articles_values(date_end,days_form):
     result_urls_items_value = json.loads(r)['body']['data'][0]['result']['items'][1]
     dct_urls = {}
     for item_no in range(len(result_urls_items_title)):
-        if 'stream' in result_urls_items_title[item_no][0]['name'] and result_urls_items_value[item_no][1]>19:
+        if ('stream' in result_urls_items_title[item_no][0]['name'] or 'videos' in result_urls_items_title[item_no][0]['name']) and result_urls_items_value[item_no][1]>19:
             dct_urls[result_urls_items_title[item_no][0]['name']] = {}
             for field_no in range(1, len(result_urls_fields)):
                 dct_urls[result_urls_items_title[item_no][0]['name']][result_urls_fields[field_no]] = \
