@@ -408,7 +408,6 @@ def get_sum_values(thatdate_sql):
 
     #项目
 
-
     result_month_lst= pd.read_sql(sql_project_month%year_sql, db.engine).values.tolist()
     result_ec_chanject_month_lst = pd.read_sql(sql_ec_chanjet_month%year_sql,  db.engine).values.tolist()
     result_ec_offline_month_lst  = pd.read_sql(sql_ec_offline_month%year_sql,  db.engine).values.tolist()

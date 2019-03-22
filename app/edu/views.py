@@ -112,7 +112,6 @@ def get_dr_values(thatdate_sql):
     results['edu_class_day'] = db.session.execute(sql_edu_class .format (sql_yest_start, sql_yest_end)).fetchall()
     results['overlap_day'] = overlap_day.render_embed()
     businesses  = pd.read_sql(sql_business.format(sql_yest_start, sql_yest_end), con=db.engine)
-    print(businesses.columns)
     results['businesses']={'business_name':businesses['business_name'].values.tolist(),
                            'business_yest':businesses['business_yest'].values.tolist(),
                            'business_edu_activate': businesses['business_edu_activate'].values.tolist(),
