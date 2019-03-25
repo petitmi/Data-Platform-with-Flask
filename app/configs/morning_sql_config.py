@@ -53,7 +53,7 @@ where created_at between '{0}' and '{1}'"""
 sql_login_newly_days="""select date(created_at) date,count(0) login_newly_days from tracks where created_at between '{0}' and '{1}'
  and trackable_type='Member'and `action`=100 group by date(created_at)  order by date(created_at) limit 15"""
 ##激活成功
-sql_activate_members_fin_days="""select date(updated_at) date,count(distinct member_id) activate_members_fin_days
+sql_activate_members_fin_days="""select date(hero_actived_at) date,count(distinct member_id) activate_members_fin_days
 from person_infos
 where actived_sites like '%unsung_hero%'  and hero_actived_at between '{0}' and '{1}'
 group by date(hero_actived_at) order by date(hero_actived_at) desc"""
