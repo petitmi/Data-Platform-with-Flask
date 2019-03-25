@@ -37,7 +37,6 @@ def get_dr_values(thatdate_sql):
     sql_yest_end=results['days_list'][14] + ' 23:59:59'
     # sql_tdb_yest_start=results['days_list'][13] + ' 00:00:00'
     # sql_tdb_yest_end=results['days_list'][13] + ' 23:59:59'
-
     # c=gt()
     # ctime['']=c-b
 
@@ -75,12 +74,12 @@ def get_dr_values(thatdate_sql):
     app_circle_days = pd.read_sql(sql_circle_days.format(sql_time_days_start, sql_time_days_end), con=db.engine)
     # l=gt()
     # ctime['result_appcircle'] = l-k
-    merged_data = activate_members_fin_days.merge(login_newly_days, how='left', on=['date', 'date']). \
+    merged_data = app_daily_days.merge(activate_members_fin_days, how='left', on=['date', 'date']). \
         merge(feed_count_editor_days, how='left', on=['date', 'date']). \
         merge(feed_author_user_days, how='left', on=['date', 'date']). \
         merge(works_days, how='left', on=['date', 'date']). \
         merge(claimers_days, how='left', on=['date', 'date']). \
-        merge(app_daily_days, how='left', on=['date', 'date']). \
+        merge(login_newly_days, how='left', on=['date', 'date']). \
         merge(app_circle_days, how='left', on=['date', 'date']). \
         fillna(0)
     # m=gt()
