@@ -63,6 +63,12 @@ def get_mr_values(thatdate_sql):
 def get_articles_values(date_end,days_form):
     import requests
     import json
+    import re
+    import pymysql
+    dbconn_cine107 = pymysql.connect(host=host_cine1, port=port_cine1, user=user_cine1, password=password_cine1, db=db_cine1_cine107,
+                                      charset='utf8')
+    sqlconn_cine107=dbconn_cine107.cursor()
+
     end_date=date_end.strftime('%Y%m%d')
     date_start=date_end-datetime.timedelta(days=days_form)
     start_date=date_start.strftime('%Y%m%d')
@@ -92,16 +98,23 @@ def get_articles_values(date_end,days_form):
 
     data = json.dumps(data)
     r = requests.post(siteListUrl, data=data).content
-    result_urls_fields = json.loads(r)['body']['data'][0]['result']['fields']
-    result_urls_items_title = json.loads(r)['body']['data'][0]['result']['items'][0]
-    result_urls_items_value = json.loads(r)['body']['data'][0]['result']['items'][1]
+    urls_fields = json.loads(r)['body']['data'][0]['result']['fields']
+    urls_items_title = json.loads(r)['body']['data'][0]['result']['items'][0]
+    urls_items_value = json.loads(r)['body']['data'][0]['result']['items'][1]
     dct_urls = {}
-    for item_no in range(len(result_urls_items_title)):
-        if ('stream' in result_urls_items_title[item_no][0]['name'] or 'videos' in result_urls_items_title[item_no][0]['name']) and result_urls_items_value[item_no][1]>19:
-            dct_urls[result_urls_items_title[item_no][0]['name']] = {}
-            for field_no in range(1, len(result_urls_fields)):
-                dct_urls[result_urls_items_title[item_no][0]['name']][result_urls_fields[field_no]] = \
-                result_urls_items_value[item_no][field_no - 1]
+    for item_no in range(len(urls_items_title)):
+        if ('stream/' in urls_items_title[item_no][0]['name']) and urls_items_value[item_no][1]>19:
+            dct_urls[urls_items_title[item_no][0]['name']] = {}
+            article_re=re.search(r'stream\/(\d+)[\?\/$]?', urls_items_title[item_no][0]['name'])
+            aricle_id=article_re.group(1)
+            article_link=article_re.end()
+            sqlconn_cine107.execute("select v_title from streams where id=%s"%aricle_id)
+            article_title=sqlconn_cine107.fetchall()[0][0]
+            dct_urls[urls_items_title[item_no][0]['name']]['title']=article_title
+            dct_urls[urls_items_title[item_no][0]['name']]['link']=urls_items_title[item_no][0]['name'][article_link:]
+            for field_no in range(1, len(urls_fields)):
+                dct_urls[urls_items_title[item_no][0]['name']][urls_fields[field_no]] = urls_items_value[item_no][field_no - 1]
+    dbconn_cine107.close()
     result={}
     result['dct_urls']=dct_urls
     result['date_start']=date_start.strftime('%Y-%m-%d')

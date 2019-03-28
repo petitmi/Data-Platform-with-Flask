@@ -14,8 +14,10 @@
         <span style="text-align: center;display:block;">
             <span style="border: #0d3349;font-weight: bold">截止日期：</span>
             <input type="text" name="date_end" value="{{ date_end }}" readonly class="form_datetime" >
-            <span style="border: #0d3349;font-weight: bold"> 日间隔(天):</span>
-            <input type="text" name="days_form" value="{{ days_form}}" style="font-size: 20px">
+            <br>
+            <span style="border: #0d3349;font-weight: bold">向前推多少天:</span>
+            <input type="text" name="days_form" value="{{ days_form}}" style="font-size: 14px">
+            <br>
             <input type="submit" class="startButton" value="查询">
         </span>
 
@@ -40,7 +42,7 @@
 <hr width="70%" align="left">
 <span style="border: #0d3349;font-weight: bold;text-align: center;display:block;color: palevioletred">【{{date_start}} - {{date_end}}&nbsp;】uv>19的文章排名</span>
 <br>
-<table class="blue_table"  >
+<table class="blue_table"  style="width: 130%" >
     <thead class="blue_head">
     <tr>
         <th class="cell">标题</th>
@@ -51,12 +53,14 @@
         <th class="cell">退出页次数</th>
         <th class="cell">平均停留时长</th>
         <th class="cell">退出率</th>
+        <th class="cell">类型</th>
+
     </tr>
     </thead>
     <tbody>
     {% for i in dct_urls %}
     <tr class="blue_row">
-        <td class="cell"><a href={{ i }} target="_blank">{{ i }}</a></td>
+        <td class="cell"><a href={{ i }} target="_blank">{{ dct_urls[i]['title'] }}</a></td>
         <td class="cell">{{ dct_urls[i]['pv_count'] }}</td>
         <td class="cell">{{ dct_urls[i]['visitor_count'] }}</td>
         <td class="cell">{{ dct_urls[i]['visit1_count']}}</td>
@@ -64,6 +68,7 @@
         <td class="cell">{{ dct_urls[i]['exit_count']}}</td>
         <td class="cell">{{ dct_urls[i]['average_stay_time']}}</td>
         <td class="cell">{{ dct_urls[i]['exit_ratio']}}%</td>
+        <td class="cell">{{ dct_urls[i]['link'] }}</td>
 
     </tr>
     {% endfor %}
