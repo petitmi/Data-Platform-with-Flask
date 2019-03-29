@@ -110,12 +110,12 @@ def get_articles_values(date_end,days_form,keyword):
                 article_re=re.search(r'stream\/(\d+)[\?\/$]?', urls_items_title[item_no][0]['name'])
                 if article_re is None:
                     article_title=None
-                    article_link=0
+                    article_link_type=0
                 else:
                     #id内容
                     aricle_id=article_re.group(1)
                     #id位置
-                    article_link=article_re.end()
+                    article_link_type=article_re.end()
                     #查询标题
                     sqlconn_cine107.execute("select v_title from streams where id=%s"%aricle_id)
                     article_title=sqlconn_cine107.fetchall()[0][0]
@@ -124,14 +124,18 @@ def get_articles_values(date_end,days_form,keyword):
 
                 #进入字典
                 dct_urls[urls_items_title[item_no][0]['name']]['title']=article_title
-                dct_urls[urls_items_title[item_no][0]['name']]['link']=urls_items_title[item_no][0]['name'][article_link:]
+                dct_urls[urls_items_title[item_no][0]['name']]['link_type']=urls_items_title[item_no][0]['name'][article_link_type:]
                 for field_no in range(1, len(urls_fields)):
                     dct_urls[urls_items_title[item_no][0]['name']][urls_fields[field_no]] = urls_items_value[item_no][field_no - 1]
     else:
         for item_no in range(len(urls_items_title)):
             if (keyword in urls_items_title[item_no][0]['name']) and urls_items_value[item_no][1]>19:
                 dct_urls[urls_items_title[item_no][0]['name']] = {}
-                dct_urls[urls_items_title[item_no][0]['name']]['title']=urls_items_title[item_no][0]['name']
+                if len(urls_items_title[item_no][0]['name']) > 100:
+                    article_title = urls_items_title[item_no][0]['name'][:99]
+                else:
+                    article_title=urls_items_title[item_no][0]['name']
+                dct_urls[urls_items_title[item_no][0]['name']]['title']=article_title
                 for field_no in range(1, len(urls_fields)):
                     dct_urls[urls_items_title[item_no][0]['name']][urls_fields[field_no]] = urls_items_value[item_no][field_no - 1]
     dbconn_cine107.close()
