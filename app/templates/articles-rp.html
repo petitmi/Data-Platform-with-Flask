@@ -51,7 +51,7 @@
 <table class="green_table"  style="width: 130%" >
     <thead class="green_row_head">
     <tr>
-        <th class="green_cell">标题</th>
+        <th class="green_cell" style="width:60px" >标题</th>
         <th class="green_cell">pv</th>
         <th class="green_cell">uv</th>
         <th class="green_cell">入口页次数</th>
@@ -66,7 +66,7 @@
     <tbody>
     {% for i in dct_urls %}
     <tr class="green_row">
-        <td class="green_cell" style="background-color: #eff2ff"><a href={{ i }} target="_blank">{{ dct_urls[i]['title'] }}</a></td>
+        <td class="green_cell" style="background-color: #eff2ff;width: 60px"><a href={{ i }} target="_blank">{{ dct_urls[i]['title'] }}</a></td>
         <td class="green_cell">{{ dct_urls[i]['pv_count'] }}</td>
         <td class="green_cell">{{ dct_urls[i]['visitor_count'] }}</td>
         <td class="green_cell">{{ dct_urls[i]['visit1_count']}}</td>

@@ -106,14 +106,22 @@ def get_articles_values(date_end,days_form,keyword):
             if ('stream/' in urls_items_title[item_no][0]['name']) and urls_items_value[item_no][1]>19:
                 dct_urls[urls_items_title[item_no][0]['name']] = {}
                 #正则匹配
+
                 article_re=re.search(r'stream\/(\d+)[\?\/$]?', urls_items_title[item_no][0]['name'])
-                #id内容
-                aricle_id=article_re.group(1)
-                #id位置
-                article_link=article_re.end()
-                #查询标题
-                sqlconn_cine107.execute("select v_title from streams where id=%s"%aricle_id)
-                article_title=sqlconn_cine107.fetchall()[0][0]
+                if article_re is None:
+                    article_title=None
+                    article_link=0
+                else:
+                    #id内容
+                    aricle_id=article_re.group(1)
+                    #id位置
+                    article_link=article_re.end()
+                    #查询标题
+                    sqlconn_cine107.execute("select v_title from streams where id=%s"%aricle_id)
+                    article_title=sqlconn_cine107.fetchall()[0][0]
+                    if len(article_title)>41:
+                        article_title=article_title[:40]
+
                 #进入字典
                 dct_urls[urls_items_title[item_no][0]['name']]['title']=article_title
                 dct_urls[urls_items_title[item_no][0]['name']]['link']=urls_items_title[item_no][0]['name'][article_link:]
