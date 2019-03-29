@@ -12,12 +12,18 @@
 <form method=post enctype=multipart/form-data>
     <span>
         <span style="text-align: center;display:block;">
-            <span style="border: #0d3349;font-weight: bold">截止日期：</span>
+            <span style="border: #0d3349;font-weight: bold;">截止日期:</span>
             <input type="text" name="date_end" value="{{ date_end }}" readonly class="form_datetime" >
             <br>
             <span style="border: #0d3349;font-weight: bold">向前推多少天:</span>
             <input type="text" name="days_form" value="{{ days_form}}" style="font-size: 14px">
             <br>
+            <span style="border: #0d3349;font-weight: bold">查询内容:</span>
+            <select name="selected">
+                {%for key in dct_selected%}
+                <option value={{ key }}{% if keyword ==key %} selected {% endif %} >{{dct_selected[key]}}</option>
+                {%endfor%}
+            </select>
             <input type="submit" class="startButton" value="查询">
         </span>
 
@@ -39,36 +45,36 @@
 
 <br>
 <h1 class="head1">日数据</h1>
-<hr width="70%" align="left">
-<span style="border: #0d3349;font-weight: bold;text-align: center;display:block;color: palevioletred">【{{date_start}} - {{date_end}}&nbsp;】uv>19的文章排名</span>
+<hr width="100%" align="left">
+<span style="border: #0d3349;font-weight: bold;text-align: center;display:block;color: palevioletred">【{{date_start}} - {{date_end}}&nbsp;】uv>19的链接排名</span>
 <br>
-<table class="blue_table"  style="width: 130%" >
-    <thead class="blue_head">
+<table class="green_table"  style="width: 130%" >
+    <thead class="green_row_head">
     <tr>
-        <th class="cell">标题</th>
-        <th class="cell">pv</th>
-        <th class="cell">uv</th>
-        <th class="cell">入口页次数</th>
-        <th class="cell">贡献下游浏览量</th>
-        <th class="cell">退出页次数</th>
-        <th class="cell">平均停留时长</th>
-        <th class="cell">退出率</th>
-        <th class="cell">类型</th>
+        <th class="green_cell">标题</th>
+        <th class="green_cell">pv</th>
+        <th class="green_cell">uv</th>
+        <th class="green_cell">入口页次数</th>
+        <th class="green_cell">贡献下游浏览量</th>
+        <th class="green_cell">退出页次数</th>
+        <th class="green_cell">平均停留时长</th>
+        <th class="green_cell">退出率</th>
+        <th class="green_cell">类型</th>
 
     </tr>
     </thead>
     <tbody>
     {% for i in dct_urls %}
-    <tr class="blue_row">
-        <td class="cell"><a href={{ i }} target="_blank">{{ dct_urls[i]['title'] }}</a></td>
-        <td class="cell">{{ dct_urls[i]['pv_count'] }}</td>
-        <td class="cell">{{ dct_urls[i]['visitor_count'] }}</td>
-        <td class="cell">{{ dct_urls[i]['visit1_count']}}</td>
-        <td class="cell">{{ dct_urls[i]['outward_count']}}</td>
-        <td class="cell">{{ dct_urls[i]['exit_count']}}</td>
-        <td class="cell">{{ dct_urls[i]['average_stay_time']}}</td>
-        <td class="cell">{{ dct_urls[i]['exit_ratio']}}%</td>
-        <td class="cell">{{ dct_urls[i]['link'] }}</td>
+    <tr class="green_row">
+        <td class="green_cell" style="background-color: #eff2ff"><a href={{ i }} target="_blank">{{ dct_urls[i]['title'] }}</a></td>
+        <td class="green_cell">{{ dct_urls[i]['pv_count'] }}</td>
+        <td class="green_cell">{{ dct_urls[i]['visitor_count'] }}</td>
+        <td class="green_cell">{{ dct_urls[i]['visit1_count']}}</td>
+        <td class="green_cell">{{ dct_urls[i]['outward_count']}}</td>
+        <td class="green_cell">{{ dct_urls[i]['exit_count']}}</td>
+        <td class="green_cell">{{ dct_urls[i]['average_stay_time']}}</td>
+        <td class="green_cell">{{ dct_urls[i]['exit_ratio']}}%</td>
+        <td class="green_cell">{{ dct_urls[i]['link'] }}</td>
 
     </tr>
     {% endfor %}

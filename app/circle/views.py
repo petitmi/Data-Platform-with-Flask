@@ -60,7 +60,7 @@ def get_mr_values(thatdate_sql):
 
 
 
-def get_articles_values(date_end,days_form):
+def get_articles_values(date_end,days_form,keyword):
     import requests
     import json
     import re
@@ -94,26 +94,38 @@ def get_articles_values(date_end,days_form):
             'order': 'visitor_count,desc'
         }
     }
-
-
     data = json.dumps(data)
     r = requests.post(siteListUrl, data=data).content
     urls_fields = json.loads(r)['body']['data'][0]['result']['fields']
     urls_items_title = json.loads(r)['body']['data'][0]['result']['items'][0]
     urls_items_value = json.loads(r)['body']['data'][0]['result']['items'][1]
     dct_urls = {}
-    for item_no in range(len(urls_items_title)):
-        if ('stream/' in urls_items_title[item_no][0]['name']) and urls_items_value[item_no][1]>19:
-            dct_urls[urls_items_title[item_no][0]['name']] = {}
-            article_re=re.search(r'stream\/(\d+)[\?\/$]?', urls_items_title[item_no][0]['name'])
-            aricle_id=article_re.group(1)
-            article_link=article_re.end()
-            sqlconn_cine107.execute("select v_title from streams where id=%s"%aricle_id)
-            article_title=sqlconn_cine107.fetchall()[0][0]
-            dct_urls[urls_items_title[item_no][0]['name']]['title']=article_title
-            dct_urls[urls_items_title[item_no][0]['name']]['link']=urls_items_title[item_no][0]['name'][article_link:]
-            for field_no in range(1, len(urls_fields)):
-                dct_urls[urls_items_title[item_no][0]['name']][urls_fields[field_no]] = urls_items_value[item_no][field_no - 1]
+
+    if keyword=='stream':
+        for item_no in range(len(urls_items_title)):
+            if ('stream/' in urls_items_title[item_no][0]['name']) and urls_items_value[item_no][1]>19:
+                dct_urls[urls_items_title[item_no][0]['name']] = {}
+                #正则匹配
+                article_re=re.search(r'stream\/(\d+)[\?\/$]?', urls_items_title[item_no][0]['name'])
+                #id内容
+                aricle_id=article_re.group(1)
+                #id位置
+                article_link=article_re.end()
+                #查询标题
+                sqlconn_cine107.execute("select v_title from streams where id=%s"%aricle_id)
+                article_title=sqlconn_cine107.fetchall()[0][0]
+                #进入字典
+                dct_urls[urls_items_title[item_no][0]['name']]['title']=article_title
+                dct_urls[urls_items_title[item_no][0]['name']]['link']=urls_items_title[item_no][0]['name'][article_link:]
+                for field_no in range(1, len(urls_fields)):
+                    dct_urls[urls_items_title[item_no][0]['name']][urls_fields[field_no]] = urls_items_value[item_no][field_no - 1]
+    else:
+        for item_no in range(len(urls_items_title)):
+            if (keyword in urls_items_title[item_no][0]['name']) and urls_items_value[item_no][1]>19:
+                dct_urls[urls_items_title[item_no][0]['name']] = {}
+                dct_urls[urls_items_title[item_no][0]['name']]['title']=urls_items_title[item_no][0]['name']
+                for field_no in range(1, len(urls_fields)):
+                    dct_urls[urls_items_title[item_no][0]['name']][urls_fields[field_no]] = urls_items_value[item_no][field_no - 1]
     dbconn_cine107.close()
     result={}
     result['dct_urls']=dct_urls
@@ -148,8 +160,10 @@ def circle_mr():
 def articles_rp():
     date_end_default=datetime.datetime.today()
     days_form=0
+    dct_selected={'stream':"107文章",'cinehello':"cinehello全站","zhuanti":"专题","company":"公司"}
     if request.method == 'POST' :
         days_form =int(request.form.get('days_form'))
+        keyword=request.form.get('selected')
         date_end_form=datetime.datetime.strptime(request.form.get('date_end'),'%Y-%m-%d')
         if date_end_form<date_end_default :
             date_end=date_end_form
@@ -157,17 +171,21 @@ def articles_rp():
             date_end=date_end_default
             flash('时间格式有误')
     elif request.method=='GET':
+        keyword = 'stream'
         date_end = date_end_default
     else:
         flash('时间格式有误')
-    results_articles=get_articles_values(date_end=date_end,days_form=days_form)
+    results_articles=get_articles_values(date_end=date_end,days_form=days_form,keyword=keyword)
+
     print('UA:',request.user_agent.string)
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('articles-rp.html',
                            date_end=date_end.strftime('%Y-%m-%d'),
                            date_start=results_articles['date_start'],
                            dct_urls=results_articles['dct_urls'],
-                           days_form=days_form)
+                           days_form=days_form,
+                           dct_selected=dct_selected,
+                           keyword=keyword)
 
 def olp_bar_line(sql):
     result_circle_day = pd.read_sql(sql, db.engine).fillna(0)
