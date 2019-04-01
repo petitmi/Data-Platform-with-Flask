@@ -22,7 +22,7 @@
             <span style="border: #0d3349;font-weight: bold">查询类别:</span>
             <select name="selected">
                 {%for key in dct_selected%}
-                <option value={{ key }}{% if seleted_type ==key %} selected {% endif %} >{{dct_selected[key]}}</option>
+                <option value={{ key }}{% if key == selected_type %} selected {% endif %} >{{dct_selected[key]}}</option>
                 {%endfor%}
             </select>
             </td>
@@ -34,7 +34,7 @@
             </td>
             <td>
                 <span style="border: #0d3349;font-weight: bold">标题关键词:</span>
-                <input type="text" name="keyword_title" value="{{ keyword_title}}" style="font-size: 14px">
+                <input type="text" name="keyword_title" value="{{keyword_title}}" style="font-size: 14px">
             <br>
                 <span style="border: #0d3349;font-weight: bold">链接关键词:</span>
                 <input type="text" name="keyword_url" value="{{ keyword_url}}" style="font-size: 14px"></td></tr>

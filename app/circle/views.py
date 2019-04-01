@@ -201,7 +201,6 @@ def articles_rp():
         selected_type=request.form.get('selected')
         keyword_url=request.form.get('keyword_url')
         keyword_title=request.form.get('keyword_title')
-
         date_end_form=datetime.datetime.strptime(request.form.get('date_end'),'%Y-%m-%d')
         if date_end_form<date_end_default :
             date_end=date_end_form
@@ -209,9 +208,8 @@ def articles_rp():
             date_end=date_end_default
             flash('时间格式有误')
     elif request.method=='GET':
-        keyword_title =None
-        keyword_url=None
-
+        keyword_title =''
+        keyword_url=''
         selected_type = 'stream'
         date_end = date_end_default
     else:
