@@ -8,27 +8,43 @@
 {% endblock %}
 
 {% block page_content %}
-
+<div>
 <form method=post enctype=multipart/form-data>
-    <span>
-        <span style="text-align: center;display:block;">
+    <table>
+        <thead style="font-size: 25px;color: #2d6987"><tr><th>时间段选择</th><th>查询内容选择</th></tr></thead>
+        <tbody>
+        <tr>
+            <td>
             <span style="border: #0d3349;font-weight: bold;">截止日期:</span>
             <input type="text" name="date_end" value="{{ date_end }}" readonly class="form_datetime" >
-            <br>
-            <span style="border: #0d3349;font-weight: bold">向前推多少天:</span>
-            <input type="text" name="days_form" value="{{ days_form}}" style="font-size: 14px">
-            <br>
-            <span style="border: #0d3349;font-weight: bold">查询内容:</span>
+            </td>
+            <td>
+            <span style="border: #0d3349;font-weight: bold">查询类别:</span>
             <select name="selected">
                 {%for key in dct_selected%}
-                <option value={{ key }}{% if keyword ==key %} selected {% endif %} >{{dct_selected[key]}}</option>
+                <option value={{ key }}{% if seleted_type ==key %} selected {% endif %} >{{dct_selected[key]}}</option>
                 {%endfor%}
             </select>
-            <input type="submit" class="startButton" value="查询">
-        </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span style="border: #0d3349;font-weight: bold">向前推多少天:</span>
+                <input type="text" name="days_form" value="{{ days_form}}" style="font-size: 14px">
+            </td>
+            <td>
+                <span style="border: #0d3349;font-weight: bold">标题关键词:</span>
+                <input type="text" name="keyword_title" value="{{ keyword_title}}" style="font-size: 14px">
+            <br>
+                <span style="border: #0d3349;font-weight: bold">链接关键词:</span>
+                <input type="text" name="keyword_url" value="{{ keyword_url}}" style="font-size: 14px"></td></tr>
+        </tbody>
 
-    </span>
+        </table>
+            <input type="submit" class="startButton" value="查询">
 </form>
+</div>
+
 <script type="text/javascript">
     $(".form_datetime").datetimepicker({format: "yyyy-mm-dd",
         minView: 2});
@@ -80,7 +96,6 @@
     {% endfor %}
     </tbody>
 </table>
-
     <!--<div class="table3-top" style="width: 90%;height: 80%;  margin: 0 auto;">-->
 <!--{{ overlap_day|safe }}-->
     <!--</div>-->
