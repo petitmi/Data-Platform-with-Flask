@@ -8,12 +8,17 @@
 {% endblock %}
 
 {% block page_content %}
-<div>
+<div >
 <form method=post enctype=multipart/form-data>
-    <table>
-        <thead style="font-size: 25px;color: #2d6987"><tr><th>时间段选择</th><th>查询内容选择</th></tr></thead>
-        <tbody>
+    <table style="margin: 0 auto;width: 60%">
+        <thead style="font-size: 25px;color: #2d6987">
         <tr>
+            <th>时间段选择</th>
+            <th>查询内容选择</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr style="witdh:100px">
             <td>
             <span style="border: #0d3349;font-weight: bold;">截止日期:</span>
             <input type="text" name="date_end" value="{{ date_end }}" readonly class="form_datetime" >
@@ -41,7 +46,7 @@
         </tbody>
 
         </table>
-            <input type="submit" class="startButton" value="查询">
+            <input style="margin: 0 auto;display: block;width: 10%;height: 3rem;border-radius:10px;background-color: #eff2ff" type="submit" class="startButton" value="查询">
 </form>
 </div>
 
@@ -59,7 +64,7 @@
 </div>
 {% endfor %}
 
-<br>
+<div>
 <h1 class="head1">日数据</h1>
 <hr width="100%" align="left">
 <span style="border: #0d3349;font-weight: bold;text-align: center;display:block;color: palevioletred">【{{date_start}} - {{date_end}}&nbsp;】uv>19的链接排名</span>
@@ -96,6 +101,7 @@
     {% endfor %}
     </tbody>
 </table>
+</div>
     <!--<div class="table3-top" style="width: 90%;height: 80%;  margin: 0 auto;">-->
 <!--{{ overlap_day|safe }}-->
     <!--</div>-->
