@@ -127,9 +127,13 @@ def get_articles_values(date_end,days_form,selected_type,keyword_title,keyword_u
                 aricle_id=article_re.group(1)
                 article_link_type=article_re.end()
                 sqlconn.execute(sql%aricle_id)
-                article_title = sqlconn.fetchall()[0][0]
-                if len(article_title)>39:
-                    article_title=article_title[:38]
+                title_result=sqlconn.fetchone()
+                if title_result is None:
+                    article_title='不存在-%s'%aricle_id
+                else:
+                    article_title = title_result[0]
+                    if len(article_title)>39:
+                        article_title=article_title[:38]
                 if selected_type=='stream' :
                     if 'mstream' in url:
                         dct_results[url]['title']=article_title+'【移动端】'
