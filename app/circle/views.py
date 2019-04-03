@@ -65,9 +65,7 @@ def get_articles_values(date_end,days_form,selected_type,keyword_title,keyword_u
     import json
     import re
     import pymysql
-    dbconn_cine107 = pymysql.connect(host=host_cine1, port=port_cine1, user=user_cine1, password=password_cine1, db=db_cine1_cine107,
-                                      charset='utf8')
-    sqlconn_cine107=dbconn_cine107.cursor()
+
 
     end_date=date_end.strftime('%Y%m%d')
     date_start=date_end-datetime.timedelta(days=days_form)
@@ -100,70 +98,74 @@ def get_articles_values(date_end,days_form,selected_type,keyword_title,keyword_u
     urls_items_title = json.loads(r)['body']['data'][0]['result']['items'][0]
     urls_items_value = json.loads(r)['body']['data'][0]['result']['items'][1]
     dct_urls = {}
+    #全部结果字典
+    for item_no in range(len(urls_items_title)):
+        if urls_items_value[item_no][1] > 19:
+            dct_urls[urls_items_title[item_no][0]['name']] = {}
+            for field_no in range(1, len(urls_fields)):
+                dct_urls[urls_items_title[item_no][0]['name']][urls_fields[field_no]] = urls_items_value[item_no][field_no - 1]
 
-    def urls_filter():
-        dct_urls[urls_items_title[item_no][0]['name']] = {}
-        if len(urls_items_title[item_no][0]['name']) > 100:
-            article_title = urls_items_title[item_no][0]['name'][:99]
-        else:
-            article_title = urls_items_title[item_no][0]['name']
-        dct_urls[urls_items_title[item_no][0]['name']]['title'] = article_title
-        for field_no in range(1, len(urls_fields)):
-            dct_urls[urls_items_title[item_no][0]['name']][urls_fields[field_no]] = urls_items_value[item_no][
-                field_no - 1]
-    #如果选择107内容
+    #选择类型为文章时筛选结果
+    def content_articles(selected_type):
+        dct_results={}
+        if selected_type == 'stream':
+            re_content=re.compile('stream\/(\d+)[\?\/$]?')
+            sql="select v_title from streams where id=%s"
+            dbinfo={'host':host_cine1,'port':port_cine1,'user':user_cine1,'password':password_cine1,'db':db_cine1_cine107}
+        if selected_type == 'articles':
+            re_content=re.compile('articles\/(\d+)[\?\/$]?')
+            sql="select title from posts where id=%s"
+            dbinfo={'host':host_cine2,'port':port_cine2,'user':user_cine2,'password':password_cine2,'db':db_cine2_circle}
+
+        dbconn= pymysql.connect(host=dbinfo['host'], port=dbinfo['port'], user=dbinfo['user'], password=dbinfo['password'], db=dbinfo['db'],
+                                      charset='utf8')
+        sqlconn=dbconn.cursor()
+        for url in list(dct_urls.keys()):
+            article_re=re.search(re_content,url)
+            if article_re is not None:
+                dct_results[url]=dct_urls[url]
+                aricle_id=article_re.group(1)
+                article_link_type=article_re.end()
+                sqlconn.execute(sql%aricle_id)
+                article_title = sqlconn.fetchall()[0][0]
+                if len(article_title)>39:
+                    article_title=article_title[:38]
+                if selected_type=='stream' :
+                    if 'mstream' in url:
+                        dct_results[url]['title']=article_title+'【移动端】'
+                    else:
+                        dct_results[url]['title'] = article_title+'【PC】'
+                else:
+                    dct_results[url]['title'] = article_title
+                dct_results[url]['link_type']=url[article_link_type:]
+        dbconn.close()
+        return dct_results
+
+    #获取最后结果
     if selected_type=='stream':
-        for item_no in range(len(urls_items_title)):
-            if ('stream/' in urls_items_title[item_no][0]['name']) and urls_items_value[item_no][1]>19:
-                dct_urls[urls_items_title[item_no][0]['name']] = {}
-                #正则匹配
-
-                article_re=re.search(r'stream\/(\d+)[\?\/$]?', urls_items_title[item_no][0]['name'])
-                if article_re is None:
-                    article_title=None
-                    article_link_type=0
-                else:
-                    #id内容
-                    aricle_id=article_re.group(1)
-                    #id位置
-                    article_link_type=article_re.end()
-                    #查询标题
-                    sqlconn_cine107.execute("select v_title from streams where id=%s"%aricle_id)
-                    article_title=sqlconn_cine107.fetchall()[0][0]
-                    if len(article_title)>41:
-                        article_title=article_title[:40]
-
-                #进入字典
-                dct_urls[urls_items_title[item_no][0]['name']]['title']=article_title
-                dct_urls[urls_items_title[item_no][0]['name']]['link_type']=urls_items_title[item_no][0]['name'][article_link_type:]
-                for field_no in range(1, len(urls_fields)):
-                    dct_urls[urls_items_title[item_no][0]['name']][urls_fields[field_no]] = urls_items_value[item_no][field_no - 1]
-
+        dct_results=content_articles(selected_type='stream')
+    elif selected_type == 'articles':
+        dct_results=content_articles(selected_type='articles')
+    elif selected_type=='all':
+        dct_results={}
+        for url in dct_urls:
+            dct_results[url]=dct_urls[url]
+            dct_results[url]['title'] = url[:80]
     else:
-        for item_no in range(len(urls_items_title)):
-            if urls_items_value[item_no][1]>19:
-                if selected_type=='all':
-                    urls_filter()
-                else:
-                    if (selected_type in urls_items_title[item_no][0]['name']):
-                        urls_filter()
+        dct_results={}
+        for url in list(dct_urls.keys()):
+            if selected_type in url:
+                dct_results[url] = dct_urls[url]
+                dct_results[url]['title']=url[:80]
 
-    if keyword_url is not None:
-        for key_item in list(dct_urls.keys()):
-            if keyword_url not in key_item:
-                dct_urls.pop(key_item)
-    if keyword_title is not None:
-        if selected_type=='stream':
-            for key_item in list(dct_urls.keys()):
-                if keyword_title not in dct_urls[key_item]['title']:
-                    dct_urls.pop(key_item)
+    #有关键词检索
+    if keyword_url !='' or keyword_title!='':
+        for url in list(dct_results):
+            if keyword_url not in url or keyword_title not in dct_results[url]['title']:
+                dct_results.pop(url)
 
-    # def get_keyword():
-    #     if keyword is not None:
-
-    dbconn_cine107.close()
     result={}
-    result['dct_urls']=dct_urls
+    result['dct_urls']=dct_results
     result['date_start']=date_start.strftime('%Y-%m-%d')
     result['date_end']=date_end
 
@@ -195,7 +197,7 @@ def circle_mr():
 def articles_rp():
     date_end_default=datetime.datetime.today()
     days_form=0
-    dct_selected={"all":"全部",'stream':"107文章",'cinehello':"cinehello","zhuanti":"专题","company":"公司"}
+    dct_selected={"all":"全部",'stream':"107文章",'articles':"cinehello文章","zhuanti":"专题","company":"公司"}
     if request.method == 'POST' :
         days_form =int(request.form.get('days_form'))
         selected_type=request.form.get('selected')
