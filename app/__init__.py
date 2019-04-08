@@ -38,6 +38,8 @@ def create_app():
     app.register_blueprint(circle_blueprint)
     from .morning import morning as morning_blueprint
     app.register_blueprint(morning_blueprint)
+    from .api import api as api_blueprint
+    app.register_blueprint(api_blueprint)
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
