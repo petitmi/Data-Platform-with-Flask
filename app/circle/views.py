@@ -65,8 +65,6 @@ def get_articles_values(date_end,days_form,selected_type,keyword_title,keyword_u
     import json
     import re
     import pymysql
-
-
     end_date=date_end.strftime('%Y%m%d')
     date_start=date_end-datetime.timedelta(days=days_form)
     start_date=date_start.strftime('%Y%m%d')

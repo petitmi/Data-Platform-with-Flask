@@ -536,3 +536,35 @@ def index_sum():
                            year_sql=year_sql,
                            thatdate=thatdate_sql
                            )
+
+
+def get_autho_business():
+    dbconn_xmmz = pymysql.connect(host=host_cine2, port=port_cine2, user=user_cine2,
+                                  password=password_cine2,
+                                  charset='utf8')
+
+    authoritors_count = pd.read_sql(sql_authoritors, con=dbconn_xmmz)
+    claimers_count = pd.read_sql(sql_calimers, con=dbconn_xmmz)
+    feeders_count = pd.read_sql(sql_feeders, con=dbconn_xmmz)
+    activate_count = pd.read_sql(sql_activate, con=dbconn_xmmz)
+
+    business_result = authoritors_count.merge(claimers_count, how="left", on='business_merge_name'). \
+        merge(feeders_count, how="left", on='business_merge_name') \
+        .merge(activate_count, how="left", on='business_merge_name')
+    business_result = (business_result).fillna(0)
+    business_result[business_result.columns.difference(['business_merge_name'])] = business_result[
+        business_result.columns.difference(['business_merge_name'])].astype(int)
+    business_result.sort_values(by=['authoritors_count'], ascending=False, inplace=True)
+    business_result.columns = ['职业', '认证人数', '认领人数','认证用户发布动态人数','认证用户3月内活跃人数']
+
+
+    return business_result
+@main.route("/business",methods=["GET"])
+@login_required
+def business():
+    ##学习、设备线上
+    business_result_pd=get_autho_business()
+    print('UA:',request.user_agent.string)
+    print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
+    return render_template('business.html',
+                           business_result=business_result_pd)

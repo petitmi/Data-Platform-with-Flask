@@ -84,3 +84,39 @@ sql_member_uuid="""select uuid,real_name from members where id='%s'"""
 # sql_vip_goods="""select order_id,FROM_UNIXTIME(paytime,'%Y-%m-%d %H:%i:%s') paytime,b.name good_name,b.price good_price,
 # address_xq address,tel phone,receiver receiver_name from lr_order a left join lr_order_product b on a.id=b.order_id
 # where status in (20,30,40,50) and uid='{0}' ;"""
+# ########################################################################################################################
+
+
+sql_authoritors = """select case when c.business_merge is null then b.business_name else c.business_merge end business_merge_name,
+count(distinct a.member_id) authoritors_count
+from circlecenter.authorities a 
+left join data_analysis.members b on a.member_id=b.member_id 
+left join data_analysis.business_merge c on b.business_name=c.business_origin
+left join circlecenter.members d on a.member_id=d.id
+where a.authable_type='Member' and a.deleted_at is null  and d.type='person' 
+group by case when c.business_merge is null then b.business_name else c.business_merge end;"""
+sql_calimers = """select case when c.business_merge is null then b.business_name else c.business_merge end business_merge_name,
+count(distinct a.member_id) claimers_count
+from circlecenter.filmographies a 
+left join data_analysis.members b on a.member_id=b.member_id 
+left join data_analysis.business_merge c on b.business_name=c.business_origin
+where a.member_id is not null and a.real_name is not null 
+group by case when c.business_merge is null then b.business_name else c.business_merge end;"""
+sql_feeders = """select  case when e.business_merge is null then b.business_name else e.business_merge end business_merge_name,
+count(distinct d.owner_id) feeders_count
+from circlecenter.authorities a 
+left join data_analysis.members b on a.member_id=b.member_id 
+left join circlecenter.members c on a.member_id=c.id 
+left join circlecenter.activities d on a.member_id=d.owner_id
+ left join data_analysis.business_merge e on b.business_name=e.business_origin
+where a.authable_type='Member' and a.deleted_at is null and c.type='person' and d.recipient_id = 3865 and d.recipient_type = 'Board' and `key` in ('video.create','album.create','link.create') 
+group by case when e.business_merge is null then b.business_name else e.business_merge end;"""
+
+sql_activate = """select case when c.business_merge is null then b.business_name else c.business_merge end business_merge_name,count(distinct a.member_id) activate_count
+from circlecenter.authorities a 
+left join data_analysis.members b on a.member_id=b.member_id 
+left join data_analysis.business_merge c on b.business_name=c.business_origin
+left join circlecenter.members d on a.member_id=d.id
+inner join (select distinct member_uuid from data_analysis.app_details where type='active' and time > date_sub(curdate(),interval 3 month)) e on d.uuid=e.member_uuid
+where a.authable_type='Member' and a.deleted_at is null  and d.type='person'   
+group by case when c.business_merge is null then b.business_name else c.business_merge end;"""
