@@ -257,7 +257,7 @@ def get_article_values(dbconn_xmmz,article_id,date_end,days_form):
 def article(article_id=None):
 
     date_end_default=datetime.date.today()-datetime.timedelta(days=1)
-    days_form=7
+    days_form=15
     dbconn_xmmz = pymysql.connect(host=host_cine2, port=port_cine2, password=password_cine2, user=user_cine2,
                                   db=db_cine2_xmmz)
     if request.method == 'POST' :
