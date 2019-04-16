@@ -124,7 +124,7 @@ def get_articles_values(date_end,days_form,selected_type,keyword_title,keyword_u
                 dct_results[url]=dct_urls[url]
                 aricle_id=article_re.group(1)
                 dct_results[url]['article_id']=aricle_id
-                dct_results[url]['article_curve']='http://morning-data.cinehello.com/articles/%s'%aricle_id
+                dct_results[url]['article_curve']='http://morning-data.cinehello.com/article/%s'%aricle_id
                 article_link_type=article_re.end()
                 sqlconn.execute(sql%aricle_id)
                 title_result=sqlconn.fetchone()
