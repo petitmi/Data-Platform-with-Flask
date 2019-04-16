@@ -107,11 +107,11 @@ def get_articles_values(date_end,days_form,selected_type,keyword_title,keyword_u
     def content_articles(selected_type):
         dct_results={}
         if selected_type == 'stream':
-            re_content=re.compile('stream\/(\d+)[\?\/$]?')
+            re_stream=re.compile('stream\/(\d+)[\?\/$]?')
             sql="select v_title from streams where id=%s"
             dbinfo={'host':host_cine1,'port':port_cine1,'user':user_cine1,'password':password_cine1,'db':db_cine1_cine107}
         if selected_type == 'articles':
-            re_content=re.compile('articles\/(\d+)[\?\/$]?')
+            re_stream=re.compile('articles\/(\d+)[\?\/$]?')
             sql="select title from posts where id=%s"
             dbinfo={'host':host_cine2,'port':port_cine2,'user':user_cine2,'password':password_cine2,'db':db_cine2_circle}
 
@@ -119,10 +119,12 @@ def get_articles_values(date_end,days_form,selected_type,keyword_title,keyword_u
                                       charset='utf8')
         sqlconn=dbconn.cursor()
         for url in list(dct_urls.keys()):
-            article_re=re.search(re_content,url)
+            article_re=re.search(re_stream,url)
             if article_re is not None:
                 dct_results[url]=dct_urls[url]
                 aricle_id=article_re.group(1)
+                dct_results[url]['article_id']=aricle_id
+                dct_results[url]['article_curve']='http://morning-data.cinehello.com/articles/%s'%aricle_id
                 article_link_type=article_re.end()
                 sqlconn.execute(sql%aricle_id)
                 title_result=sqlconn.fetchone()
@@ -140,6 +142,9 @@ def get_articles_values(date_end,days_form,selected_type,keyword_title,keyword_u
                 else:
                     dct_results[url]['title'] = article_title
                 dct_results[url]['link_type']=url[article_link_type:]
+
+
+
         dbconn.close()
         return dct_results
 

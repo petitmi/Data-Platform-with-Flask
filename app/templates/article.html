@@ -1,0 +1,42 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.min.js"></script>
+    <script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+{% endblock %}
+
+{% block page_content %}
+<form method=post enctype=multipart/form-data>
+    <span>
+        <span style="text-align: center;display:block;">
+            <span style="border: #0d3349;font-weight: bold"> article id :</span>
+            <input type="text" name="article_id" value="{{article_id}}" style="font-size: 20px">
+            <span style="border: #0d3349;font-weight: bold">截止日期：</span>
+            <input id="date" type="date" name="date_end" value="{{ date_end }}">
+            <span style="border: #0d3349;font-weight: bold"> 日期段(h):</span>
+            <input type="text" name="days_form" value="{{days_form}}" style="font-size: 20px">
+            <input type="submit" class="startButton" value="查询">
+        </span>
+        <br>
+        <span style="border: #0d3349;font-weight: bold;text-align: center;display:block;">文章：{{article_title}}&nbsp;</span>
+        <span style="border: #0d3349;font-weight: bold;padding-left: 38%;display:block;">时间区间：{{date_start}} - {{date_end}}</span>
+
+    </span>
+</form>
+<script type="text/javascript">
+    $(".datetimepicker1").datetimepicker({format: "yyyy-mm-dd hh:ii:ss",
+        autoclose: true,
+        todayBtn: true,
+        minuteStep: 5,
+        forceParse: 0});
+</script>
+
+<br>
+<div>
+    {{ overlap_stream|safe }}
+
+</div>
+{% endblock %}
+

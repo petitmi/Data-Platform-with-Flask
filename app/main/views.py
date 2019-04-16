@@ -215,6 +215,84 @@ def member(member_id=None):
                            hours_form=hours_form)
 
 
+def get_article_values(dbconn_xmmz,article_id,date_end,days_form):
+    # date_end_dt = datetime.datetime.strptime(date_end, '%Y-%m-%d')
+    date_start=date_end - datetime.timedelta(days=days_form+1)
+    days_lst = []
+    for i in range(days_form):
+        date = (date_end - datetime.timedelta(days=i))
+        days_lst.append(date)
+
+    days_df = pd.DataFrame(days_lst, columns=['date'])
+    sql = """select date,sum(visitor_count) uv,AVG(exit_ratio) exit_ratio from articles_streams where article_id='%(article_id)s' and 
+    date between '%(date_start)s' and '%(date_end)s' group by date;"""
+    sql_title="""select title from articles_streams where article_id='%s' """
+    result_df = pd.read_sql(sql % {'article_id': article_id, 'date_start': date_start, 'date_end': date_end},
+                            con=dbconn_xmmz)
+
+    result_title = pd.read_sql(sql_title%article_id,con=dbconn_xmmz).values[0][0]
+    result_df = days_df.merge(result_df, on=['date'], how='left')
+    result_df=result_df.fillna(0)
+
+    result={}
+    result['date_start']=date_start
+    result['date_end']=date_end
+    result['result']={}
+    result['result']['date']=result_df['date'].values.tolist()[::-1]
+    result['result']['uv']=result_df['uv'].values.tolist()[::-1]
+    result['result']['exit_ratio']=result_df['exit_ratio'].values.tolist()[::-1]
+    result['article_title']=result_title
+
+    overlap_stream = olp(attr=result['result']['date'], bar1=result['result']['uv'], bar2=0, bar3=0,
+                        line1=result['result']['exit_ratio'], line2=0, line3=0,
+                        bar1_title='日期',bar2_title=0, bar3_title=0, line1_title='退出率', line2_title=0, line3_title=0,
+                        title='文章', width=1200, height=260)
+    result['overlap_stream']=overlap_stream.render_embed()
+    print(result)
+    return result
+
+@main.route('/article', methods=['GET', 'POST'])
+@main.route('/article/', methods=['GET', 'POST'])
+@main.route('/article/<article_id>', methods=['GET', 'POST'])
+def article(article_id=None):
+
+    date_end_default=datetime.date.today()-datetime.timedelta(days=1)
+    days_form=7
+    dbconn_xmmz = pymysql.connect(host=host_cine2, port=port_cine2, password=password_cine2, user=user_cine2,
+                                  db=db_cine2_xmmz)
+    if request.method == 'POST' :
+        article_id = request.form.get('article_id')
+        print(article_id)
+        days_form =int(request.form.get('days_form'))
+        date_end_form=datetime.datetime.strptime(request.form.get('date_end'),'%Y-%m-%d')
+        date_end_form=datetime.date(date_end_form.year,date_end_form.month,date_end_form.day)
+        print(type(date_end_form))
+        print(type(date_end_default))
+        if date_end_form<date_end_default :
+            date_end=date_end_form
+        else:
+            date_end=date_end_default
+            flash('时间格式有误')
+    elif request.method=='GET'or request.form.get('member_id') =='':
+        if article_id==None:
+            sql_article_uv_max = """select article_id from articles_streams where TO_DAYS(NOW()) - TO_DAYS(date) = 1 order by visitor_count desc limit 1"""
+            print(sql_article_uv_max)
+
+            article_id = pd.read_sql(sql_article_uv_max, con=dbconn_xmmz).values[0][0]
+        date_end = date_end_default
+    else:
+        flash('时间格式有误')
+    results_article=get_article_values(dbconn_xmmz=dbconn_xmmz,article_id=article_id,date_end=date_end,days_form=days_form)
+    dbconn_xmmz.close()
+    print('UA:',request.user_agent.string)
+    print('\033[1;35m'+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
+    return render_template('article.html',
+                           overlap_stream=results_article['overlap_stream'],
+                           article_id=article_id,
+                           date_end=date_end.strftime('%Y-%m-%d'),
+                           date_start=results_article['date_start'],
+                           article_title=results_article['article_title'],
+                           days_form=days_form)
 
 
 @main.route('/screen')
