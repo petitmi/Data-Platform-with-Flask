@@ -22,3 +22,18 @@ from posts_daily a left join posts_totality b on a.post_id=b.post_id where posts
 
 sql_boards_detail="""select a.board_name,login_uv,newly_login_uv,pv,cast(anony_pv*100/pv as UNSIGNED),total_comments,comments,total_marks,marks,b.total_followers,followers
 from boards_daily a left join boards_totality b on a.board_id=b.board_id where boards_date='%s'order by login_uv desc limit 15"""
+
+sql_operations_articles="""select a.id stream_id,a.other_id,a.v_title,a.member_id,b.v_name,
+count(case when c.id is not null then 1 else null end) datu_count, 
+count(case when d.id is not null then 1 else null end) toutiao_count, 
+count(case when e.id is not null then 1 else null end) wenku_count,
+f.n_count_more stream_count,
+a.d_time
+from streams a left join members b on a.member_id=b.id
+left join homeimages c on a.id=c.stream_id
+left join homestream_ts d on a.id=d.stream_id
+left join wenkus e on a.id=e.stream_id
+left join stream_counts f on a.id=f.stream_id
+where a.member_id in {2} and a.d_time between '{0}' and '{1}'
+group by a.id;"""
+sql_operations="""select member_ids from users"""

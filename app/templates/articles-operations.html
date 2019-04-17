@@ -1,0 +1,72 @@
+<!DOCTYPE html  >
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.min.js" xmlns="http://www.w3.org/1999/html"></script>
+<script type="text/javascript" src="/static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+{% endblock %}
+
+{% block page_content %}
+<div >
+<form method=post enctype=multipart/form-data>
+    <span>
+        <span style="text-align: center;display:block;">
+            <span style="border: #0d3349;font-weight: bold">日期：</span>
+            <input id="date" type="date" name="date_end" value="{{ date_end }}">
+            <input type="submit" class="startButton" value="查询">
+        </span>
+
+    </span>
+</form>
+
+<script type="text/javascript">
+    $(".form_datetime").datetimepicker({format: "yyyy-mm-dd",
+        minView: 2});
+</script>
+
+
+{% for message in get_flashed_messages() %}
+<div class="alert alert-warning">
+    <div class=flashes>
+        <div style="color: red" > {{ message }}</div>
+    </div>
+</div>
+{% endfor %}
+
+<div>
+<h1 class="head1">日数据</h1>
+<hr width="100%" align="left">
+
+<table class="green_table" >
+    <thead class="green_row_head">
+    <tr>
+        <th class="green_cell" style="width:60px" >标题</th>
+        <th class="green_cell" style="width:6px" >作者</th>
+        <th class="green_cell">发布时间</th>
+        <th class="green_cell">点击</th>
+        <th class="green_cell">大图</th>
+        <th class="green_cell">头条</th>
+        <th class="green_cell">文库</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in results_operations %}
+    <tr class="green_row">
+        <td class="green_cell" style="background-color: #eff2ff;width: 40%">{{ results_operations[i]['v_title'] }}</a></td>
+        <td class="green_cell" style="width:6px" >{{results_operations[i]['v_name']}}</td>
+        <td class="green_cell">{{ results_operations[i]['d_time'] }}</td>
+        <td class="green_cell">{{ results_operations[i]['stream_count'] }}</td>
+        <td class="green_cell">{{ results_operations[i]['datu_count'] }}</td>
+        <td class="green_cell">{{ results_operations[i]['toutiao_count']}}</td>
+        <td class="green_cell">{{ results_operations[i]['wenku_count']}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+    <!--<div class="table3-top" style="width: 90%;height: 80%;  margin: 0 auto;">-->
+<!--{{ overlap_day|safe }}-->
+    <!--</div>-->
+{% endblock %}

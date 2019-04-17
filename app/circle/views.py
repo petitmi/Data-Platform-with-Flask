@@ -9,7 +9,7 @@ from ..configs.circle_sql_config import *
 from ..configs.time_config import *
 from ..configs.config import *
 import pandas as pd
-
+import pymysql
 
 def get_rp_values():
     yesterday_sql=(datetime.datetime.now()-datetime.timedelta(1)).strftime('%Y-%m-%d')
@@ -250,3 +250,59 @@ def olp_bar_line(sql):
     overlap_day.add(bar)
     overlap_day.add(line, yaxis_index=1, is_add_yaxis=True)
     return overlap_day
+
+def get_operations_values(thatdate_sql):
+    thatdate_sql_start=str(thatdate_sql)+' 00:00:00'
+    thatdate_sql_end=str(thatdate_sql)+' 23:59:59'
+
+    dbconn_xmmz = pymysql.connect(host=host_cine1, user=user_cine1, port=port_cine1, password=password_cine1,
+                                  db=db_cine1_cine107)
+    sqlconn_xmmz = dbconn_xmmz.cursor()
+
+    sqlconn_xmmz.execute(sql_operations)
+    result_all_operations = sqlconn_xmmz.fetchall()
+    operations_lst = []
+    for users_tpl in result_all_operations:
+        users_lst = users_tpl[0].split(',')
+        for user in users_lst:
+            operations_lst.append(user)
+
+    operations_tpl = tuple(set(operations_lst))
+
+    sqlconn_xmmz.execute(sql_operations_articles.format(thatdate_sql_start,thatdate_sql_end,operations_tpl))
+    result_all_articles = sqlconn_xmmz.fetchall()
+    header_result_all_articles = sqlconn_xmmz.description
+    headers_lst = []
+    for header in header_result_all_articles:
+        headers_lst.append(header[0])
+    results = {}
+    for articles in result_all_articles:
+        results[articles[0]] = {}
+        for header_num in range(len(headers_lst)):
+            results[articles[0]][headers_lst[header_num]] = articles[header_num]
+    dbconn_xmmz.close()
+
+    return results
+
+@circle.route('/articles-operations',methods=["POST","GET"])
+@login_required
+@permission_required(Permission.CIRCLE)
+def articles_operations():
+    today_sql = datetime.date.today()
+    if request.method == 'POST' :
+        thatdate_sql = datetime.datetime.strptime(request.form.get('date_end'),'%Y-%m-%d')
+        thatdate_sql=datetime.date(thatdate_sql.year,thatdate_sql.month,thatdate_sql.day)
+
+        if thatdate_sql>today_sql :
+            flash('选择的日期未经历')
+    if request.method=='GET'or request.form.get('input') =='':
+        thatdate_sql = today_sql-datetime.timedelta(days=1)
+    results_operations=get_operations_values(thatdate_sql)
+    print('UA:',request.user_agent.string)
+    print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
+    return render_template('articles-operations.html',
+                           thatdate=thatdate_sql,
+                           results_operations=results_operations,date_end=thatdate_sql)
+
+
+
