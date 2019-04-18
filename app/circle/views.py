@@ -11,6 +11,8 @@ from ..configs.config import *
 import pandas as pd
 import pymysql
 
+
+
 def get_rp_values():
     yesterday_sql=(datetime.datetime.now()-datetime.timedelta(1)).strftime('%Y-%m-%d')
     result={'data_totality': db.session.execute(sql_data_totality % yesterday_sql).fetchall()}
@@ -257,30 +259,53 @@ def get_operations_values(thatdate_sql):
 
     dbconn_xmmz = pymysql.connect(host=host_cine1, user=user_cine1, port=port_cine1, password=password_cine1,
                                   db=db_cine1_cine107)
-    sqlconn_xmmz = dbconn_xmmz.cursor()
+    operations_members_pd=pd.read_sql(sql_operations,con=dbconn_xmmz)
+    operations_members_pd=operations_members_pd.drop('member_ids', axis=1).join(
+        operations_members_pd['member_ids'].str.split(',', expand=True).stack().reset_index(level=1, drop=True).rename('member_ids'))
+    #全部operations
+    operations_all_tpl=tuple(operations_members_pd['member_ids'].tolist())
+    #全部文章
+    articles_all_pd=pd.read_sql(sql_operations_articles.format(thatdate_sql_start,thatdate_sql_end,operations_all_tpl),con=dbconn_xmmz)
+    articles_all_pd=articles_all_pd.sort_values('v_name')
+    header_all_articles_lst=list(articles_all_pd.columns.values)
+    value_all_articles_lst=articles_all_pd.values.tolist()
+    ##标题
+    articles_headers_lst = []
+    for header in header_all_articles_lst:
+        articles_headers_lst.append(header)
 
-    sqlconn_xmmz.execute(sql_operations)
-    result_all_operations = sqlconn_xmmz.fetchall()
-    operations_lst = []
-    for users_tpl in result_all_operations:
-        users_lst = users_tpl[0].split(',')
-        for user in users_lst:
-            operations_lst.append(user)
-
-    operations_tpl = tuple(set(operations_lst))
-
-    sqlconn_xmmz.execute(sql_operations_articles.format(thatdate_sql_start,thatdate_sql_end,operations_tpl))
-    result_all_articles = sqlconn_xmmz.fetchall()
-    header_result_all_articles = sqlconn_xmmz.description
-    headers_lst = []
-    for header in header_result_all_articles:
-        headers_lst.append(header[0])
-    results = {}
-    for articles in result_all_articles:
-        results[articles[0]] = {}
-        for header_num in range(len(headers_lst)):
-            results[articles[0]][headers_lst[header_num]] = articles[header_num]
+    articles_operations = {}
+    for articles in value_all_articles_lst:
+        articles_operations[articles[0]] = {}
+        for header_num in range(len(articles_headers_lst)):
+            articles_operations[articles[0]][articles_headers_lst[header_num]] = articles[header_num]
+    operations_members_pd['member_ids']=operations_members_pd['member_ids'].astype('int')
     dbconn_xmmz.close()
+    all_operations_articles_pd=operations_members_pd.merge(articles_all_pd,how='left',left_on='member_ids',right_on='member_id')
+
+    #获得人员统计
+    #分组聚合
+    aggregation = {'member_id': ['count'], 'stream_count': ['sum'],'datu_count': ['sum'], 'wenku_count': ['sum'], 'toutiao_count': ['sum']}
+    operations_members_grouped = all_operations_articles_pd.groupby(all_operations_articles_pd['v_name_cn']).agg(aggregation)
+    #修改列名
+    operations_members_grouped.columns = ['_'.join(col).strip() for col in operations_members_grouped.columns.values]
+    #点击降序
+    operations_members_grouped=operations_members_grouped.sort_values('stream_count_sum',ascending=False)
+    #人员、标题、数据
+    members_vname_lst=list(operations_members_grouped.index.values)
+    header_operations_members_lst=list(operations_members_grouped.columns.values)
+    value_operations_members_lst=operations_members_grouped.values.tolist()
+    members_headers_lst=[]
+    for header in header_operations_members_lst:
+        members_headers_lst.append(header)
+    members_operations = {}
+    for member_num in range(len(members_vname_lst)):
+        members_operations[members_vname_lst[member_num]] = {}
+        for header_num in range(len(members_headers_lst)):
+            members_operations[members_vname_lst[member_num]][header_operations_members_lst[header_num]] = value_operations_members_lst[member_num][header_num]
+    results={}
+    results['articles_operations']=articles_operations
+    results['members_operations']=members_operations
 
     return results
 
@@ -302,7 +327,10 @@ def articles_operations():
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('articles-operations.html',
                            thatdate=thatdate_sql,
-                           results_operations=results_operations,date_end=thatdate_sql)
+                           articles_operations=results_operations['articles_operations'],
+                           members_operations=results_operations['members_operations'],
+
+                           date_end=thatdate_sql)
 
 
 

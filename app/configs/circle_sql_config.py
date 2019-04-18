@@ -36,4 +36,4 @@ left join wenkus e on a.id=e.stream_id
 left join stream_counts f on a.id=f.stream_id
 where a.member_id in {2} and a.d_time between '{0}' and '{1}'
 group by a.id;"""
-sql_operations="""select member_ids from users"""
+sql_operations="""select member_ids,v_name_cn from users where member_ids!='0'"""

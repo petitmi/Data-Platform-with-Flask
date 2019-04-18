@@ -35,9 +35,38 @@
 {% endfor %}
 
 <div>
-<h1 class="head1">日数据</h1>
+<h1 class="head1">运营人员</h1>
 <hr width="100%" align="left">
 
+<table class="blue_table" style="width: 500px" >
+    <thead class="blue_head">
+    <tr>
+        <th class="cell" style="width:60px" >作者</th>
+        <th class="cell" style="width:60px" >文章数</th>
+        <th class="cell" style="width:6px" >点击数</th>
+        <th class="cell">大图数</th>
+        <th class="cell">文库数</th>
+        <th class="cell">头条数</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in members_operations %}
+    <tr class="blue_row">
+        <td class="cell" style="background-color: #eff2ff;width: 40%">{{ i }}</td>
+        <td class="cell" >{{members_operations[i]['member_id_count']|int}}</td>
+        <td class="cell" >{{members_operations[i]['stream_count_sum']|int}}</td>
+        <td class="cell">{{ members_operations[i]['datu_count_sum'] |int}}</td>
+        <td class="cell">{{ members_operations[i]['wenku_count_sum'] |int}}</td>
+        <td class="cell">{{ members_operations[i]['toutiao_count_sum'] |int}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+    </div>
+<br>
+    <div>
+<h1 class="head1">运营文章</h1>
+<hr width="100%" align="left">
 <table class="green_table" >
     <thead class="green_row_head">
     <tr>
@@ -52,20 +81,20 @@
     </tr>
     </thead>
     <tbody>
-    {% for i in results_operations %}
+    {% for i in articles_operations %}
     <tr class="green_row">
-        <td class="green_cell" style="background-color: #eff2ff;width: 40%">{{ results_operations[i]['v_title'] }}</a></td>
-        <td class="green_cell" style="width:6px" >{{results_operations[i]['v_name']}}</td>
-        <td class="green_cell">{{ results_operations[i]['d_time'] }}</td>
-        <td class="green_cell">{{ results_operations[i]['stream_count'] }}</td>
-        <td class="green_cell">{{ results_operations[i]['datu_count'] }}</td>
-        <td class="green_cell">{{ results_operations[i]['toutiao_count']}}</td>
-        <td class="green_cell">{{ results_operations[i]['wenku_count']}}</td>
+        <td class="green_cell" style="background-color: #eff2ff;width: 40%">{{ articles_operations[i]['v_title'] }}</a></td>
+        <td class="green_cell" style="width:6px" >{{articles_operations[i]['v_name']}}</td>
+        <td class="green_cell">{{ articles_operations[i]['d_time'] }}</td>
+        <td class="green_cell">{{ articles_operations[i]['stream_count'] }}</td>
+        <td class="green_cell">{{ articles_operations[i]['datu_count'] }}</td>
+        <td class="green_cell">{{ articles_operations[i]['toutiao_count']}}</td>
+        <td class="green_cell">{{ articles_operations[i]['wenku_count']}}</td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
-</div>
+    </div>
     <!--<div class="table3-top" style="width: 90%;height: 80%;  margin: 0 auto;">-->
 <!--{{ overlap_day|safe }}-->
     <!--</div>-->
