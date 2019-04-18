@@ -266,7 +266,7 @@ def get_operations_values(thatdate_sql):
     operations_all_tpl=tuple(operations_members_pd['member_ids'].tolist())
     #全部文章
     articles_all_pd=pd.read_sql(sql_operations_articles.format(thatdate_sql_start,thatdate_sql_end,operations_all_tpl),con=dbconn_xmmz)
-    articles_all_pd=articles_all_pd.sort_values('v_name')
+    articles_all_pd.sort_values(by='stream_count',ascending=False, inplace=True)
     header_all_articles_lst=list(articles_all_pd.columns.values)
     value_all_articles_lst=articles_all_pd.values.tolist()
     ##标题
