@@ -112,7 +112,7 @@ left join circlecenter.activities d on a.member_id=d.owner_id
 where a.authable_type='Member' and a.deleted_at is null and c.type='person' and d.recipient_id = 3865 and d.recipient_type = 'Board' and `key` in ('video.create','album.create','link.create') 
 group by case when e.business_merge is null then b.business_name else e.business_merge end;"""
 
-sql_activate = """select case when c.business_merge is null then b.business_name else c.business_merge end business_merge_name,count(distinct a.member_id) activate_count
+sql_activate_business = """select case when c.business_merge is null then b.business_name else c.business_merge end business_merge_name,count(distinct a.member_id) activate_count
 from circlecenter.authorities a 
 left join data_analysis.members b on a.member_id=b.member_id 
 left join data_analysis.business_merge c on b.business_name=c.business_origin

@@ -329,7 +329,6 @@ def articles_operations():
                            thatdate=thatdate_sql,
                            articles_operations=results_operations['articles_operations'],
                            members_operations=results_operations['members_operations'],
-
                            date_end=thatdate_sql)
 
 

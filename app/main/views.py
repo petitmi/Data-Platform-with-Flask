@@ -624,7 +624,7 @@ def get_autho_business():
     authoritors_count = pd.read_sql(sql_authoritors, con=dbconn_xmmz)
     claimers_count = pd.read_sql(sql_calimers, con=dbconn_xmmz)
     feeders_count = pd.read_sql(sql_feeders, con=dbconn_xmmz)
-    activate_count = pd.read_sql(sql_activate, con=dbconn_xmmz)
+    activate_count = pd.read_sql(sql_activate_business, con=dbconn_xmmz)
 
     business_result = authoritors_count.merge(claimers_count, how="left", on='business_merge_name'). \
         merge(feeders_count, how="left", on='business_merge_name') \
