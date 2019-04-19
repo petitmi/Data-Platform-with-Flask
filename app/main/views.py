@@ -216,7 +216,6 @@ def member(member_id=None):
 
 
 def get_article_values(dbconn_xmmz,article_id,date_end,days_form):
-    # date_end_dt = datetime.datetime.strptime(date_end, '%Y-%m-%d')
     date_start=date_end - datetime.timedelta(days=days_form+1)
     days_lst = []
     for i in range(days_form):
@@ -240,15 +239,15 @@ def get_article_values(dbconn_xmmz,article_id,date_end,days_form):
     result['result']={}
     result['result']['date']=result_df['date'].values.tolist()[::-1]
     result['result']['uv']=result_df['uv'].values.tolist()[::-1]
-    result['result']['exit_ratio']=result_df['exit_ratio'].values.tolist()[::-1]
+    exit_ratio_lst=result_df['exit_ratio'].values.tolist()[::-1]
+    result['result']['exit_ratio'] = ['%.1f'%x for x in exit_ratio_lst]
     result['article_title']=result_title
 
     overlap_stream = olp(attr=result['result']['date'], bar1=result['result']['uv'], bar2=0, bar3=0,
                         line1=result['result']['exit_ratio'], line2=0, line3=0,
-                        bar1_title='日期',bar2_title=0, bar3_title=0, line1_title='退出率', line2_title=0, line3_title=0,
+                        bar1_title='日期',bar2_title=0, bar3_title=0, line1_title='退出率(%)', line2_title=0, line3_title=0,
                         title='文章', width=1200, height=260)
     result['overlap_stream']=overlap_stream.render_embed()
-    print(result)
     return result
 
 @main.route('/article', methods=['GET', 'POST'])
@@ -276,8 +275,6 @@ def article(article_id=None):
     elif request.method=='GET'or request.form.get('member_id') =='':
         if article_id==None:
             sql_article_uv_max = """select article_id from articles_streams where TO_DAYS(NOW()) - TO_DAYS(date) = 1 order by visitor_count desc limit 1"""
-            print(sql_article_uv_max)
-
             article_id = pd.read_sql(sql_article_uv_max, con=dbconn_xmmz).values[0][0]
         date_end = date_end_default
     else:
