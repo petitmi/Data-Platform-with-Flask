@@ -232,7 +232,7 @@ def get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keywor
     result={}
     result['dct_urls']=dct_results['result']
     result['type']=dct_results['type']
-    if dct_results['author']:
+    if 'author' in dct_results.keys():
         result['author']=dct_results['author']
     result['date_start']=date_start_str
     result['date_end']=date_end_str
@@ -268,7 +268,7 @@ def articles_rp(author_id=None):
     else:
         flash('时间格式有误')
     results_articles=get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keyword_url,author_name=author_name,author_id_given=author_id)
-    if results_articles['author']:
+    if 'author' in results_articles:
         author_name=results_articles['author']
     print('UA:',request.user_agent.string)
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
