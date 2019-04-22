@@ -247,6 +247,7 @@ def get_article_values(dbconn_xmmz,article_id,date_end,days_form):
                         line1=result['result']['exit_ratio'], line2=0, line3=0,
                         bar1_title='日期',bar2_title=0, bar3_title=0, line1_title='退出率(%)', line2_title=0, line3_title=0,
                         title='文章', width=1200, height=260)
+
     result['overlap_stream']=overlap_stream.render_embed()
     return result
 
