@@ -85,7 +85,7 @@ def circle_mr():
 
 
 
-def get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keyword_url):
+def get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keyword_url,author_name,author_id_given):
     import re
     import json
     import requests
@@ -129,9 +129,10 @@ def get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keywor
             for field_no in range(1, len(urls_fields)):
                 dct_urls[urls_items_title[item_no][0]['name']][urls_fields[field_no]] = urls_items_value[item_no][field_no - 1]
 
+    dct_results={}
+    dct_results['result'] = {}
     #选择类型为文章时筛选结果
     def content_articles(selected_type):
-        dct_results={}
         if selected_type == 'stream':
             #如果是stream去107
             re_stream=re.compile('stream\/(\d+)[\?\/$]?')
@@ -149,23 +150,26 @@ def get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keywor
         for url in list(dct_urls.keys()):
             article_re=re.search(re_stream,url)
             if article_re is not None:
-                dct_results[url]=dct_urls[url]
+                dct_results['result'][url]=dct_urls[url]
                 aricle_id=article_re.group(1)
                 if selected_type == 'stream':
-                    sql_author_name="""select b.v_name from streams a left join members b on a.member_id=b.id where a.id=%s;"""
+                    sql_author_name="""select b.v_name,b.id from streams a left join members b on a.member_id=b.id where a.id=%s;"""
                 if selected_type == 'articles':
-                    sql_author_name="""select b.real_name from posts a left join members b on a.member_id=b.id where a.id=%s;"""
+                    sql_author_name="""select b.real_name,b.id from posts a left join members b on a.member_id=b.id where a.id=%s;"""
                 sqlconn.execute(sql_author_name%aricle_id)
 
                 author_name_row=sqlconn.fetchone()
                 if author_name_row:
                     author_name=author_name_row[0]
+                    author_id=author_name_row[1]
+
                 else:
                     author_name='None'
 
-                dct_results[url]['article_id']=aricle_id
-                dct_results[url]['author_name']=author_name
-                dct_results[url]['article_curve']='http://morning-data.cinehello.com/article/%s'%aricle_id
+                dct_results['result'][url]['article_id']=aricle_id
+                dct_results['result'][url]['author_name']=author_name
+                dct_results['result'][url]['author_id']=author_id
+                dct_results['result'][url]['article_curve']='http://morning-data.cinehello.com/article/%s'%aricle_id
                 article_link_type=article_re.end()
                 sqlconn.execute(sql%aricle_id)
                 title_result=sqlconn.fetchone()
@@ -177,12 +181,12 @@ def get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keywor
                         article_title=article_title[:38]
                 if selected_type=='stream' :
                     if 'mstream' in url:
-                        dct_results[url]['title']=article_title+'【移动端】'
+                        dct_results['result'][url]['title']=article_title+'【移】'
                     else:
-                        dct_results[url]['title'] = article_title+'【PC】'
+                        dct_results['result'][url]['title'] = article_title+'【PC】'
                 else:
-                    dct_results[url]['title'] = article_title
-                dct_results[url]['link_type']=url[article_link_type:]
+                    dct_results['result'][url]['title'] = article_title
+                dct_results['result'][url]['link_type']=url[article_link_type:]
         dbconn.close()
         return dct_results
 
@@ -194,38 +198,52 @@ def get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keywor
         dct_results=content_articles(selected_type='articles')
         dct_results['type'] = 'app'
     elif selected_type=='all':
-        dct_results={}
         for url in dct_urls:
-            dct_results[url]=dct_urls[url]
-            dct_results[url]['title'] = url[:80]
+            dct_results['result'][url]=dct_urls[url]
+            dct_results['result'][url]['title'] = url[:80]
         dct_results['type'] = '全站'
 
     else:
-        dct_results={}
         for url in list(dct_urls.keys()):
             if selected_type in url:
-                dct_results[url] = dct_urls[url]
-                dct_results[url]['title']=url[:80]
+                dct_results['result'][url] = dct_urls[url]
+                dct_results['result'][url]['title']=url[:80]
         dct_results['type'] = selected_type
-
-
     #有关键词检索
-    if keyword_url !='default' or keyword_title!='default':
-        for url in list(dct_results):
-            if keyword_url not in url or keyword_title not in dct_results[url]['title']:
-                dct_results.pop(url)
-
+    if keyword_url !='' or keyword_title!='':
+        for url in list(dct_results['result'].keys()):
+            if keyword_url not in url or keyword_title not in dct_results['result'][url]['title']:
+                dct_results['result'].pop(url)
+    if author_id_given :
+        dbconn_cine107= pymysql.connect(host=host_cine1, port=port_cine1, user=user_cine1, password=password_cine1, db=db_cine1_cine107,
+                                      charset='utf8')
+        sqlconn_cine107=dbconn_cine107.cursor()
+        sql_author_name="""select v_name from members where id=%s"""
+        sqlconn_cine107.execute(sql_author_name % author_id_given)
+        author_name_url=sqlconn_cine107.fetchone()[0]
+        dct_results['author']=author_name_url
+        for url in list(dct_results['result'].keys()):
+            if int(author_id_given) != dct_results['result'][url]['author_id']:
+                dct_results['result'].pop(url)
+    if author_name !='':
+        for url in list(dct_results['result'].keys()):
+            if author_name != dct_results['result'][url]['author_id']:
+                dct_results['result'].pop(url)
     result={}
-    result['dct_urls']=dct_results
+    result['dct_urls']=dct_results['result']
+    result['type']=dct_results['type']
+    if dct_results['author']:
+        result['author']=dct_results['author']
     result['date_start']=date_start_str
     result['date_end']=date_end_str
-    print(result)
     return result
 
 
 @circle.route('/articles-rp',methods=["POST","GET"])
+@circle.route('/articles-rp/author/<author_id>',methods=["POST","GET"])
+
 @login_required
-def articles_rp():
+def articles_rp(author_id=None):
     date_end_default=datetime.datetime.today()
     days_form=0
     dct_selected={"all":"全部",'stream':"107文章",'articles':"cinehello文章","zhuanti":"专题","company":"公司"}
@@ -234,6 +252,7 @@ def articles_rp():
         selected_type=request.form.get('selected')
         keyword_url=request.form.get('keyword_url')
         keyword_title=request.form.get('keyword_title')
+        author_name=request.form.get('author_name').strip()
         date_end_dt_form=datetime.datetime.strptime(request.form.get('date_end'),'%Y-%m-%d')
         if date_end_dt_form<date_end_default :
             date_end_dt=date_end_dt_form
@@ -241,26 +260,29 @@ def articles_rp():
             date_end_dt=date_end_default
             flash('时间格式有误')
     elif request.method=='GET':
-        keyword_title ='default'
-        keyword_url='default'
+        keyword_title =''
+        keyword_url=''
+        author_name=''
         selected_type = 'stream'
         date_end_dt = date_end_default
     else:
         flash('时间格式有误')
-
-    results_articles=get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keyword_url)
-
+    results_articles=get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keyword_url,author_name=author_name,author_id_given=author_id)
+    if results_articles['author']:
+        author_name=results_articles['author']
     print('UA:',request.user_agent.string)
     print('\033[1;35m'+session['user_id']+' - '+request.remote_addr+' - '+request.method+' - '+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+' - '+request.path+'\033[0m')
     return render_template('articles-rp.html',
                            date_end=date_end_dt.strftime('%Y-%m-%d'),
                            date_start=results_articles['date_start'],
                            dct_urls=results_articles['dct_urls'],
+                           dct_type=results_articles['type'],
                            days_form=days_form,
                            dct_selected=dct_selected,
                            selected_type=selected_type,
                            keyword_title=keyword_title,
-                           keyword_url=keyword_url)
+                           keyword_url=keyword_url,
+                           author_name=author_name)
 
 def olp_bar_line(sql):
     result_circle_day = pd.read_sql(sql, db.engine).fillna(0)

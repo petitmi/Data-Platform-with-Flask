@@ -262,12 +262,10 @@ def article(article_id=None):
                                   db=db_cine2_xmmz)
     if request.method == 'POST' :
         article_id = request.form.get('article_id')
-        print(article_id)
         days_form =int(request.form.get('days_form'))
         date_end_form=datetime.datetime.strptime(request.form.get('date_end'),'%Y-%m-%d')
         date_end_form=datetime.date(date_end_form.year,date_end_form.month,date_end_form.day)
-        print(type(date_end_form))
-        print(type(date_end_default))
+
         if date_end_form<date_end_default :
             date_end=date_end_form
         else:

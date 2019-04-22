@@ -34,15 +34,18 @@
         </tr>
         <tr>
             <td>
-                <span style="border: #0d3349;font-weight: bold">向前推多少天:</span>
-                <input type="text" name="days_form" value="{{ days_form}}" style="font-size: 14px">
+                <span style="border: #0d3349;font-weight: bold">开始日期(几天前):</span>
+                <input type="text" name="days_form" value="{{ days_form}}" style="width:30px;font-size: 14px">
             </td>
             <td>
                 <span style="border: #0d3349;font-weight: bold">标题关键词:</span>
                 <input type="text" name="keyword_title" value="{{keyword_title}}" style="font-size: 14px">
             <br>
                 <span style="border: #0d3349;font-weight: bold">链接关键词:</span>
-                <input type="text" name="keyword_url" value="{{ keyword_url}}" style="font-size: 14px"></td></tr>
+                <input type="text" name="keyword_url" value="{{ keyword_url}}" style="font-size: 14px">
+                <br>
+                <span style="border: #0d3349;font-weight: bold">作者:</span>
+                <input type="text" name="author_name" value="{{ author_name}}" style="font-size: 14px"></td></tr>
         </tbody>
 
         </table>
@@ -67,7 +70,7 @@
 <div>
 <h1 class="head1">日数据</h1>
 <hr width="100%" align="left">
-<span style="border: #0d3349;font-weight: bold;text-align: center;display:block;color: palevioletred">{{dct_urls['type']}}【{{date_start}} - {{date_end}}&nbsp;】uv>19的链接排名</span>
+<span style="border: #0d3349;font-weight: bold;text-align: center;display:block;color: palevioletred">{{dct_type}}【{{date_start}} - {{date_end}}&nbsp;】uv>19的链接排名</span>
 <br>
 <table class="green_table" >
     <thead class="green_row_head">
