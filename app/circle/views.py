@@ -227,11 +227,12 @@ def get_articles_values(date_end_dt,days_form,selected_type,keyword_title,keywor
                 dct_results['result'].pop(url)
     if author_name !='':
         for url in list(dct_results['result'].keys()):
-            if author_name != dct_results['result'][url]['author_id']:
+            if author_name != dct_results['result'][url]['author_name']:
                 dct_results['result'].pop(url)
     result={}
     result['dct_urls']=dct_results['result']
     result['type']=dct_results['type']
+    #字典会带上author
     if 'author' in dct_results.keys():
         result['author']=dct_results['author']
     result['date_start']=date_start_str
