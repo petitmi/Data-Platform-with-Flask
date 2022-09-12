@@ -1,7 +1,7 @@
 # data-platform
 
-use flask:flask-login;flask-WTF;flask-bootstrap;
-use pandas;
-use pyecharts;
-use pymysql;
-use elasticsearch;
+use flask:flask-login;flask-WTF;flask-bootstrap;\n
+use pandas;\n
+use pyecharts;\n
+use pymysql;\n
+use elasticsearch;\n
